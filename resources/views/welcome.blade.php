@@ -23,12 +23,14 @@
             <a href="#katalog">Katalog</a>
             <a href="#about">Tentang Kami</a>
             
-            <a href="{{ route('login') }}" class="nav-button">Login/Register</a>
+            <a href="{{ route('login') }}" class="nav-button">Login</a>
+            
+            <a href="{{ route('register') }}" style="margin-left: 15px; color: var(--color-accent-strong); font-weight: 600;">Register</a>
         </nav>
     </header>
 
     <main>
-        <section class="hero">
+        <section class="hero" style="background-image: url('{{ asset('images/bg.jpg') }}');">
             <div class="hero-content">
                 <h1>Temukan Makna Tersembunyi di Setiap Helai Bunga.</h1>
                 <p>Koleksi Bunga Pilihan Terbaik, Dirangkai dengan Sentuhan Hati dari Whispering Flora.</p>
@@ -42,7 +44,6 @@
                 
                 {{-- CARD SIMULASI PRODUK 1 --}}
                 <div class="product-card">
-                    {{-- Pastikan gambar-gambar ini ada di public/images/ --}}
                     <img src="{{ asset('images/babybreath.jpg') }}" alt="Baby's Breath">
                     <div class="product-info">
                         <h3>Baby's Breath Flower</h3>
