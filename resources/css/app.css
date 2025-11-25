@@ -291,3 +291,185 @@ a { text-decoration: none; }
         padding: 50px 20px;
     }
 }
+
+/*LOGIN*/ 
+/* --- Container dan Layout Utama --- */
+.auth-container {
+    /* Atur agar modal berada di tengah, sesuaikan dengan struktur HTML induk Anda */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.4); /* Overlay gelap jika ini adalah modal */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.auth-wrapper {
+    display: flex; /* Untuk menempatkan Login dan Register berdampingan */
+    max-width: 900px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.auth-column {
+    padding: 40px 30px;
+    flex: 1; /* Agar kedua kolom memiliki lebar yang sama */
+    color: var(--color-text-dark);
+    font-family: var(--font-body);
+}
+
+.login-column {
+    border-right: 1px solid var(--color-pastel-bliss-2); /* Pemisah tipis */
+}
+
+.column-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--color-text-dark);
+    margin-bottom: 25px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+/* --- Form Elements --- */
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-light);
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-pastel-bliss-2);
+    border-radius: 4px;
+    background-color: var(--color-pastel-bliss-3); /* Background input */
+    color: var(--color-text-dark);
+    font-size: 14px;
+}
+
+.form-input:focus {
+    border-color: var(--color-pastel-bliss-1);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 181, 167, 0.5);
+}
+
+.error-message {
+    color: var(--color-accent-strong);
+    font-size: 12px;
+    display: block;
+    margin-top: 5px;
+}
+
+/* --- Checkbox dan Link --- */
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.form-checkbox {
+    margin-right: 8px;
+    /* Custom styling for checkbox if needed */
+    accent-color: var(--color-accent-strong); 
+}
+
+.checkbox-label {
+    font-size: 14px;
+    color: var(--color-text-dark);
+    margin-bottom: 0;
+}
+
+.privacy-text {
+    font-size: 13px;
+    color: var(--color-text-light);
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+.privacy-link {
+    color: var(--color-accent-strong);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.forgot-password-link {
+    display: block;
+    text-align: left;
+    margin-top: 15px;
+    font-size: 13px;
+    color: var(--color-text-light);
+    text-decoration: none;
+}
+
+.forgot-password-link:hover,
+.privacy-link:hover {
+    text-decoration: underline;
+}
+
+/* --- Tombol Submit --- */
+
+.auth-button {
+    padding: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    letter-spacing: 1px;
+}
+
+.login-button {
+    background-color: var(--color-pastel-bliss-1); /* Primer Pink */
+    color: white;
+}
+
+.login-button:hover {
+    background-color: #e59a8c; /* Slightly darker pink */
+}
+
+.register-button {
+    background-color: var(--color-accent-strong); /* Deep Pink */
+    color: white;
+}
+
+.register-button:hover {
+    background-color: #c72d60; /* Slightly darker deep pink */
+}
+
+/* --- Responsiveness (Opsional tapi Disarankan) --- */
+
+@media (max-width: 768px) {
+    .auth-wrapper {
+        flex-direction: column; /* Ubah menjadi tumpukan di layar kecil */
+        max-width: 450px;
+    }
+    
+    .login-column {
+        border-right: none;
+        border-bottom: 1px solid var(--color-pastel-bliss-2);
+    }
+}
