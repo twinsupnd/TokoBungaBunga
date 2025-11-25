@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Variabel CSS untuk Palet Warna "Pastel Bliss" */
 :root {
     --color-pastel-bliss-1: #FFB5A7; /* Primer Pink */
@@ -13,8 +9,8 @@
     /* Warna tambahan untuk teks dan tombol agar kontras */
     --color-text-dark: #5A4B4B; /* Darker tone for readability */
     --color-text-light: #8C7878; /* Muted tone for sub-text */
-    --color-button-primary: #B2967D; /* Muted Brown, from previous design */
-    --color-accent-strong: #ED3878; /* Deep Pink, from previous design */
+    --color-button-primary: #B2967D; /* Muted Brown */
+    --color-accent-strong: #ED3878; /* Deep Pink */
 
     --font-display: 'Playfair Display', serif;
     --font-body: 'Quicksand', sans-serif;
@@ -36,7 +32,7 @@ a { text-decoration: none; }
 .header {
     position: fixed;
     top: 0; left: 0; right: 0;
-    background-color: var(--color-pastel-bliss-3); /* Header tetap putih agar elegan */
+    background-color: var(--color-pastel-bliss-3); 
     padding: 15px 50px;
     display: flex;
     justify-content: space-between;
@@ -55,7 +51,7 @@ a { text-decoration: none; }
     width: auto;
 }
 
-.nav a { /* Bagian navigasi yang terpotong */
+.nav a { 
     margin-left: 25px;
     text-decoration: none;
     color: var(--color-text-dark);
@@ -70,31 +66,30 @@ a { text-decoration: none; }
 .nav-button {
     padding: 10px 25px; 
     border-radius: 25px; 
-    background-color: var(--color-button-primary); /* Warna dasar coklat */
+    background-color: var(--color-button-primary); 
     color: white !important;
     font-weight: 600;
-    transition: all 0.4s ease-in-out; /* Transisi lebih alus */
+    transition: all 0.4s ease-in-out; 
     border: none; 
-    position: relative; /* Penting untuk z-index teks */
-    z-index: 1; /* Teks di atas background */
+    position: relative; 
+    z-index: 1; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
     
     /* Background transisi baru */
     background-image: linear-gradient(
         45deg, 
-        var(--color-pastel-bliss-5) 0%, /* Peach */
-        var(--color-accent-strong) 50%, /* Deep Pink di tengah */
-        var(--color-button-primary) 100% /* Coklat di akhir */
+        var(--color-pastel-bliss-5) 0%, 
+        var(--color-accent-strong) 50%, 
+        var(--color-button-primary) 100% 
     );
-    background-size: 200% 100%; /* Agar bisa digeser */
-    background-position: right bottom; /* Mulai dari kanan (yang coklat) */
+    background-size: 200% 100%; 
+    background-position: right bottom; 
 }
 
 .nav-button:hover {
-    background-position: left bottom; /* Geser ke kiri saat hover (muncul gradient pink) */
+    background-position: left bottom; 
     color: white !important; 
     transform: translateY(-2px); 
-    /* Menggunakan nilai RGB untuk warna accent-strong */
     box-shadow: 0 8px 20px rgba(237, 56, 120, 0.4); 
 }
 
@@ -116,8 +111,7 @@ a { text-decoration: none; }
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    /* Menggunakan variabel CSS untuk background */
-    background: rgba(248, 237, 235, 0.3); /* Diganti dari rgba(var(--color-pastel-bliss-3), 0.3) */
+    background: rgba(248, 237, 235, 0.3);
 }
 
 .hero-content {
@@ -125,8 +119,8 @@ a { text-decoration: none; }
     z-index: 10;
     max-width: 800px;
     
-    /* MODIFIKASI: KOTAK PUTIH AGAK TRANSPARAN DI BELAKANG TEXT */
-    background-color: rgba(255, 255, 255, 0.75); /* Background putih semi-transparan (75% opaque) */
+    /* KOTAK PUTIH AGAK TRANSPARAN DI BELAKANG TEXT */
+    background-color: rgba(255, 255, 255, 0.75); 
     padding: 50px; 
     border-radius: 20px; 
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
@@ -136,7 +130,7 @@ a { text-decoration: none; }
     font-family: var(--font-display);
     font-size: 56px;
     margin-bottom: 10px;
-    color: var(--color-accent-strong); /* Deep Pink */
+    color: var(--color-accent-strong); 
 }
 
 .hero-content p {
@@ -154,8 +148,7 @@ a { text-decoration: none; }
     font-weight: 700;
     font-size: 18px;
     
-    /* Warna dasar dan transisi untuk warna */
-    background-color: var(--color-pastel-bliss-1); /* Pink Primer */
+    background-color: var(--color-pastel-bliss-1); 
     transition: all 0.3s ease-in-out; 
     
     position: relative; 
@@ -174,30 +167,25 @@ a { text-decoration: none; }
     content: '';
     position: absolute;
     top: 0;
-    left: -100%; /* Mulai dari luar kiri */
-    width: 25px; /* Lebar kilauan */
+    left: -100%; 
+    width: 25px; 
     height: 100%;
-    transform: skewX(-20deg); /* Miringkan kilauan */
-    
-    /* Gradient putih untuk efek kilauan */
+    transform: skewX(-20deg); 
     background: rgba(255, 255, 255, 0.4); 
-    
     transition: left 1.0s ease-in-out;
     z-index: 2;
 }
 
 .hero-content .cta-button:hover {
-    /* Perubahan warna saat hover menjadi Deep Pink */
     background-color: var(--color-accent-strong); 
-    
     color: white; 
-    box-shadow: 0 8px 25px rgba(237, 56, 120, 0.4); /* Shadow baru (Deep Pink RGBA) */
+    box-shadow: 0 8px 25px rgba(237, 56, 120, 0.4); 
     transform: translateY(-2px); 
 }
 
 /* BARU: Animasi kilauan saat hover */
 .hero-content .cta-button:hover::after {
-    left: 100%; /* Geser ke kanan hingga keluar tombol */
+    left: 100%; 
 }
 
 /* Efek untuk ikon saat hover pada tombol */
@@ -255,7 +243,7 @@ a { text-decoration: none; }
 
 .product-info h3 {
     font-family: var(--font-display);
-    color: var(--color-accent-strong); /* Deep Pink */
+    color: var(--color-accent-strong); 
     margin-top: 0;
     font-size: 22px;
 }
@@ -263,13 +251,13 @@ a { text-decoration: none; }
 .product-info .price {
     font-size: 20px;
     font-weight: 700;
-    color: var(--color-button-primary); /* Muted Brown */
+    color: var(--color-button-primary); 
     margin-top: 10px;
 }
 
 /* --- FOOTER --- */
 .footer {
-    background-color: var(--color-pastel-bliss-2); /* FCD5CE */ 
+    background-color: var(--color-pastel-bliss-2); 
     color: var(--color-text-dark);
     padding: 20px 50px;
     text-align: center;
