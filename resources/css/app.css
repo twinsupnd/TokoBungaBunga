@@ -23,7 +23,7 @@
 /* --- Global Reset & Body --- */
 body {
     margin: 0; padding: 0;
-    background-color: var(--color-pastel-bliss-3); /* F8EDEB */
+    background-color: var(--color-pastel-bliss-3);
     font-family: var(--font-body);
     color: var(--color-text-dark);
     line-height: 1.6;
@@ -76,7 +76,7 @@ a { text-decoration: none; }
     transition: all 0.4s ease-in-out; /* Transisi lebih alus */
     border: none; 
     position: relative; /* Penting untuk z-index teks */
-    z-index: 1; /* Teks di atas background */
+    z-index: 1;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
     
     /* Background transisi baru */
