@@ -7,24 +7,93 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+    
+    <body>
+        <div class="split-auth-container">
+            
+            <div class="auth-image-panel" 
+                 style="background-image: url('{{ asset('images/bunga.jpg') }}');">
+                <div class="auth-image-panel-content">
+                    <h2 class="auth-image-panel-title">WHISPERING FLORA</h2>
+                    <p>Saat kata tak cukup, biar bunga yang bicara.</p>
+                </div>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+            <div class="auth-form-panel">
+                
+                <h1 class="welcome-title">Welcome to Whispering Flora!</h1> 
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab-button" data-tab="signin">Sign In</button>
+                    <button class="auth-tab-button" data-tab="signup">Sign Up</button>
+                </div>
+
+                <div class="auth-form-wrapper">
+                    {{ $slot }}
+                </div>
             </div>
+            
         </div>
+        
+        <script>
+            const authFormWrapper = document.querySelector('.auth-form-wrapper');
+            const signInTab = document.querySelector('[data-tab="signin"]');
+            const signUpTab = document.querySelector('[data-tab="signup"]');
+            
+            function updateFormWrapperHeight() {
+                const activeForm = document.querySelector('.auth-form.active');
+                if (activeForm) {
+                    authFormWrapper.style.height = activeForm.offsetHeight + 'px';
+                }
+            }
+
+            function showTab(tabName) {
+                const signInForm = document.getElementById('signin-form');
+                const signUpForm = document.getElementById('signup-form');
+                
+                // Pastikan elemen form sudah ada
+                if (!signInForm || !signUpForm) return; 
+
+                // Update kelas aktif pada tab
+                signInTab.classList.toggle('active', tabName === 'signin');
+                signUpTab.classList.toggle('active', tabName === 'signup');
+                
+                // Update kelas aktif pada form
+                signInForm.classList.toggle('active', tabName === 'signin');
+                signUpForm.classList.toggle('active', tabName === 'signup');
+
+                // Update URL tanpa reload (untuk konsistensi saat refresh)
+                const newPath = tabName === 'signin' ? '{{ route("login") }}' : '{{ route("register") }}';
+                history.pushState(null, '', newPath);
+
+                // Update tinggi wrapper setelah transisi
+                setTimeout(updateFormWrapperHeight, 50); 
+            }
+
+            signInTab.addEventListener('click', () => showTab('signin'));
+            signUpTab.addEventListener('click', () => showTab('signup'));
+
+            // Inisialisasi saat halaman dimuat (memeriksa URL saat ini)
+            window.addEventListener('load', () => {
+                const currentPath = window.location.pathname;
+                if (currentPath.includes('register')) {
+                    showTab('signup');
+                } else {
+                    showTab('signin');
+                }
+            });
+            
+            // Perlu update tinggi saat form pertama kali dimuat
+            setTimeout(updateFormWrapperHeight, 100);
+            window.addEventListener('resize', updateFormWrapperHeight);
+        </script>
     </body>
 </html>
