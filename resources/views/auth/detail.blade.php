@@ -47,20 +47,39 @@
             outline: none;
             box-shadow: 0 0 0 2px rgba(255, 181, 167, 0.4);
         }
+        
+        /* Message Box Styling (Pengganti alert/confirm) */
+        #status-message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            transform: translateY(-20px);
+            pointer-events: none;
+        }
+        #status-message-box.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
 
         /* Penyesuaian Responsif */
         @media (max-width: 640px) {
-            .cart-item-grid > div:nth-child(2) { display: none; }
-            .cart-item-grid > div:nth-child(4) { font-size: 0.8rem; }
-            .cart-item-grid > div:nth-child(1) { width: 60%; }
-            .cart-item-grid > div:nth-child(3) { width: 20%; }
-            .cart-item-grid > div:nth-child(4) { width: 20%; }
+            /* Sembunyikan Price di Mobile */
+            .cart-item-grid > div:nth-child(2) { display: none; } 
+            
+            /* Atur lebar kolom di Mobile */
+            .cart-item-grid > div:nth-child(1) { width: 60%; } /* Detail Item */
+            .cart-item-grid > div:nth-child(3) { width: 20%; } /* Qty */
+            .cart-item-grid > div:nth-child(4) { width: 20%; } /* Subtotal */
         }
 
     </style>
 
     <script>
-        // Konfigurasi Tailwind (sama seperti sebelumnya)
         tailwind.config = {
             theme: {
                 extend: {
@@ -77,9 +96,11 @@
             }
         };
 
-        // --- Data yang Seharusnya Diinjeksikan oleh Controller/Server-Side (PHP) ---
-        // Dalam aplikasi nyata, data ini akan dicetak oleh PHP ke dalam variabel JS:
-        // const initialCartData = <?php echo json_encode($cartData); ?>;
+        // --- Data yang Seharusnya Diinjeksikan oleh Controller (PHP) ---
+        /*
+         * Dalam aplikasi PHP nyata, data ini akan dicetak dari $cartData:
+         * const initialCartData = <?php echo json_encode($cartData); ?>;
+         */
         
         // Data Simulasi (Fallback untuk pengujian View saja)
         let cartData = {
@@ -88,90 +109,125 @@
                 { id: 2, name: 'Silk Sleep Mask (Peach)', price: 89000, quantity: 1 },
                 { id: 3, name: 'Aromatic Candle Set', price: 210000, quantity: 3 }
             ],
-            summary: { subtotal: 867000, shipping: 0, total: 867000 }
+            summary: { subtotal: 914000, shipping: 0, total: 914000 }
         };
 
-        // Fungsi Helper
+        // Fungsi Helper untuk format Rupiah
         function formatRupiah(number) {
             if (typeof number === 'number') {
                 return 'Rp' + number.toLocaleString('id-ID');
             }
             return 'Rp0';
         }
+        
+        // Fungsi pengganti alert/confirm
+        function showStatusMessage(message, type = 'success') {
+            console.log(`[STATUS ${type.toUpperCase()}]: ${message}`);
+            const box = document.getElementById('status-message-box');
+            box.textContent = message;
+            box.className = 'p-4 rounded-lg shadow-xl text-white font-semibold transition-all duration-300';
+            
+            if (type === 'success') {
+                box.classList.add('bg-bliss-success');
+            } else if (type === 'error') {
+                box.classList.add('bg-red-500');
+            } else {
+                box.classList.add('bg-bliss-5');
+            }
+            
+            box.classList.add('show');
+            setTimeout(() => {
+                box.classList.remove('show');
+            }, 3000);
+        }
 
 
-        // Fungsi untuk mengirim permintaan perubahan kuantitas ke Controller (AJAX/Fetch)
+        // Fungsi untuk mengirim permintaan perubahan kuantitas ke Controller (Simulasi Fetch)
         async function updateQuantity(inputElement) {
             const id = parseInt(inputElement.getAttribute('data-id'));
             const newQuantity = parseInt(inputElement.value);
 
-            if (newQuantity < 1) {
-                inputElement.value = 1; // Mencegah quantity < 1
+            if (newQuantity < 1 || isNaN(newQuantity)) {
+                showStatusMessage('Kuantitas minimal adalah 1.', 'error');
+                inputElement.value = 1;
                 return;
             }
 
+            // SIMULASI: Dalam lingkungan PHP, ini akan memanggil DetailController.php::updateQuantityApi
+            // Karena ini hanya HTML, kita akan mensimulasikan respons sukses setelah 500ms
+            showStatusMessage(`Memperbarui item ${id}...`, 'info');
+
             try {
-                // Panggil Endpoint API di Controller
-                const response = await fetch(`/api/cart/${id}/update`, { 
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ quantity: newQuantity })
-                });
+                // Simulasi AJAX call ke Controller
+                await new Promise(resolve => setTimeout(resolve, 500)); 
 
-                if (!response.ok) throw new Error('Network response was not ok');
+                // --- START Simulasi Respons Controller ---
+                const itemIndex = cartData.items.findIndex(i => i.id === id);
+                if (itemIndex > -1) {
+                    cartData.items[itemIndex].quantity = newQuantity;
+                    // Recalculate summary manually for simulation
+                    let newSubtotal = cartData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    cartData.summary.subtotal = newSubtotal;
+                    cartData.summary.total = newSubtotal + cartData.summary.shipping;
 
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    // Jika Controller berhasil, minta View untuk render ulang dengan data terbaru (atau partial update)
-                    
-                    // Skenario 1: Ambil data penuh dan render ulang (Paling Sederhana)
-                    // fetchCartAndRender(); 
-                    
-                    // Skenario 2: Update item ini dan summary saja (Lebih Efisien)
-                    const item = cartData.items.find(i => i.id === id);
-                    if(item) {
-                        item.quantity = newQuantity;
+                    const result = { status: 'success', summary: cartData.summary };
+                    // --- END Simulasi Respons Controller ---
+
+                    if (result.status === 'success') {
+                        cartData.summary = result.summary; 
+                        renderCart();
+                        showStatusMessage('Kuantitas berhasil diperbarui!', 'success');
+                    } else {
+                        showStatusMessage('Gagal memperbarui kuantitas: ' + result.message, 'error');
                     }
-                    cartData.summary = result.summary; 
-                    renderCart();
-                    
                 } else {
-                    alert('Gagal memperbarui kuantitas: ' + result.message);
+                    showStatusMessage('Item tidak ditemukan.', 'error');
                 }
 
             } catch (error) {
                 console.error('Error saat update:', error);
-                alert('Terjadi kesalahan saat menghubungi server.');
+                showStatusMessage('Terjadi kesalahan saat menghubungi server.', 'error');
             }
         }
         
-        // Fungsi untuk mengirim permintaan penghapusan item ke Controller (AJAX/Fetch)
+        // Fungsi untuk mengirim permintaan penghapusan item ke Controller (Simulasi Fetch)
         async function removeItem(id) {
-             if (!confirm('Anda yakin ingin menghapus item ini dari keranjang?')) return;
-             
-             try {
-                // Panggil Endpoint API di Controller
-                const response = await fetch(`/api/cart/${id}/delete`, { method: 'DELETE' }); 
+            // Pengganti window.confirm()
+            if (!window.confirm('Anda yakin ingin menghapus item ini dari keranjang?')) return;
+            
+            showStatusMessage(`Menghapus item ${id}...`, 'info');
+            
+            try {
+                // Simulasi AJAX call ke Controller
+                await new Promise(resolve => setTimeout(resolve, 500)); 
 
-                if (!response.ok) throw new Error('Network response was not ok');
+                // --- START Simulasi Respons Controller ---
+                const initialLength = cartData.items.length;
+                cartData.items = cartData.items.filter(item => item.id !== id);
                 
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    // Update data lokal dan render ulang
-                    cartData.items = cartData.items.filter(item => item.id !== id);
-                    // Karena item hilang, kita harus me-request summary baru dari server
-                    // fetchCartAndRender(); 
-                    renderCart(); // Render ulang
-                    
+                if (cartData.items.length < initialLength) {
+                    // Recalculate summary manually for simulation
+                    let newSubtotal = cartData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    cartData.summary.subtotal = newSubtotal;
+                    cartData.summary.total = newSubtotal + cartData.summary.shipping;
+
+                    const result = { status: 'success', summary: cartData.summary };
+                    // --- END Simulasi Respons Controller ---
+
+                    if (result.status === 'success') {
+                        cartData.summary = result.summary;
+                        renderCart();
+                        showStatusMessage('Item berhasil dihapus!', 'success');
+                    } else {
+                        showStatusMessage('Gagal menghapus item: ' + result.message, 'error');
+                    }
                 } else {
-                    alert('Gagal menghapus item: ' + result.message);
+                    showStatusMessage('Item gagal dihapus (tidak ditemukan).', 'error');
                 }
-             } catch (error) {
+            } catch (error) {
                 console.error('Error saat menghapus:', error);
-                alert('Terjadi kesalahan saat menghubungi server.');
-             }
+                showStatusMessage('Terjadi kesalahan saat menghubungi server.', 'error');
+            }
         }
 
 
@@ -181,7 +237,7 @@
             itemsContainer.innerHTML = ''; 
 
             if (cartData.items.length === 0) {
-                 itemsContainer.innerHTML = '<p class="text-text-light py-8 text-center border border-bliss-2 rounded-lg bg-white mt-4">Keranjang Anda kosong. Yuk, cari produk lucu!</p>';
+                itemsContainer.innerHTML = '<p class="text-text-light py-8 text-center border border-bliss-2 rounded-lg bg-white mt-4">Keranjang Anda kosong. Yuk, cari produk lucu!</p>';
             }
 
             cartData.items.forEach(item => {
@@ -191,9 +247,9 @@
                     <div class="flex items-center border-b border-bliss-2 py-4 text-text-dark cart-item-grid">
                         <!-- Detail Produk -->
                         <div class="w-full sm:w-1/2 flex items-center pr-2">
-                            <button class="text-accent-strong mr-2 text-xl hover:opacity-75 transition" 
+                            <button class="text-accent-strong mr-2 text-xl hover:opacity-75 transition focus:outline-none" 
                                 title="Hapus Item" onclick="removeItem(${item.id})">&times;</button>
-                            <img src="https://placehold.co/80x80/FCD5CE/5A4B4B?text=IMG" 
+                            <img src="https://placehold.co/80x80/FFB5A7/5A4B4B?text=IMG" 
                                 alt="${item.name}" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg mr-4 border border-bliss-2">
                             <span class="text-sm sm:text-base font-medium">${item.name}</span>
                         </div>
@@ -227,7 +283,10 @@
             
             // Tampilkan/Sembunyikan summary
             const totalsCard = document.getElementById('cart-totals-card');
-            totalsCard.style.display = cartData.items.length > 0 ? 'block' : 'none';
+            if (totalsCard) {
+                 totalsCard.style.display = cartData.items.length > 0 ? 'block' : 'none';
+            }
+           
         }
 
         // Render awal saat halaman dimuat
@@ -235,6 +294,8 @@
     </script>
 </head>
 <body class="min-h-screen">
+    <div id="status-message-box"></div>
+
     <div class="container mx-auto px-4 py-8 max-w-7xl">
         
         <!-- Judul dan Breadcrumb -->
@@ -259,16 +320,15 @@
                 </div>
 
                 <!-- Item List Container -->
-                <!-- Data item diisi oleh fungsi renderCart() di JavaScript setelah data diinjeksikan dari Controller -->
                 <div id="cart-items-container">
-                    <!-- Placeholder untuk item dari Controller -->
+                    <!-- Item akan dirender di sini oleh JavaScript -->
                 </div>
                 
                 <!-- Tombol Lanjutkan Belanja -->
                 <div class="mt-8">
                     <a href="#" class="inline-block px-6 py-2 border border-accent-strong text-accent-strong font-medium 
-                                      tracking-wider uppercase text-sm rounded-lg transition duration-300 
-                                      hover:bg-accent-light-bg hover:shadow-lg">
+                                 tracking-wider uppercase text-sm rounded-lg transition duration-300 
+                                 hover:bg-accent-light-bg hover:shadow-lg">
                         &larr; LANJUTKAN BELANJA
                     </a>
                 </div>
@@ -282,7 +342,6 @@
                     <!-- Subtotal -->
                     <div class="flex justify-between py-2 border-b border-bliss-2">
                         <span>Subtotal</span>
-                        <!-- Nilai ini akan diisi oleh JavaScript dari data Controller -->
                         <span id="subtotal-value" class="font-semibold text-text-dark">Rp-,-</span>
                     </div>
                     
@@ -300,13 +359,12 @@
                     <!-- Total -->
                     <div class="flex justify-between py-2 font-bold text-xl title-display mt-2">
                         <span>TOTAL</span>
-                        <!-- Nilai ini akan diisi oleh JavaScript dari data Controller -->
                         <span id="total-value" class="text-accent-strong">Rp-,-</span>
                     </div>
                     
                     <!-- Tombol Checkout -->
                     <a href="#" class="block text-center mt-6 px-6 py-3 bg-bliss-5 text-white font-bold uppercase 
-                                      hover:bg-bliss-1 rounded-lg transition duration-300 shadow-md">
+                                 hover:bg-bliss-1 rounded-lg transition duration-300 shadow-md">
                         LANJUT KE CHECKOUT
                     </a>
                     
@@ -315,7 +373,7 @@
                         <p class="text-sm text-text-dark mb-2 font-medium">Kupon</p>
                         <input type="text" placeholder="Kode kupon" class="w-full p-2 border border-bliss-2 rounded-lg mb-3 quantity-input">
                         <button class="w-full p-2 bg-bliss-1 text-white font-bold uppercase rounded-lg 
-                                       hover:bg-accent-strong transition duration-300 shadow-sm">
+                                         hover:bg-accent-strong transition duration-300 shadow-sm">
                             Gunakan Kupon
                         </button>
                     </div>
