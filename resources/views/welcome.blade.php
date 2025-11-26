@@ -23,7 +23,7 @@
             <a href="#katalog">Katalog</a>
             <a href="#about">Tentang Kami</a>
             
-            <a href="{{ route('login') }}" class="nav-button">Login</a>
+            <a href="#" id="open-auth-modal" class="nav-button open-auth-modal">Login</a>
             
             <a href="{{ route('register') }}" style="margin-left: 15px; color: var(--color-accent-strong); font-weight: 600;">Register</a>
         </nav>
@@ -98,5 +98,7 @@
         </div>
     </footer>
 
-</body>
-</html>
+        @include('auth._login-modal')
+
+    </body>
+    </html>
