@@ -366,7 +366,7 @@ a { text-decoration: none; }
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem; /* Jarak antar form group */
+    gap: 1.3rem; /* Jarak antar form group */
 }
 
 .form-group {
@@ -422,7 +422,6 @@ a { text-decoration: none; }
     border-radius: 0.125rem;
     cursor: pointer;
     /* Ganti warna saat checked, jika menggunakan CSS murni */
-    /* Untuk Laravel/Tailwind, ini akan dikontrol oleh JS atau @apply */
 }
 
 .checkbox-label {
