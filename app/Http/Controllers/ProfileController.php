@@ -7,10 +7,21 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    /**
+     * Display the user's profile page.
+     */
+    public function show(Request $request): View
+    {
+        return view('profile.show', [
+            'user' => $request->user(),
+        ]);
+    }
+
     /**
      * Display the user's profile form.
      */
@@ -56,5 +67,29 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Upload profile photo.
+     */
+    public function uploadPhoto(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'profile_photo' => ['required', 'image', 'max:2048'],
+        ]);
+
+        $user = $request->user();
+
+        // Delete old photo if exists
+        if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
+            Storage::disk('public')->delete($user->profile_photo_path);
+        }
+
+        // Store new photo
+        $path = $request->file('profile_photo')->store('profile-photos', 'public');
+
+        $user->update(['profile_photo_path' => $path]);
+
+        return Redirect::route('profile.show')->with('success', 'Foto profil berhasil diperbarui!');
     }
 }

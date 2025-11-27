@@ -23,9 +23,30 @@
             <a href="#katalog">Katalog</a>
             <a href="#about">Tentang Kami</a>
             
-            <a href="#" id="open-auth-modal" class="nav-button open-auth-modal">Login</a>
-            
-            <a href="{{ route('register') }}" style="margin-left: 15px; color: var(--color-accent-strong); font-weight: 600;">Register</a>
+            @auth
+                <div class="user-menu">
+                    <button class="user-menu-btn" id="user-menu-toggle">
+                        👤 {{ auth()->user()->name }}
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="{{ route('profile.show') }}" class="dropdown-item">
+                            👤 Profil Saya
+                        </a>
+                        <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                            ✏️ Edit Profil
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="dropdown-item" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer;">
+                                🚪 Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @else
+                <a href="#" id="open-auth-modal" class="nav-button open-auth-modal">Login</a>
+                <a href="{{ route('register') }}" style="margin-left: 15px; color: var(--color-accent-strong); font-weight: 600;">Register</a>
+            @endauth
         </nav>
     </header>
 
@@ -99,6 +120,36 @@
     </footer>
 
         @include('auth._login-modal')
+
+    <script>
+        // User menu dropdown toggle
+        const userMenuBtn = document.getElementById('user-menu-toggle');
+        const userDropdown = document.getElementById('user-dropdown');
+
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                userDropdown.classList.toggle('active');
+            });
+
+            // Close dropdown jika klik di luar
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.user-menu')) {
+                    userDropdown.classList.remove('active');
+                }
+            });
+        }
+
+        // Modal login functionality (existing code)
+        const openAuthModal = document.getElementById('open-auth-modal');
+        if (openAuthModal) {
+            openAuthModal.addEventListener('click', (e) => {
+                e.preventDefault();
+                const modal = document.getElementById('auth-modal');
+                if (modal) modal.style.display = 'flex';
+            });
+        }
+    </script>
 
     </body>
     </html>

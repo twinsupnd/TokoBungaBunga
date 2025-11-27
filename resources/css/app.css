@@ -94,6 +94,74 @@ a { text-decoration: none; }
     box-shadow: 0 8px 20px rgba(237, 56, 120, 0.4); 
 }
 
+/* --- USER MENU --- */
+.user-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.user-menu-btn {
+    padding: 10px 25px;
+    border-radius: 25px;
+    background-color: var(--color-button-primary);
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-menu-btn:hover {
+    background-color: var(--color-accent-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(237, 56, 120, 0.3);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    margin-top: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.user-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--color-text-dark);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: var(--color-pastel-bliss-3);
+    color: var(--color-accent-strong);
+    padding-left: 25px;
+}
+
 /* --- HERO SECTION --- */
 .hero {
     /* Perhatian: path asset di sini harus diganti di HTML/Blade */

@@ -1,0 +1,310 @@
+﻿/* Profile CSS - Clean styling without duplicates */
+
+.navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 15px rgba(237, 56, 120, 0.1);
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-accent-strong);
+    font-family: var(--font-display);
+}
+
+.navbar-nav {
+    display: flex;
+    gap: 30px;
+}
+
+.navbar-nav a {
+    text-decoration: none;
+    color: var(--color-text-dark);
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.navbar-nav a:hover {
+    color: var(--color-accent-strong);
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--color-text-dark);
+    border: 2px solid var(--color-pastel-bliss-2);
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background: var(--color-pastel-bliss-2);
+    transform: translateX(-3px);
+}
+
+.profile-header {
+    background: linear-gradient(135deg, var(--color-pastel-bliss-1) 0%, var(--color-pastel-bliss-5) 100%);
+    padding: 60px 50px;
+    text-align: center;
+    color: white;
+    border-radius: 20px;
+    margin: 30px auto;
+    max-width: 900px;
+    box-shadow: 0 15px 40px rgba(237, 56, 120, 0.2);
+}
+
+.profile-header h1 {
+    font-family: var(--font-display);
+    font-size: 40px;
+    margin: 15px 0 8px;
+    font-weight: 700;
+}
+
+.profile-container {
+    max-width: 750px;
+    margin: 0 auto 40px;
+    padding: 0 20px;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 35px rgba(237, 56, 120, 0.1);
+    padding: 45px;
+}
+
+.profile-photo-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 25px;
+}
+
+.profile-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.upload-photo-btn {
+    position: absolute;
+    bottom: 0; right: 0;
+    background: white;
+    border: 3px solid var(--color-pastel-bliss-1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+}
+
+.upload-photo-btn:hover {
+    transform: scale(1.15);
+    background: var(--color-pastel-bliss-2);
+}
+
+#photo-upload {
+    display: none;
+}
+
+.role-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 12px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s;
+}
+
+.info-row:hover {
+    background: rgba(255, 181, 167, 0.05);
+    padding: 15px 10px;
+}
+
+.info-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    font-weight: 700;
+}
+
+.info-value {
+    font-size: 16px;
+    color: var(--color-text-dark);
+    font-weight: 700;
+    text-align: right;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s;
+    font-size: 13px;
+}
+
+.btn-edit {
+    background: var(--color-button-primary);
+    color: white;
+}
+
+.btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(178, 150, 125, 0.3);
+}
+
+.btn-logout {
+    background: var(--color-accent-strong);
+    color: white;
+}
+
+.btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(237, 56, 120, 0.3);
+}
+
+.btn-primary {
+    background: var(--color-button-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+    color: var(--color-text-dark);
+}
+
+.btn-secondary:hover {
+    background: #d0d0d0;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--color-accent-strong);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    margin-bottom: 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--color-pastel-bliss-2);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    transition: border 0.3s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-accent-strong);
+}
+
+.form-input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.form-hint {
+    font-size: 12px;
+    color: var(--color-text-light);
+    margin-top: 5px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+@media (max-width: 768px) {
+    .navbar { padding: 12px 20px; }
+    .navbar-nav { display: none; }
+    .profile-header { padding: 40px 20px; }
+    .profile-card { padding: 25px; }
+    .profile-actions, .form-actions { flex-direction: column; }
+    .btn { width: 100%; }
+}

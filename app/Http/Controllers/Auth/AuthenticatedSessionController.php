@@ -28,7 +28,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Use Fortify 'home' config as the post-login fallback (supports intended())
+        $fallback = config('fortify.home', '/');
+        return redirect()->intended($fallback);
     }
 
     /**
