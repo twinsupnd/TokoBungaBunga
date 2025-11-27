@@ -58,9 +58,16 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            'options' => extension_loaded('pdo_mysql') ? (function () {
+                $opts = [];
+                // prefer new class constant on PHP 8.5+, fallback to legacy PDO constant
+                if (defined('Pdo\\Mysql::ATTR_SSL_CA')) {
+                    $opts[constant('Pdo\\Mysql::ATTR_SSL_CA')] = env('MYSQL_ATTR_SSL_CA');
+                } elseif (defined('PDO::MYSQL_ATTR_SSL_CA')) {
+                    $opts[PDO::MYSQL_ATTR_SSL_CA] = env('MYSQL_ATTR_SSL_CA');
+                }
+                return array_filter($opts);
+            })() : [],
         ],
 
         'mariadb' => [
@@ -78,9 +85,16 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            'options' => extension_loaded('pdo_mysql') ? (function () {
+                $opts = [];
+                // prefer new class constant on PHP 8.5+, fallback to legacy PDO constant
+                if (defined('Pdo\\Mysql::ATTR_SSL_CA')) {
+                    $opts[constant('Pdo\\Mysql::ATTR_SSL_CA')] = env('MYSQL_ATTR_SSL_CA');
+                } elseif (defined('PDO::MYSQL_ATTR_SSL_CA')) {
+                    $opts[PDO::MYSQL_ATTR_SSL_CA] = env('MYSQL_ATTR_SSL_CA');
+                }
+                return array_filter($opts);
+            })() : [],
         ],
 
         'pgsql' => [

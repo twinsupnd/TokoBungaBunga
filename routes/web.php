@@ -36,9 +36,3 @@ Route::get('/pesanan', function () {
 
 
 require __DIR__.'/auth.php';
-
-
-Route::get('/cart', function () {
-   
-    return view('auth.cart'); 
-})->name('cart.index');
