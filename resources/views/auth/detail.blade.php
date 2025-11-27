@@ -3,384 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja - Pastel Bliss (View)</title>
-    <!-- Load Tailwind CSS via CDN -->
+    <title>Detail Pesanan - Checkout</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load required fonts: Playfair Display for titles, Quicksand for body text, and Inter as fallback -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        /* Variabel CSS untuk Palet Warna "Pastel Bliss" */
+        /* --- Variabel Warna dan Font (Pastel Bliss) --- */
         :root {
-            --color-pastel-bliss-1: #FFB5A7; 
-            --color-pastel-bliss-2: #FCD5CE; 
-            --color-pastel-bliss-3: #F8EDEB; 
-            --color-pastel-bliss-5: #FEC89A; 
+            --color-pastel-bliss-1: #FFB5A7; /* Primer Pink */
+            --color-pastel-bliss-2: #FCD5CE; /* Light Pink */
+            --color-pastel-bliss-3: #F8EDEB; /* Off-White/Lightest Pink (Background) */
+            --color-pastel-bliss-4: #F9DCC4; /* Light Peach (Accent Background) */
+            --color-pastel-bliss-5: #FEC89A; /* Peach/Orange Tone */
+            
             --color-text-dark: #5A4B4B; 
-            --color-text-light: #8C7878;
-            --color-accent-strong: #ED3878;
-            --color-bliss-success: #78C257; 
+            --color-text-light: #8C7878; 
+            --color-accent-strong: #ED3878; /* Deep Pink (CTA Utama dan Judul) */
+
             --font-display: 'Playfair Display', serif;
             --font-body: 'Quicksand', sans-serif;
+            --font-nav: 'Instrument Sans', sans-serif; 
+
+            --color-button-secondary: #B2967D; /* Muted Brown */
+            --color-bliss-success: #78C257; /* Success/Green tone */
         }
         
         body {
             background-color: var(--color-pastel-bliss-3);
-            font-family: var(--font-body), 'Inter', sans-serif;
+            font-family: var(--font-body);
             color: var(--color-text-dark);
+            min-height: 100vh;
         }
-        
+
         .title-display {
             font-family: var(--font-display);
         }
         
-        .quantity-input {
-            border-color: var(--color-pastel-bliss-2);
+        /* HEADER - Gunakan gaya yang sama dengan cart.blade.php */
+        .header {
             background-color: white;
-            color: var(--color-text-dark);
-            transition: border-color 0.3s;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .quantity-input:focus {
-            border-color: var(--color-pastel-bliss-1);
+        .header-nav-link {
+            font-family: var(--font-nav);
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--color-text-dark);
+            transition: color 0.2s;
+        }
+        .header-nav-link:hover {
+            color: var(--color-accent-strong);
+        }
+
+        /* Input Form Checkout */
+        .form-input-bliss {
+            border-color: var(--color-pastel-bliss-2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .form-input-bliss:focus {
+            border-color: var(--color-pastel-bliss-1) !important;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 181, 167, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 181, 167, 0.5) !important;
         }
         
-        /* Message Box Styling (Pengganti alert/confirm) */
-        #status-message-box {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.5s, transform 0.5s;
-            transform: translateY(-20px);
-            pointer-events: none;
+        /* Button Primary (Lanjut Pembayaran) */
+        .btn-payment {
+            background-color: var(--color-accent-strong);
+            transition: background-color 0.3s;
         }
-        #status-message-box.show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
+        .btn-payment:hover {
+            background-color: #c92f65; 
+            box-shadow: 0 4px 15px rgba(237, 56, 120, 0.4);
         }
-
-
-        /* Penyesuaian Responsif */
-        @media (max-width: 640px) {
-            /* Sembunyikan Price di Mobile */
-            .cart-item-grid > div:nth-child(2) { display: none; } 
-            
-            /* Atur lebar kolom di Mobile */
-            .cart-item-grid > div:nth-child(1) { width: 60%; } /* Detail Item */
-            .cart-item-grid > div:nth-child(3) { width: 20%; } /* Qty */
-            .cart-item-grid > div:nth-child(4) { width: 20%; } /* Subtotal */
+        
+        /* Opsi Pembayaran */
+        .payment-option {
+            cursor: pointer;
+            border: 2px solid var(--color-pastel-bliss-2);
+            transition: all 0.2s;
+            border-radius: 10px;
+        }
+        .payment-option.active {
+            border-color: var(--color-accent-strong);
+            box-shadow: 0 0 0 1px var(--color-accent-strong);
+            background-color: var(--color-pastel-bliss-2);
         }
 
     </style>
 
     <script>
+        // Konfigurasi Tailwind (untuk memastikan variabel CSS diakui)
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         'bliss-1': 'var(--color-pastel-bliss-1)',
+                        'bliss-2': 'var(--color-pastel-bliss-2)',
+                        'bliss-3': 'var(--color-pastel-bliss-3)',
+                        'bliss-4': 'var(--color-pastel-bliss-4)',
                         'bliss-5': 'var(--color-pastel-bliss-5)',
                         'text-dark': 'var(--color-text-dark)',
                         'text-light': 'var(--color-text-light)',
                         'accent-strong': 'var(--color-accent-strong)',
                         'bliss-success': 'var(--color-bliss-success)',
-                        'accent-light-bg': 'rgba(237, 56, 120, 0.1)', 
                     }
                 }
             }
         };
 
-        // --- Data yang Seharusnya Diinjeksikan oleh Controller (PHP) ---
-        /*
-         * Dalam aplikasi PHP nyata, data ini akan dicetak dari $cartData:
-         * const initialCartData = <?php echo json_encode($cartData); ?>;
-         */
-        
-        // Data Simulasi (Fallback untuk pengujian View saja)
-        let cartData = {
+        // --- MODEL DATA SIMULASI CHECKOUT ---
+        // Data ini biasanya diambil dari sesi atau database setelah konfirmasi keranjang
+        let checkoutData = {
             items: [
-                { id: 1, name: 'Natural Hand Cream (Rose)', price: 125000, quantity: 2 },
-                { id: 2, name: 'Silk Sleep Mask (Peach)', price: 89000, quantity: 1 },
-                { id: 3, name: 'Aromatic Candle Set', price: 210000, quantity: 3 }
+                { id: 1, name: 'Baby Blooms Bouquet', price: 550000, quantity: 2, imageUrl: 'https://placehold.co/80x80/FFB5A7/5A4B4B?text=Bouquet' },
+                { id: 2, name: 'Aromatic Candle Set (Peony)', price: 210000, quantity: 3, imageUrl: 'https://placehold.co/80x80/F9DCC4/5A4B4B?text=Candle' }
             ],
-            summary: { subtotal: 914000, shipping: 0, total: 914000 }
+            shipping: 40000, // Simulasi Ongkir
+            subtotal: 0,
+            total: 0,
+            discount: 0
         };
 
-        // Fungsi Helper untuk format Rupiah
+        // --- FUNGSI HELPER ---
+
+        // Memformat angka ke format Rupiah
         function formatRupiah(number) {
             if (typeof number === 'number') {
                 return 'Rp' + number.toLocaleString('id-ID');
             }
-            return 'Rp0';
-        }
-        
-        // Fungsi pengganti alert/confirm
-        function showStatusMessage(message, type = 'success') {
-            console.log(`[STATUS ${type.toUpperCase()}]: ${message}`);
-            const box = document.getElementById('status-message-box');
-            box.textContent = message;
-            box.className = 'p-4 rounded-lg shadow-xl text-white font-semibold transition-all duration-300';
-            
-            if (type === 'success') {
-                box.classList.add('bg-bliss-success');
-            } else if (type === 'error') {
-                box.classList.add('bg-red-500');
-            } else {
-                box.classList.add('bg-bliss-5');
-            }
-            
-            box.classList.add('show');
-            setTimeout(() => {
-                box.classList.remove('show');
-            }, 3000);
+            return 'Rp-,-';
         }
 
-
-        // Fungsi untuk mengirim permintaan perubahan kuantitas ke Controller (Simulasi Fetch)
-        async function updateQuantity(inputElement) {
-            const id = parseInt(inputElement.getAttribute('data-id'));
-            const newQuantity = parseInt(inputElement.value);
-
-            if (newQuantity < 1 || isNaN(newQuantity)) {
-                showStatusMessage('Kuantitas minimal adalah 1.', 'error');
-                inputElement.value = 1;
-                return;
-            }
-
-            // SIMULASI: Dalam lingkungan PHP, ini akan memanggil DetailController.php::updateQuantityApi
-            // Karena ini hanya HTML, kita akan mensimulasikan respons sukses setelah 500ms
-            showStatusMessage(`Memperbarui item ${id}...`, 'info');
-
-            try {
-                // Simulasi AJAX call ke Controller
-                await new Promise(resolve => setTimeout(resolve, 500)); 
-
-                // --- START Simulasi Respons Controller ---
-                const itemIndex = cartData.items.findIndex(i => i.id === id);
-                if (itemIndex > -1) {
-                    cartData.items[itemIndex].quantity = newQuantity;
-                    // Recalculate summary manually for simulation
-                    let newSubtotal = cartData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                    cartData.summary.subtotal = newSubtotal;
-                    cartData.summary.total = newSubtotal + cartData.summary.shipping;
-
-                    const result = { status: 'success', summary: cartData.summary };
-                    // --- END Simulasi Respons Controller ---
-
-                    if (result.status === 'success') {
-                        cartData.summary = result.summary; 
-                        renderCart();
-                        showStatusMessage('Kuantitas berhasil diperbarui!', 'success');
-                    } else {
-                        showStatusMessage('Gagal memperbarui kuantitas: ' + result.message, 'error');
-                    }
-                } else {
-                    showStatusMessage('Item tidak ditemukan.', 'error');
-                }
-
-            } catch (error) {
-                console.error('Error saat update:', error);
-                showStatusMessage('Terjadi kesalahan saat menghubungi server.', 'error');
-            }
-        }
-        
-        // Fungsi untuk mengirim permintaan penghapusan item ke Controller (Simulasi Fetch)
-        async function removeItem(id) {
-            // Pengganti window.confirm()
-            if (!window.confirm('Anda yakin ingin menghapus item ini dari keranjang?')) return;
-            
-            showStatusMessage(`Menghapus item ${id}...`, 'info');
-            
-            try {
-                // Simulasi AJAX call ke Controller
-                await new Promise(resolve => setTimeout(resolve, 500)); 
-
-                // --- START Simulasi Respons Controller ---
-                const initialLength = cartData.items.length;
-                cartData.items = cartData.items.filter(item => item.id !== id);
-                
-                if (cartData.items.length < initialLength) {
-                    // Recalculate summary manually for simulation
-                    let newSubtotal = cartData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                    cartData.summary.subtotal = newSubtotal;
-                    cartData.summary.total = newSubtotal + cartData.summary.shipping;
-
-                    const result = { status: 'success', summary: cartData.summary };
-                    // --- END Simulasi Respons Controller ---
-
-                    if (result.status === 'success') {
-                        cartData.summary = result.summary;
-                        renderCart();
-                        showStatusMessage('Item berhasil dihapus!', 'success');
-                    } else {
-                        showStatusMessage('Gagal menghapus item: ' + result.message, 'error');
-                    }
-                } else {
-                    showStatusMessage('Item gagal dihapus (tidak ditemukan).', 'error');
-                }
-            } catch (error) {
-                console.error('Error saat menghapus:', error);
-                showStatusMessage('Terjadi kesalahan saat menghubungi server.', 'error');
-            }
+        // Menghitung ulang ringkasan total
+        function calculateSummary(items, shipping, discount) {
+            const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = subtotal + shipping - discount;
+            return { subtotal, total };
         }
 
+        // --- LOGIKA VIEW (Render UI) ---
 
-        // Fungsi untuk merender ulang seluruh isi keranjang berdasarkan data 'cartData' saat ini
-        function renderCart() {
-            const itemsContainer = document.getElementById('cart-items-container');
+        function renderDetails() {
+            const itemsContainer = document.getElementById('item-details-container');
+            const summary = calculateSummary(checkoutData.items, checkoutData.shipping, checkoutData.discount);
+            
+            checkoutData.subtotal = summary.subtotal;
+            checkoutData.total = summary.total;
+
             itemsContainer.innerHTML = ''; 
 
-            if (cartData.items.length === 0) {
-                itemsContainer.innerHTML = '<p class="text-text-light py-8 text-center border border-bliss-2 rounded-lg bg-white mt-4">Keranjang Anda kosong. Yuk, cari produk lucu!</p>';
-            }
-
-            cartData.items.forEach(item => {
+            checkoutData.items.forEach(item => {
                 const subtotalItem = item.price * item.quantity;
 
-                const itemHtml = `
-                    <div class="flex items-center border-b border-bliss-2 py-4 text-text-dark cart-item-grid">
-                        <!-- Detail Produk -->
-                        <div class="w-full sm:w-1/2 flex items-center pr-2">
-                            <button class="text-accent-strong mr-2 text-xl hover:opacity-75 transition focus:outline-none" 
-                                title="Hapus Item" onclick="removeItem(${item.id})">&times;</button>
-                            <img src="https://placehold.co/80x80/FFB5A7/5A4B4B?text=IMG" 
-                                alt="${item.name}" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg mr-4 border border-bliss-2">
-                            <span class="text-sm sm:text-base font-medium">${item.name}</span>
+                itemsContainer.innerHTML += `
+                    <div class="flex justify-between items-center py-3 border-b border-bliss-2/50 text-sm">
+                        <div class="flex items-center gap-3">
+                            <img src="${item.imageUrl}" class="w-10 h-10 object-cover rounded-md border border-bliss-2" alt="${item.name}">
+                            <span class="font-medium">${item.name} (${item.quantity}x)</span>
                         </div>
-
-                        <!-- Harga (Sembunyi di Mobile) -->
-                        <div class="w-1/6 text-left font-light hidden sm:block">
-                            ${formatRupiah(item.price)}
-                        </div>
-
-                        <!-- Kuantitas (Quantity) -->
-                        <div class="w-1/4 sm:w-1/6 text-center flex justify-center">
-                            <input type="number" value="${item.quantity}" min="1" data-id="${item.id}"
-                                onchange="updateQuantity(this)"
-                                class="w-12 sm:w-16 quantity-input border rounded-lg text-center py-1 text-sm">
-                        </div>
-                        
-                        <!-- Subtotal Item -->
-                        <div class="w-1/2 sm:w-1/6 text-right font-semibold">
-                            ${formatRupiah(subtotalItem)}
-                        </div>
+                        <span class="font-semibold">${formatRupiah(subtotalItem)}</span>
                     </div>
                 `;
-                itemsContainer.innerHTML += itemHtml;
             });
 
             // Update Ringkasan Total
-            if (cartData.summary) {
-                document.getElementById('subtotal-value').textContent = formatRupiah(cartData.summary.subtotal);
-                document.getElementById('total-value').textContent = formatRupiah(cartData.summary.total);
-            }
+            document.getElementById('subtotal-value').textContent = formatRupiah(checkoutData.subtotal);
+            document.getElementById('shipping-value').textContent = checkoutData.shipping === 0 ? 'Gratis' : formatRupiah(checkoutData.shipping);
+            document.getElementById('discount-value').textContent = formatRupiah(checkoutData.discount);
+            document.getElementById('total-value').textContent = formatRupiah(checkoutData.total);
+            document.getElementById('total-value-cta').textContent = formatRupiah(checkoutData.total);
             
-            // Tampilkan/Sembunyikan summary
-            const totalsCard = document.getElementById('cart-totals-card');
-            if (totalsCard) {
-                 totalsCard.style.display = cartData.items.length > 0 ? 'block' : 'none';
-            }
-           
+            // Render ulang ikon Lucide
+            lucide.createIcons();
+        }
+        
+        // --- LOGIKA INTERAKSI ---
+        
+        function selectPaymentMethod(element, method) {
+            // Hapus kelas 'active' dari semua opsi
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            // Tambahkan kelas 'active' pada opsi yang diklik
+            element.classList.add('active');
+            
+            // Di sini Anda dapat menyimpan metode pembayaran yang dipilih (method)
+            console.log("Metode pembayaran dipilih:", method);
         }
 
+        function proceedToPayment(event) {
+            event.preventDefault(); // Mencegah form submit default
+
+            // 1. Validasi Formulir (Simulasi)
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+
+            if (!name || !phone || !address) {
+                alert("Mohon lengkapi semua data pelanggan dan pengiriman!");
+                return;
+            }
+
+            // 2. Simulasi Proses Pembayaran
+            alert(`Berhasil! Pesanan untuk ${name} (Total: ${formatRupiah(checkoutData.total)}) siap diproses ke Pembayaran. (Simulasi selesai)`);
+            
+            // Di lingkungan nyata, Anda akan:
+            // a. Mengirim data form dan cart ke server.
+            // b. Menerima token pembayaran dari gateway (Midtrans/Xendit).
+            // c. Redirect ke halaman pembayaran atau membuka modal pembayaran.
+        }
+
+
         // Render awal saat halaman dimuat
-        window.onload = renderCart;
+        window.onload = function() {
+            renderDetails();
+            lucide.createIcons();
+        };
     </script>
 </head>
 <body class="min-h-screen">
-    <div id="status-message-box"></div>
 
-    <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <header class="header container mx-auto px-4 max-w-7xl">
+        <a href="#" class="logo-container">
+            <div class="text-2xl font-bold title-display text-accent-strong">Whispering Flora</div>
+        </a>
+        <nav class="hidden md:flex space-x-8 text-sm font-medium">
+            <a href="#" class="header-nav-link">KATALOG</a>
+            <a href="#" class="header-nav-link">TENTANG KAMI</a>
+            <a href="#" class="header-nav-link">HUBUNGI KAMI</a>
+        </nav>
+        <div class="flex items-center space-x-6">
+            <i data-lucide="heart" class="w-5 h-5 text-text-light cursor-pointer hover:text-accent-strong"></i>
+            <i data-lucide="user" class="w-5 h-5 text-text-light cursor-pointer hover:text-accent-strong"></i>
+            <div class="relative">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-text-dark cursor-pointer"></i>
+                <span class="absolute -top-3 -right-3 text-xs bg-accent-strong text-white rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    ${checkoutData.items.reduce((sum, item) => sum + item.quantity, 0)} 
+                </span>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="container mx-auto px-4 py-12 max-w-7xl">
         
-        <!-- Judul dan Breadcrumb -->
-        <h1 class="text-2xl sm:text-3xl title-display mb-8 font-light text-text-dark">
-            Keranjang Belanja &gt; 
-            <span class="font-semibold text-text-light">Detail Pemesanan</span> &gt; Pesanan Selesai
+        <h1 class="text-2xl sm:text-3xl title-display mb-10 font-medium text-text-dark">
+            <a href="/cart" class="text-text-light hover:text-accent-strong transition">Keranjang Belanja</a> 
+            <span class="font-bold text-accent-strong text-xl">&gt; Detail Pemesanan</span> 
+            <span class="font-light text-text-light text-xl">&gt; Pesanan Selesai</span>
         </h1>
-        
-        <!-- Main Content Area: Dua Kolom -->
-        <div class="flex flex-wrap lg:flex-nowrap -mx-4">
+
+        <form onsubmit="proceedToPayment(event)" class="flex flex-wrap lg:flex-nowrap -mx-4">
             
-            <!-- KOLOM KIRI: PRODUK DI KERANJANG -->
-            <div class="w-full lg:w-3/4 px-4">
-                <h2 class="text-xs sm:text-sm font-bold tracking-wider uppercase text-text-light mb-4">PRODUCT</h2>
+            <div class="w-full lg:w-2/3 px-4">
                 
-                <!-- Table Header -->
-                <div class="hidden sm:flex items-center text-xs font-semibold uppercase text-text-light border-b border-bliss-2 pb-2 mb-2">
-                    <div class="w-1/2">Item</div>
-                    <div class="w-1/6 text-left">Price</div>
-                    <div class="w-1/6 text-center">Qty</div>
-                    <div class="w-1/6 text-right">Subtotal</div>
+                <div class="bg-white p-6 md:p-10 border border-bliss-2 rounded-xl shadow-lg mb-8">
+                    <h2 class="text-xl font-bold title-display mb-6 text-accent-strong">1. Data Pelanggan & Pengiriman</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium mb-2">Nama Lengkap</label>
+                            <input type="text" id="name" required class="form-input-bliss border" placeholder="Masukkan nama Anda">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium mb-2">Nomor Telepon (WhatsApp)</label>
+                            <input type="tel" id="phone" required class="form-input-bliss border" placeholder="Contoh: 0812...">
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label for="address" class="block text-sm font-medium mb-2">Alamat Lengkap Pengiriman</label>
+                        <textarea id="address" rows="3" required class="form-input-bliss border" placeholder="Jalan, Nomor Rumah, RT/RW, Kecamatan, Kota"></textarea>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label for="notes" class="block text-sm font-medium mb-2">Catatan Tambahan (Opsional)</label>
+                        <textarea id="notes" rows="2" class="form-input-bliss border" placeholder="Contoh: Pesan untuk florist, waktu pengiriman yang diinginkan"></textarea>
+                    </div>
+
                 </div>
 
-                <!-- Item List Container -->
-                <div id="cart-items-container">
-                    <!-- Item akan dirender di sini oleh JavaScript -->
+                <div class="bg-white p-6 md:p-10 border border-bliss-2 rounded-xl shadow-lg">
+                    <h2 class="text-xl font-bold title-display mb-6 text-accent-strong">2. Metode Pembayaran</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        <div class="payment-option p-4 flex items-center gap-4 hover:border-accent-strong/50" 
+                            onclick="selectPaymentMethod(this, 'Bank Transfer')">
+                            <i data-lucide="credit-card" class="w-6 h-6 text-text-dark"></i>
+                            <span class="font-medium">Transfer Bank (BCA / Mandiri)</span>
+                        </div>
+                        
+                        <div class="payment-option p-4 flex items-center gap-4 hover:border-accent-strong/50" 
+                            onclick="selectPaymentMethod(this, 'E-Wallet')">
+                            <i data-lucide="smartphone" class="w-6 h-6 text-text-dark"></i>
+                            <span class="font-medium">E-Wallet (Gopay / OVO / Dana)</span>
+                        </div>
+
+                    </div>
+                    
+                    <p class="text-sm text-text-light mt-4">Anda akan diarahkan ke halaman pembayaran setelah mengklik tombol 'Bayar Sekarang'.</p>
                 </div>
-                
-                <!-- Tombol Lanjutkan Belanja -->
-                <div class="mt-8">
-                    <a href="#" class="inline-block px-6 py-2 border border-accent-strong text-accent-strong font-medium 
-                                 tracking-wider uppercase text-sm rounded-lg transition duration-300 
-                                 hover:bg-accent-light-bg hover:shadow-lg">
-                        &larr; LANJUTKAN BELANJA
-                    </a>
-                </div>
-            </div> <!-- End Kolom Kiri -->
-            
-            <!-- KOLOM KANAN: RINGKASAN TOTAL -->
-            <div class="w-full lg:w-1/4 px-4 mt-10 lg:mt-0" id="cart-totals-card">
-                <h2 class="text-xs sm:text-sm font-bold tracking-wider uppercase text-text-light mb-4">RINGKASAN</h2>
-                
+            </div> <div class="w-full lg:w-1/3 px-4 mt-10 lg:mt-0">
                 <div class="bg-white p-6 border border-bliss-2 rounded-xl shadow-lg">
-                    <!-- Subtotal -->
-                    <div class="flex justify-between py-2 border-b border-bliss-2">
-                        <span>Subtotal</span>
-                        <span id="subtotal-value" class="font-semibold text-text-dark">Rp-,-</span>
+                    <h2 class="text-lg font-bold title-display mb-4 text-accent-strong">Ringkasan Pesanan</h2>
+
+                    <div id="item-details-container" class="mb-4">
+                        </div>
+                    
+                    <div class="space-y-2 py-4 border-t border-bliss-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Subtotal Produk:</span>
+                            <span id="subtotal-value" class="font-medium">Rp-,-</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>Diskon:</span>
+                            <span id="discount-value" class="font-medium text-red-500">- Rp0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>Biaya Pengiriman:</span>
+                            <span id="shipping-value" class="font-medium text-bliss-success">Rp-,-</span>
+                        </div>
                     </div>
                     
-                    <!-- Shipping -->
-                    <div class="py-2 border-b border-bliss-2">
-                        <div class="flex justify-between">
-                            <span>Pengiriman</span>
-                            <span class="font-semibold text-bliss-success">Gratis</span>
-                        </div>
-                        <div class="text-right text-xs text-text-light mt-1">
-                            Pengiriman ke DKI Jakarta. <a href="#" class="text-accent-strong underline hover:no-underline">Ubah alamat</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Total -->
-                    <div class="flex justify-between py-2 font-bold text-xl title-display mt-2">
-                        <span>TOTAL</span>
+                    <div class="flex justify-between pt-4 font-bold text-xl title-display border-t border-text-dark/20 mt-2">
+                        <span>TOTAL AKHIR</span>
                         <span id="total-value" class="text-accent-strong">Rp-,-</span>
                     </div>
                     
-                    <!-- Tombol Checkout -->
-                    <a href="#" class="block text-center mt-6 px-6 py-3 bg-bliss-5 text-white font-bold uppercase 
-                                 hover:bg-bliss-1 rounded-lg transition duration-300 shadow-md">
-                        LANJUT KE CHECKOUT
-                    </a>
+                    <button type="submit" class="btn-payment w-full text-center mt-6 px-6 py-3 text-white font-bold uppercase 
+                                             rounded-lg transition duration-300 shadow-md">
+                        BAYAR SEKARANG 
+                        (<span id="total-value-cta">Rp-,-</span>)
+                    </button>
                     
-                    <!-- Coupon Code -->
-                    <div class="mt-8 pt-4 border-t border-bliss-2">
-                        <p class="text-sm text-text-dark mb-2 font-medium">Kupon</p>
-                        <input type="text" placeholder="Kode kupon" class="w-full p-2 border border-bliss-2 rounded-lg mb-3 quantity-input">
-                        <button class="w-full p-2 bg-bliss-1 text-white font-bold uppercase rounded-lg 
-                                         hover:bg-accent-strong transition duration-300 shadow-sm">
-                            Gunakan Kupon
-                        </button>
-                    </div>
+                    <p class="text-xs text-center text-text-light mt-4">
+                        Dengan menekan tombol ini, Anda menyetujui <a href="#" class="underline hover:no-underline text-accent-strong">Syarat & Ketentuan</a> kami.
+                    </p>
                 </div>
-            </div> <!-- End Kolom Kanan -->
-            
-        </div> <!-- End Flex Wrapper -->
-    </div>
+            </div> </form> </div>
+
 </body>
 </html>

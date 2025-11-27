@@ -1,314 +1,524 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Keranjang Belanja</title>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Whispering Flora (Pastel Bliss)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
+        /* --- Variabel Warna dan Font (Pastel Bliss) --- */
         :root {
-            /* Definisi Dummy untuk Variabel Tema "Pastel Bliss" */
-            --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            --font-display: 'Georgia', serif;
-            --color-text-dark: #333;
-            --color-accent-strong: #DE5C88; /* Merah Muda Kuat */
-            --color-button-primary: #8D497A; /* Ungu Gelap */
-            --color-pastel-bliss-1: #FDD7E4; /* Pastel Sangat Muda */
-            --color-pastel-bliss-2: #FCE1E7; /* Pastel Muda */
-            --color-pastel-bliss-5: #E794B2; /* Pastel Sedang */
-        }
-    </style>
+            --color-pastel-bliss-1: #FFB5A7; /* Primer Pink */
+            --color-pastel-bliss-2: #FCD5CE; /* Light Pink */
+            --color-pastel-bliss-3: #F8EDEB; /* Off-White/Lightest Pink (Background) */
+            --color-pastel-bliss-4: #F9DCC4; /* Light Peach (Accent Background) */
+            --color-pastel-bliss-5: #FEC89A; /* Peach/Orange Tone */
+            
+            --color-text-dark: #5A4B4B; 
+            --color-text-light: #8C7878; 
+            --color-accent-strong: #ED3878; /* Deep Pink (CTA Utama dan Judul) */
 
-    <style>
-        /* Wrapper utama halaman (mengganti .cart-container) */
-        .card-custom {
-            max-width: 1100px;
-            margin: 120px auto 80px;
-            padding: 30px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Quicksand', sans-serif;
+            --font-nav: 'Instrument Sans', sans-serif; 
+
+            --color-button-secondary: #B2967D; /* Muted Brown untuk kupon */
+            --color-bliss-success: #78C257; /* Success/Green tone */
+        }
+        
+        body {
+            background-color: var(--color-pastel-bliss-3);
             font-family: var(--font-body);
             color: var(--color-text-dark);
+            min-height: 100vh;
         }
-        
-        /* Judul halaman (menggunakan class Bootstrap h4/fw-bold) */
-        .cart-title-custom {
+
+        .title-display {
             font-family: var(--font-display);
-            font-size: 36px;
-            color: var(--color-accent-strong);
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        /* Tabel item keranjang (mengganti cart-table, fokus pada item-nya) */
-        .cart-item-custom {
-            transition: all 0.2s;
-            border-bottom: 1px solid #f1dada !important; /* Overwrite Bootstrap border */
-            padding: 20px 0 !important;
-        }
-
-        .cart-item-custom:hover {
-            background: var(--color-pastel-bliss-1);
-        }
-
-        /* Gambar produk (mengganti .cart-item-image) */
-        .cart-img-custom {
-            width: 90px;
-            height: 90px;
-            border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        }
-
-        /* ================================
-           BUTTON QUANTITY (+) & (–)
-           ================================ */
-        /* Mengoverride Bootstrap button style */
-        .quantity-box button {
-            width: 35px !important;
-            height: 35px !important;
-            background-color: var(--color-pastel-bliss-2) !important;
-            border: none !important;
-            border-radius: 8px !important;
-            font-size: 20px !important;
-            font-weight: 700 !important;
-            cursor: pointer;
-            transition: all 0.25s !important;
-            color: var(--color-text-dark) !important;
-            padding: 0 !important;
-        }
-
-        .quantity-box button:hover {
-            background-color: var(--color-pastel-bliss-1) !important;
-            transform: translateY(-2px);
         }
         
-        /* ================================
-           TOTAL & CHECKOUT BOX (mengganti .cart-summary)
-           ================================ */
-
-        .summary-custom {
-            background-color: var(--color-pastel-bliss-2) !important;
-            padding: 25px 30px !important;
-            border-radius: 20px !important;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05) !important;
+        /* HEADER */
+        .header {
+            background-color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        /* Tombol Checkout (mengganti .checkout-btn) */
-        .checkout-btn-custom {
-            width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            font-weight: 700;
+        .header-nav-link {
+            font-family: var(--font-nav);
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--color-text-dark);
+            transition: color 0.2s;
+        }
+        .header-nav-link:hover {
+            color: var(--color-accent-strong);
+        }
+        
+        /* Input Kuantitas Disesuaikan */
+        .quantity-control {
+            border: 1px solid var(--color-pastel-bliss-2);
+            border-radius: 8px;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .quantity-input {
             border: none;
-            border-radius: 15px;
-            color: white;
+            text-align: center;
+            width: 32px;
+            height: 32px;
+            padding: 0 4px;
+            color: var(--color-text-dark);
+            -moz-appearance: textfield; 
+            background-color: var(--color-pastel-bliss-3);
+        }
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none; 
+            margin: 0;
+        }
+
+        .quantity-btn {
+            background-color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
-            margin-top: 20px;
-            /* Gradient dari CSS kustom Anda */
-            background-image: linear-gradient(
-                45deg, 
-                var(--color-pastel-bliss-5) 0%, 
-                var(--color-accent-strong) 50%, 
-                var(--color-button-primary) 100%
-            );
-            background-size: 200% 100%;
-            background-position: right bottom;
-            transition: all 0.4s ease-in-out;
-            box-shadow: 0 6px 20px rgba(237, 56, 120, 0.35);
+            color: var(--color-text-dark);
+            transition: background-color 0.2s;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .quantity-btn:hover {
+            background-color: var(--color-pastel-bliss-2);
+        }
+        .quantity-btn:active {
+            background-color: var(--color-pastel-bliss-1);
+            color: white;
         }
 
-        .checkout-btn-custom:hover {
-            background-position: left bottom;
-            transform: translateY(-2px);
+        /* Button Primary (Lanjut Checkout) */
+        .btn-checkout {
+            background-color: var(--color-accent-strong);
+            transition: background-color 0.3s;
+        }
+        .btn-checkout:hover {
+            background-color: #c92f65; 
+            box-shadow: 0 4px 15px rgba(237, 56, 120, 0.4);
         }
 
-        /* Gaya Tombol Lanjutkan Belanja */
-        .back-shopping-link {
-            display: inline-block;
-            margin-top: 15px;
-            font-size: 16px;
-            color: var(--color-accent-strong);
-            font-weight: 600;
-            text-decoration: underline;
-            transition: color 0.3s;
+        /* Button Secondary (Gunakan Diskon) */
+        .btn-coupon {
+            background-color: var(--color-button-secondary);
+            transition: background-color 0.3s;
+        }
+        .btn-coupon:hover {
+            background-color: #9f866f;
         }
 
-        .back-shopping-link:hover {
-            color: var(--color-button-primary);
+        /* Input umum */
+        input[type="text"], input[type="number"] {
+            border-color: var(--color-pastel-bliss-2);
+        }
+        input:focus {
+            border-color: var(--color-pastel-bliss-1) !important;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 181, 167, 0.5) !important;
         }
 
-        /* Gaya untuk menyembunyikan elemen summary jika kosong (ditangani oleh JS) */
-        .hidden-summary-detail {
-            display: none !important;
+        /* Penyesuaian Responsif untuk Kolom Item */
+        @media (max-width: 640px) {
+            /* Sembunyikan kolom harga per unit di mobile */
+            .cart-item-grid > div:nth-child(2) { display: none; } 
+            /* Jadikan teks subtotal lebih kecil */
+            .cart-item-grid > div:nth-child(4) { font-size: 0.8rem; }
+            /* Penyesuaian lebar kolom di mobile */
+            .cart-item-grid > div:nth-child(1) { width: 60%; } /* Detail Produk */
+            .cart-item-grid > div:nth-child(3) { width: 20%; } /* Kuantitas */
+            .cart-item-grid > div:nth-child(4) { width: 20%; } /* Subtotal */
         }
+
     </style>
+
+    <script>
+        // Konfigurasi Tailwind (untuk memastikan variabel CSS diakui)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bliss-1': 'var(--color-pastel-bliss-1)',
+                        'bliss-2': 'var(--color-pastel-bliss-2)',
+                        'bliss-3': 'var(--color-pastel-bliss-3)',
+                        'bliss-4': 'var(--color-pastel-bliss-4)',
+                        'bliss-5': 'var(--color-pastel-bliss-5)',
+                        'text-dark': 'var(--color-text-dark)',
+                        'text-light': 'var(--color-text-light)',
+                        'accent-strong': 'var(--color-accent-strong)',
+                        'bliss-success': 'var(--color-bliss-success)',
+                    }
+                }
+            }
+        };
+
+        // --- MODEL DATA SIMULASI CART ---
+        let cartData = {
+            items: [
+                { 
+                    id: 1, 
+                    name: 'Baby Blooms Bouquet', 
+                    price: 550000, 
+                    quantity: 2, 
+                    imageUrl: 'https://placehold.co/80x80/FFB5A7/5A4B4B?text=Pastel+Bouquet' 
+                },
+                { 
+                    id: 2, 
+                    name: 'Satin Ribbon (Rose Gold)', 
+                    price: 89000, 
+                    quantity: 1, 
+                    imageUrl: 'https://placehold.co/80x80/FCD5CE/5A4B4B?text=Rose+Ribbon' 
+                },
+                { 
+                    id: 3, 
+                    name: 'Aromatic Candle Set (Peony)', 
+                    price: 210000, 
+                    quantity: 3, 
+                    imageUrl: 'https://placehold.co/80x80/F9DCC4/5A4B4B?text=Aroma+Candle' 
+                }
+            ],
+            summary: { subtotal: 0, shipping: 0, total: 0 }
+        };
+
+        // --- FUNGSI HELPER ---
+
+        // Memformat angka ke format Rupiah
+        function formatRupiah(number) {
+            if (typeof number === 'number') {
+                return 'Rp' + number.toLocaleString('id-ID');
+            }
+            return 'Rp-,-';
+        }
+
+        // Menampilkan pesan notifikasi di UI
+        function showMessage(message, type = 'success') {
+            const msgBox = document.getElementById('message-box');
+            msgBox.textContent = message;
+            
+            if (type === 'success') {
+                msgBox.className = 'p-3 mb-4 rounded-lg bg-bliss-success/10 text-bliss-success font-medium';
+            } else if (type === 'error') {
+                msgBox.className = 'p-3 mb-4 rounded-lg bg-accent-strong/10 text-accent-strong font-medium';
+            } else if (type === 'info') {
+                msgBox.className = 'p-3 mb-4 rounded-lg bg-bliss-1/10 text-text-dark font-medium';
+            }
+            
+            // Hapus pesan setelah 4 detik
+            setTimeout(() => {
+                msgBox.textContent = '';
+                msgBox.className = '';
+            }, 4000);
+        }
+
+        // Menghitung ulang ringkasan total (Subtotal, Total)
+        function calculateSummaryLocally(items) {
+            const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 1000000 ? 0 : 40000; // Contoh: Gratis ongkir jika subtotal di atas Rp1.000.000
+            const total = subtotal + shipping;
+            return { subtotal, shipping, total };
+        }
+
+        // --- LOGIKA CONTROLLER (Perubahan Data) ---
+
+        // Fungsi utama untuk memperbarui kuantitas (dipanggil oleh button dan input onchange)
+        async function updateQuantityOnServer(id, newQuantity) {
+            const item = cartData.items.find(i => i.id === id);
+            
+            if (!item) {
+                showMessage('Item tidak ditemukan.', 'error');
+                return;
+            }
+
+            // Sanitasi input (wajib >= 1)
+            newQuantity = parseInt(newQuantity);
+            if (isNaN(newQuantity) || newQuantity < 1) {
+                // Reset to item's current quantity if invalid
+                document.querySelector(`input[data-id="${id}"]`).value = item.quantity;
+                showMessage('Kuantitas harus minimal 1.', 'error');
+                renderCart(); // Render ulang untuk memastikan input field kembali ke nilai yang benar
+                return;
+            }
+
+            // Jika kuantitas kurang dari 1, kita bisa hapus atau reset ke 1
+            if (newQuantity <= 0) {
+                 removeItem(id); // Hapus jika kuantitas di set ke 0
+                 return;
+            }
+            
+            // Pastikan kuantitas tidak terlalu besar (simulasi batas stok)
+            if (newQuantity > 99) {
+                newQuantity = 99;
+                document.querySelector(`input[data-id="${id}"]`).value = 99;
+                showMessage('Kuantitas maksimum adalah 99.', 'info');
+            }
+
+            // SIMULASI: Proses Update di Server
+            item.quantity = newQuantity;
+            
+            // Update Summary
+            const newSummary = calculateSummaryLocally(cartData.items);
+            cartData.summary = newSummary;
+            
+            showMessage('Keranjang berhasil diperbarui!', 'success');
+            renderCart();
+        }
+
+        // Handler untuk tombol +/-
+        function changeQuantity(id, delta) {
+            const inputElement = document.querySelector(`input[data-id="${id}"]`);
+            if (!inputElement) return;
+
+            let currentQuantity = parseInt(inputElement.value);
+            let newQuantity = currentQuantity + delta;
+            
+            // Langsung update di server
+            updateQuantityOnServer(id, newQuantity);
+        }
+
+        // Fungsi untuk menghapus item
+        async function removeItem(id) {
+            const itemIndex = cartData.items.findIndex(item => item.id === id);
+            
+            if (itemIndex > -1) {
+                // PENTING: Konfirmasi Hapus
+                if (!confirm("Apakah Anda yakin ingin menghapus item ini dari keranjang?")) {
+                    return;
+                }
+
+                // SIMULASI: Proses Hapus di Server
+                cartData.items.splice(itemIndex, 1);
+                
+                // Update Summary
+                const newSummary = calculateSummaryLocally(cartData.items);
+                cartData.summary = newSummary;
+                
+                showMessage('Item berhasil dihapus dari keranjang.', 'success');
+                renderCart();
+            }
+        }
+        
+        // Simulasikan penggunaan diskon
+        function applyCoupon() {
+            const couponInput = document.getElementById('coupon-input');
+            const code = couponInput.value.trim().toUpperCase();
+
+            if (cartData.items.length === 0) {
+                showMessage('Keranjang kosong. Tidak bisa menggunakan diskon.', 'info');
+                return;
+            }
+
+            if (code === 'FLORABESAR') {
+                showMessage('Diskon 10% berhasil diterapkan!', 'success');
+            } else if (code === 'FREEONGKIR') {
+                showMessage('Voucher Free Ongkir berhasil diterapkan!', 'success');
+            } else {
+                showMessage('Kode diskon tidak valid.', 'error');
+            }
+            // Di lingkungan nyata, kita akan memanggil renderCart() untuk menampilkan diskon yang diterapkan.
+        }
+
+
+        // --- LOGIKA VIEW (Render UI) ---
+
+        // Fungsi untuk merender ulang seluruh isi keranjang
+        function renderCart() {
+            const itemsContainer = document.getElementById('cart-items-container');
+            const summary = calculateSummaryLocally(cartData.items);
+            cartData.summary = summary; // Update summary data
+
+            itemsContainer.innerHTML = ''; 
+
+            if (cartData.items.length === 0) {
+                itemsContainer.innerHTML = '<p class="text-text-light py-8 text-center border border-bliss-2 rounded-lg bg-white mt-4">Keranjang Anda kosong. Yuk, cari produk lucu!</p>';
+            }
+
+            cartData.items.forEach(item => {
+                const subtotalItem = item.price * item.quantity;
+
+                const itemHtml = `
+                    <div class="flex items-center border-b border-bliss-2 py-4 text-text-dark cart-item-grid">
+                        <div class="w-full sm:w-1/2 flex items-center pr-2">
+                            <button class="text-text-light mr-4 text-lg hover:text-accent-strong transition" 
+                                title="Hapus Item" onclick="removeItem(${item.id})">
+                                <i data-lucide="x-circle" class="w-5 h-5"></i>
+                            </button>
+                            <img src="${item.imageUrl}" 
+                                onerror="this.onerror=null;this.src='https://placehold.co/80x80/FCD5CE/5A4B4B?text=Item'"
+                                alt="${item.name}" class="w-16 h-16 object-cover rounded-lg mr-4 border border-bliss-2">
+                            <span class="text-sm sm:text-base font-medium">${item.name}</span>
+                        </div>
+
+                        <div class="w-1/6 text-left font-light hidden sm:block">
+                            ${formatRupiah(item.price)}
+                        </div>
+
+                        <div class="w-1/4 sm:w-1/6 text-center flex justify-center">
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+                                <input type="number" value="${item.quantity}" min="1" max="99" data-id="${item.id}"
+                                    onchange="updateQuantityOnServer(${item.id}, parseInt(this.value))"
+                                    class="quantity-input">
+                                <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="w-1/2 sm:w-1/6 text-right font-semibold">
+                            ${formatRupiah(subtotalItem)}
+                        </div>
+                    </div>
+                `;
+                itemsContainer.innerHTML += itemHtml;
+            });
+            
+            // Render ulang ikon Lucide untuk item-item yang baru dibuat
+            lucide.createIcons();
+
+            // Update Ringkasan Total
+            document.getElementById('subtotal-value').textContent = formatRupiah(summary.subtotal);
+            document.getElementById('shipping-value').textContent = summary.shipping === 0 ? 'Gratis' : formatRupiah(summary.shipping);
+            document.getElementById('shipping-value').classList.toggle('text-bliss-success', summary.shipping === 0);
+            document.getElementById('total-value').textContent = formatRupiah(summary.total);
+            
+            // PENTING: Update Cart Count di Header! (Perbaikan)
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = cartData.items.length;
+            }
+            
+            // Tampilkan/Sembunyikan summary
+            const totalsCard = document.getElementById('cart-totals-card');
+            if (totalsCard) {
+                totalsCard.style.display = cartData.items.length > 0 ? 'block' : 'none';
+            }
+        }
+
+        // Render awal saat halaman dimuat
+        window.onload = function() {
+            renderCart();
+            // Ensure Lucide icons are rendered for static header elements
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        };
+    </script>
 </head>
+<body class="min-h-screen">
 
-<body class="bg-light">
-
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16" style="vertical-align: middle;">
-                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607.64 1.749A.5.5 0 0 1 .5 1.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-            </svg>
+    <header class="header container mx-auto px-4 max-w-7xl">
+        <a href="#" class="logo-container">
+            <div class="text-2xl font-bold title-display text-accent-strong">Whispering Flora</div>
         </a>
-    </div>
-</nav>
+        
+        <nav class="hidden md:flex space-x-8 text-sm font-medium">
+            <a href="#" class="header-nav-link">KATALOG</a>
+            <a href="#" class="header-nav-link">TENTANG KAMI</a>
+            <a href="#" class="header-nav-link">HUBUNGI KAMI</a>
+        </nav>
 
-<div class="container my-5">
-    <div class="card p-4 shadow-sm card-custom"> 
-        <h4 class="mb-4 fw-bold cart-title-custom">Daftar Belanja Anda</h4>
-        <div id="cartList">
+        <div class="flex items-center space-x-6">
+            <i data-lucide="heart" class="w-5 h-5 text-text-light cursor-pointer hover:text-accent-strong"></i>
+            <i data-lucide="user" class="w-5 h-5 text-text-light cursor-pointer hover:text-accent-strong"></i>
+            <div class="relative">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-text-dark cursor-pointer"></i>
+                <span id="cart-count" class="absolute -top-3 -right-3 text-xs bg-accent-strong text-white rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    0 
+                </span>
             </div>
-
-        <div id="summaryBox" class="mt-4 summary-custom">
-            <div id="summaryDetails"> 
-                <h5 class="summary-title mb-3">Ringkasan Pesanan</h5>
-                
-                <div class="summary-row" id="subtotalRow">
-                    <span>Subtotal Item</span>
-                    <span id="subTotal">Rp0</span>
-                </div>
-                
-                <div class="summary-row" id="totalRow" style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 12px;">
-                    <span class="summary-total">Total Keseluruhan</span>
-                    <span id="cartTotal" class="summary-total">Rp0</span>
-                </div>
-            </div>
-            
-            <button class="checkout-btn-custom" onclick="checkout()">Checkout</button>
-            
-            <a href="/" class="back-shopping-link d-block text-center">← Lanjutkan Belanja</a>
         </div>
-    </div>
-</div>
+    </header>
 
-<script>
-// ==============================
-//  INITIALISASI DATA KERANJANG
-// ==============================
-let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
 
-// ==============================
-//  SIMPAN KE LOCALSTORAGE
-// ==============================
-function saveCart() {
-    localStorage.setItem('cartItems', JSON.stringify(cart));
-}
-
-// ==============================
-//  FORMAT RUPIAH
-// ==============================
-function formatRupiah(num) {
-    if (isNaN(num)) return "Rp0";
-    return "Rp" + num.toLocaleString('id-ID');
-}
-
-// ==============================
-//  RENDER KERANJANG
-// ==============================
-function renderCart() {
-    let list = document.getElementById('cartList');
-    list.innerHTML = '';
-
-    const summaryDetails = document.getElementById('summaryDetails');
-
-    if (cart.length === 0) {
-        list.innerHTML = `<p class='text-center text-muted p-5'>Keranjang kosong. Yuk, cari produk lucu!</p>`;
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
         
-        // Sembunyikan detail total/subtotal jika keranjang kosong
-        if (summaryDetails) summaryDetails.classList.add('hidden-summary-detail');
+        <h1 class="text-2xl sm:text-3xl title-display mb-10 font-medium text-text-dark">
+            Keranjang Belanja 
+            <span class="font-light text-text-light text-xl">&gt; Detail Pemesanan &gt; Pesanan Selesai</span>
+        </h1>
+
+        <div id="message-box" role="alert"></div>
         
-        return;
-    }
+        <div class="flex flex-wrap lg:flex-nowrap -mx-4">
+            
+            <div class="w-full lg:w-3/4 px-4">
+                
+                <div class="flex items-center text-xs font-semibold tracking-wider uppercase text-text-dark border-b-2 border-bliss-2 pb-2 mb-2">
+                    <div class="w-full sm:w-1/2">Produk</div>
+                    <div class="w-1/6 text-left hidden sm:block">Harga</div>
+                    <div class="w-1/6 text-center">Kuantitas</div>
+                    <div class="w-1/6 text-right">Subtotal</div>
+                </div>
 
-    // Tampilkan kembali detail total/subtotal jika ada item
-    if (summaryDetails) summaryDetails.classList.remove('hidden-summary-detail');
-
-    let total = 0;
-
-    cart.forEach((item, index) => {
-        const itemTotal = item.price * item.qty;
-        total += itemTotal;
-
-        list.innerHTML += `
-            <div class="d-flex justify-content-between align-items-center cart-item-custom">
-                <div class="d-flex align-items-center gap-3" style="width: 40%;">
-                    <img src="${item.image}" alt="${item.name}" class="cart-img-custom" />
-                    <div>
-                        <h6 class="cart-item-name fw-bold mb-0">${item.name}</h6>
-                        <p class="cart-item-price mb-0">${formatRupiah(item.price)}</p>
+                <div id="cart-items-container">
+                    </div>
+                
+                <div class="mt-8">
+                    <a href="#" class="inline-block px-6 py-2 border border-accent-strong text-accent-strong font-medium 
+                                             tracking-wider uppercase text-sm rounded-lg transition duration-300 
+                                             hover:bg-accent-strong/10 hover:shadow-lg">
+                        &larr; LANJUTKAN BELANJA
+                    </a>
+                </div>
+            </div> <div class="w-full lg:w-1/4 px-4 mt-10 lg:mt-0" id="cart-totals-card">
+                <h2 class="text-xs sm:text-sm font-bold tracking-wider uppercase text-text-light mb-4">RINGKASAN BELANJA</h2>
+                
+                <div class="bg-white p-6 border border-bliss-2 rounded-xl shadow-lg">
+                    <div class="flex justify-between py-2 border-b border-bliss-2">
+                        <span>Subtotal</span>
+                        <span id="subtotal-value" class="font-semibold text-text-dark">Rp-,-</span>
+                    </div>
+                    
+                    <div class="py-2 border-b border-bliss-2">
+                        <div class="flex justify-between">
+                            <span>Pengiriman</span>
+                            <span id="shipping-value" class="font-semibold text-bliss-success">Gratis</span>
+                        </div>
+                        <div class="text-right text-xs text-text-light mt-1">
+                            Pengiriman ke DKI Jakarta. <a href="/pesanan" class="text-accent-strong underline hover:no-underline">Ubah alamat</a>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between py-2 font-bold text-xl title-display mt-2">
+                        <span>TOTAL</span>
+                        <span id="total-value" class="text-accent-strong">Rp-,-</span>
+                    </div>
+                    
+                    <a href="/pesanan" class="btn-checkout block text-center mt-6 px-6 py-3 text-white font-bold uppercase 
+                                             rounded-lg transition duration-300 shadow-md">
+                        LANJUT KE CHECKOUT
+                    </a>
+                    
+                    <div class="mt-8 pt-4 border-t border-bliss-2">
+                        <p class="text-sm text-text-dark mb-2 font-medium">Voucher/Diskon</p>
+                        <input type="text" id="coupon-input" placeholder="Kode voucher atau diskon" class="w-full p-2 border rounded-lg mb-3">
+                        <button onclick="applyCoupon()" class="btn-coupon w-full p-2 text-white font-bold uppercase rounded-lg 
+                                             transition duration-300 shadow-sm">
+                            GUNAKAN DISKON
+                        </button>
                     </div>
                 </div>
-
-                <div class="quantity-box d-flex align-items-center gap-2">
-                    <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
-                    <input type="text" value="${item.qty}" class="qty-input text-center" readonly style="width: 40px;"/>
-                    <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
-                </div>
-
-                <div style="width: 15%; text-align: right;">
-                    <h6 class="fw-bold mb-0">${formatRupiah(itemTotal)}</h6>
-                </div>
-                
-                <button class="delete-btn" onclick="removeItem(${index})" title="Hapus Item">
-                    &times;
-                </button>
-            </div>
-        `;
-    });
-
-    document.getElementById('cartTotal').innerText = formatRupiah(total);
-    document.getElementById('subTotal').innerText = formatRupiah(total);
-}
-
-// ==============================
-//  UPDATE KUANTITAS
-// ==============================
-function updateQty(index, change) {
-    cart[index].qty += change;
-    if (cart[index].qty <= 0) cart[index].qty = 1; 
-
-    saveCart();
-    renderCart();
-}
-
-// ==============================
-//  HAPUS ITEM
-// ==============================
-function removeItem(index) {
-    if (confirm(`Yakin ingin menghapus ${cart[index].name} dari keranjang?`)) {
-        cart.splice(index, 1);
-        saveCart();
-        renderCart();
-    }
-}
-
-// ==============================
-//  CHECKOUT (DUMMY)
-// ==============================
-function checkout() {
-    if (cart.length === 0) {
-        alert('Keranjang Anda kosong!');
-        return;
-    }
-    
-    cart = [];
-    saveCart();
-    renderCart();
-    alert('Checkout berhasil! Terima kasih telah berbelanja. (Simulasi selesai)');
-}
-
-// ==============================
-//  LOAD DATA AWAL
-// ==============================
-renderCart();
-</script>
+            </div> </div> </div>
 
 </body>
 </html>
