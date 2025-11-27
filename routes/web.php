@@ -1,3 +1,5 @@
+// File: routes/web.php
+
 <?php
 
 use App\Http\Controllers\ProfileController;
@@ -22,9 +24,11 @@ Route::get('/pesanan', function () {
     return view('auth.detail');
 })->name('pesanan.preview');
 
-// Route to preview cart view
-Route::get('/cart', function () {
-    return view('auth.cart');
-})->name('cart.preview');
 
 require __DIR__.'/auth.php';
+
+
+Route::get('/cart', function () {
+   
+    return view('auth.cart'); 
+})->name('cart.index');
