@@ -37,7 +37,16 @@ class JenisController extends Controller
      */
     public function show(Jenis $jenis)
     {
-        //
+        return view('jenis.show', compact('jenis'));
+    }
+
+    /**
+     * Landing page showing all products.
+     */
+    public function landing()
+    {
+        $products = Jenis::orderBy('id')->get();
+        return view('welcome', compact('products'));
     }
 
     /**

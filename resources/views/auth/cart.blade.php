@@ -175,32 +175,54 @@
         };
 
         // --- MODEL DATA SIMULASI CART ---
+        // Try to load cart data from localStorage, fallback to demo data
         let cartData = {
-            items: [
-                { 
-                    id: 1, 
-                    name: 'Baby Blooms Bouquet', 
-                    price: 550000, 
-                    quantity: 2, 
-                    imageUrl: 'https://placehold.co/80x80/FFB5A7/5A4B4B?text=Pastel+Bouquet' 
-                },
-                { 
-                    id: 2, 
-                    name: 'Satin Ribbon (Rose Gold)', 
-                    price: 89000, 
-                    quantity: 1, 
-                    imageUrl: 'https://placehold.co/80x80/FCD5CE/5A4B4B?text=Rose+Ribbon' 
-                },
-                { 
-                    id: 3, 
-                    name: 'Aromatic Candle Set (Peony)', 
-                    price: 210000, 
-                    quantity: 3, 
-                    imageUrl: 'https://placehold.co/80x80/F9DCC4/5A4B4B?text=Aroma+Candle' 
-                }
-            ],
-            summary: { subtotal: 0, shipping: 0, total: 0 }
+            items: [],
+            summary: { subtotal: 0, shipping: 50000, total: 0 }
         };
+
+        // Load from localStorage if exists
+        try {
+            const savedCart = localStorage.getItem('whispering_flora_cart');
+            if (savedCart) {
+                const parsedCart = JSON.parse(savedCart);
+                if (parsedCart && parsedCart.items && Array.isArray(parsedCart.items)) {
+                    cartData = parsedCart;
+                }
+            }
+        } catch (e) {
+            console.log('Error loading cart from localStorage:', e);
+        }
+
+        // If no saved cart, use demo data for preview
+        if (cartData.items.length === 0) {
+            cartData = {
+                items: [
+                    { 
+                        id: 1, 
+                        name: 'Baby Blooms Bouquet', 
+                        price: 550000, 
+                        quantity: 2, 
+                        imageUrl: 'https://placehold.co/80x80/FFB5A7/5A4B4B?text=Pastel+Bouquet' 
+                    },
+                    { 
+                        id: 2, 
+                        name: 'Satin Ribbon (Rose Gold)', 
+                        price: 89000, 
+                        quantity: 1, 
+                        imageUrl: 'https://placehold.co/80x80/FCD5CE/5A4B4B?text=Rose+Ribbon' 
+                    },
+                    { 
+                        id: 3, 
+                        name: 'Aromatic Candle Set (Peony)', 
+                        price: 210000, 
+                        quantity: 3, 
+                        imageUrl: 'https://placehold.co/80x80/F9DCC4/5A4B4B?text=Aroma+Candle' 
+                    }
+                ],
+                summary: { subtotal: 0, shipping: 50000, total: 0 }
+            };
+        }
 
         // --- FUNGSI HELPER ---
 

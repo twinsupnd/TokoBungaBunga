@@ -15,40 +15,7 @@
     </head>
 <body>
 
-    <header class="header">
-        <a href="/" class="logo-container">
-            <img src="{{ asset('images/logo.png') }}" alt="Whispering Flora Logo">
-        </a>
-        <nav class="nav">
-            <a href="#katalog">Katalog</a>
-            <a href="#about">Tentang Kami</a>
-            
-            @auth
-                <div class="user-menu">
-                    <button class="user-menu-btn" id="user-menu-toggle">
-                        👤 {{ auth()->user()->name }}
-                    </button>
-                    <div class="user-dropdown" id="user-dropdown">
-                        <a href="{{ route('profile.show') }}" class="dropdown-item">
-                            👤 Profil Saya
-                        </a>
-                        <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                            ✏️ Edit Profil
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="dropdown-item" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer;">
-                                🚪 Logout
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            @else
-                <a href="#" id="open-auth-modal" class="nav-button open-auth-modal">Login</a>
-                <a href="{{ route('register') }}" style="margin-left: 15px; color: var(--color-accent-strong); font-weight: 600;">Register</a>
-            @endauth
-        </nav>
-    </header>
+    @include('components.header')
 
     <main>
         <section class="hero" style="background-image: url('{{ asset('images/bg.jpg') }}');">
@@ -62,37 +29,29 @@
         <section class="section" id="katalog">
             <h2 class="section-title">Bunga Pilihan Mingguan</h2>
             <div class="product-grid">
-                
-                {{-- CARD SIMULASI PRODUK 1 --}}
-                <div class="product-card">
-                    <img src="{{ asset('images/babybreath.jpg') }}" alt="Baby's Breath">
-                    <div class="product-info">
-                        <h3>Baby's Breath Flower</h3>
-                        <p style="color: var(--color-text-light); font-size: 14px;">Baby's Breath memiliki Simbol Cinta Abadi, Kemurnian, dan Kekuatan.</p>
-                        <p class="price">Rp 50.000</p>
+                @if(isset($products) && $products->count())
+                    @foreach($products as $product)
+                        <a href="{{ route('jenis.show', $product->slug) }}" style="display: block; color: inherit; text-decoration: none;">
+                            <div class="product-card" style="position: relative; border-radius: 10px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                                <div style="position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;">
+                                    <img src="{{ asset('images/' . ($product->image ?? 'babybreath.jpg')) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease;">
+                                    <div style="position: absolute; top: 12px; left: 12px; background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--color-accent-strong, #d4847c); backdrop-filter: blur(4px);">
+                                        🌸 Favorit
+                                    </div>
+                                </div>
+                                <div class="product-info" style="padding: 16px;">
+                                    <h3 style="margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--color-text-dark);">{{ $product->name }}</h3>
+                                    <p style="color: var(--color-text-light); font-size: 13px; margin: 0 0 10px; line-height: 1.4;">{{ \Illuminate\Support\Str::limit($product->description, 80) }}</p>
+                                    <p class="price" style="margin: 0; font-weight: 700; color: var(--color-accent-strong, #d4847c); font-size: 16px;">{{ $product->price }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                @else
+                    <div style="color: var(--color-text-light); text-align: center; padding: 40px; grid-column: 1 / -1;">
+                        <p>Belum ada produk — silahkan jalankan <code>php artisan migrate:fresh --seed</code></p>
                     </div>
-                </div>
-
-                {{-- CARD SIMULASI PRODUK 2 --}}
-                <div class="product-card">
-                    <img src="{{ asset('images/helleborus.jpg') }}" alt="Helleborus">
-                    <div class="product-info">
-                        <h3>Helleborus Flower</h3>
-                        <p style="color: var(--color-text-light); font-size: 14px;">Bunga Helleborus sering dianggap sebagai simbol kedamaian dan ketenangan.</p>
-                        <p class="price">Rp 80.000</p>
-                    </div>
-                </div>
-                
-                {{-- CARD SIMULASI PRODUK 3 --}}
-                <div class="product-card">
-                    <img src="{{ asset('images/minicymbidium.jpg') }}" alt="Mini Cymbidium">
-                    <div class="product-info">
-                        <h3>Mini Cymbidium Flower</h3>
-                        <p style="color: var(--color-text-light); font-size: 14px;">Cymbidium secara umum melambangkan cinta, kemewahan, dan keindahan yang langka.</p>
-                        <p class="price">Rp 40.000</p>
-                    </div>
-                </div>
-
+                @endif
             </div>
             
             <a href="{{ route('login') }}" class="cta-button" style="margin-top: 50px; display: inline-block;">Lihat Semua Produk &raquo;</a>
@@ -122,25 +81,25 @@
         @include('auth._login-modal')
 
     <script>
-        // User menu dropdown toggle
-        const userMenuBtn = document.getElementById('user-menu-toggle');
-        const userDropdown = document.getElementById('user-dropdown');
-
-        if (userMenuBtn && userDropdown) {
-            userMenuBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                userDropdown.classList.toggle('active');
-            });
-
-            // Close dropdown jika klik di luar
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.user-menu')) {
-                    userDropdown.classList.remove('active');
+        // Update cart count badge from localStorage
+        function updateCartBadge() {
+            try {
+                const savedCart = localStorage.getItem('whispering_flora_cart');
+                if (savedCart) {
+                    const cartData = JSON.parse(savedCart);
+                    const totalItems = cartData.items.reduce((sum, item) => sum + item.quantity, 0);
+                    const badge = document.getElementById('cart-count-badge');
+                    if (badge) {
+                        badge.textContent = totalItems;
+                        badge.style.display = totalItems > 0 ? 'flex' : 'none';
+                    }
                 }
-            });
+            } catch (e) {
+                console.log('Error loading cart from localStorage:', e);
+            }
         }
 
-        // Modal login functionality (existing code)
+        // Modal login functionality
         const openAuthModal = document.getElementById('open-auth-modal');
         if (openAuthModal) {
             openAuthModal.addEventListener('click', (e) => {
@@ -150,6 +109,8 @@
             });
         }
     </script>
+
+    @include('auth._login-modal')
 
     </body>
     </html>

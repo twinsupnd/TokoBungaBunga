@@ -9,4 +9,17 @@ class Jenis extends Model
 {
     /** @use HasFactory<\Database\Factories\JenisFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'image',
+        'price',
+        'description',
+    ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

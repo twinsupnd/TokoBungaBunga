@@ -3,13 +3,18 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\JenisController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [JenisController::class, 'landing']);
+Route::get('/jenis/{jenis:slug}', [JenisController::class, 'show'])->name('jenis.show');
+
+// Cart route
+Route::get('/cart', function () {
+    return view('auth.cart');
+})->middleware(['auth', 'verified'])->name('cart');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
