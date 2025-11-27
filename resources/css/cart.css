@@ -1,0 +1,234 @@
+/* ============================================================
+   CART PAGE – Pastel Bliss Theme
+   ============================================================ */
+
+/* Wrapper utama halaman */
+.cart-container {
+    max-width: 1100px;
+    margin: 120px auto 80px;
+    padding: 30px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    font-family: var(--font-body);
+    color: var(--color-text-dark);
+}
+
+/* Judul halaman */
+.cart-title {
+    font-family: var(--font-display);
+    font-size: 36px;
+    color: var(--color-accent-strong);
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+/* Tabel item keranjang */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+}
+
+.cart-table thead {
+    background-color: var(--color-pastel-bliss-2);
+}
+
+.cart-table th {
+    padding: 15px;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-text-dark);
+    text-align: left;
+}
+
+.cart-table td {
+    padding: 20px 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1dada;
+}
+
+/* Gambar produk */
+.cart-item-image {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Nama produk */
+.cart-item-name {
+    font-family: var(--font-display);
+    color: var(--color-accent-strong);
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.cart-item-price {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-button-primary);
+}
+
+/* ================================
+   BUTTON QUANTITY (+) & (–)
+   ================================ */
+
+.qty-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.qty-btn {
+    width: 35px;
+    height: 35px;
+    background-color: var(--color-pastel-bliss-2);
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: var(--color-text-dark);
+}
+
+.qty-btn:hover {
+    background-color: var(--color-pastel-bliss-1);
+    transform: translateY(-2px);
+}
+
+.qty-input {
+    width: 50px;
+    padding: 8px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #f0cfcf;
+    border-radius: 8px;
+}
+
+/* ================================
+   BUTTON HAPUS ITEM
+   ================================ */
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    color: var(--color-accent-strong);
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.delete-btn:hover {
+    color: #b31d58;
+}
+
+/* ================================
+   TOTAL & CHECKOUT BOX
+   ================================ */
+
+.cart-summary {
+    background-color: var(--color-pastel-bliss-2);
+    padding: 25px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    margin-top: 40px;
+}
+
+.summary-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--color-accent-strong);
+    margin-bottom: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.summary-total {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-button-primary);
+}
+
+/* Tombol Checkout */
+.checkout-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+
+    background-image: linear-gradient(
+        45deg, 
+        var(--color-pastel-bliss-5) 0%, 
+        var(--color-accent-strong) 50%, 
+        var(--color-button-primary) 100%
+    );
+    background-size: 200% 100%;
+    background-position: right bottom;
+
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 6px 20px rgba(237, 56, 120, 0.35);
+}
+
+.checkout-btn:hover {
+    background-position: left bottom;
+    transform: translateY(-2px);
+}
+
+/* Tombol Lanjutkan Belanja */
+.back-shopping {
+    display: inline-block;
+    margin-top: 25px;
+    font-size: 16px;
+    color: var(--color-accent-strong);
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color 0.3s;
+}
+
+.back-shopping:hover {
+    color: var(--color-button-primary);
+}
+
+/* ================================
+   RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+    .cart-container {
+        padding: 20px;
+    }
+
+    .cart-title {
+        font-size: 28px;
+    }
+
+    .cart-table th, .cart-table td {
+        font-size: 14px;
+    }
+
+    .qty-wrapper {
+        flex-direction: column;
+    }
+
+    .cart-summary {
+        padding: 20px;
+    }
+
+    .checkout-btn {
+        font-size: 16px;
+    }
+}

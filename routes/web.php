@@ -17,4 +17,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Temporary route to preview order details view
+Route::get('/pesanan', function () {
+    return view('auth.detail');
+})->name('pesanan.preview');
+
+// Route to preview cart view
+Route::get('/cart', function () {
+    return view('auth.cart');
+})->name('cart.preview');
+
 require __DIR__.'/auth.php';
