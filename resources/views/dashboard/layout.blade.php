@@ -30,11 +30,17 @@
 
         /* Make only the menu scrollable */
         .sidebar .sidebar-header { padding: 20px; flex: 0 0 auto; }
-        .sidebar .sidebar-menu-wrapper { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 16px; }
+        .sidebar .sidebar-header a { text-decoration: none; color: var(--text); font-weight: 700; }
+        .sidebar .sidebar-menu-wrapper { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 16px; flex: 1; }
         .sidebar .sidebar-menu { list-style: none; margin: 0; padding: 0; }
         .sidebar .sidebar-menu li { margin-bottom: 6px; }
-        .sidebar .sidebar-menu a { display: block; padding: 10px 12px; border-radius: 8px; color: var(--text); text-decoration: none; }
+        .sidebar .sidebar-menu a { display: block; padding: 10px 12px; border-radius: 8px; color: var(--text); text-decoration: none; transition: all 0.2s ease; }
+        .sidebar .sidebar-menu a:hover { background: rgba(199,183,255,0.1); }
         .sidebar .sidebar-menu a.active { background: linear-gradient(90deg, var(--pastel-accent), var(--pastel-accent-2)); color: #fff; box-shadow: 0 4px 12px rgba(199,183,255,0.18); }
+
+        .sidebar-bottom { padding-top: 12px; border-top: 1px solid rgba(34,34,59,0.08); flex: 0 0 auto; }
+        .logout-btn { width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: rgba(199,183,255,0.1); color: var(--text); font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .logout-btn:hover { background: rgba(199,183,255,0.2); }
 
         /* Main content area scrolls independently */
         .main-content { flex: 1 1 auto; overflow-y: auto; padding: 28px; }
@@ -57,57 +63,17 @@
             <div class="sidebar-menu-wrapper">
                 @include('dashboard.sidebar')
             </div>
+            <div class="sidebar-bottom">
+                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                    @csrf
+                    <button class="logout-btn">Logout</button>
+                </form>
+            </div>
         </aside>
 
         <section class="main-content" role="main">
             @yield('content')
         </section>
     </div>
-</body>
-</html>
-            --card-bg: #ffffff;
-        }
-
-        html,body{height:100%;}
-        body.dashboard-body{margin:0;font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:var(--bliss-3); color:var(--text-dark);}
-
-        .dashboard-container{display:flex;min-height:100vh;}
-
-        /* Sidebar */
-        .sidebar{width:260px; background:var(--card-bg); padding:20px 18px; box-shadow: 2px 0 10px rgba(0,0,0,0.03); display:flex; flex-direction:column;}
-        .sidebar-header{padding:8px 0 18px;border-bottom:1px solid #f1eaea}
-        .sidebar-header h2{margin:0;color:var(--bliss-1);font-weight:700}
-
-        .sidebar-menu{margin:0;padding:0;list-style:none;flex:1;overflow:auto}
-        .sidebar-menu li{margin:0}
-        .sidebar-menu a{display:block;padding:12px 10px;border-radius:8px;color:var(--text-dark);text-decoration:none;font-weight:600;margin:6px 2px}
-        .sidebar-menu a.active{background:var(--bliss-2);box-shadow:inset 0 0 0 1px rgba(236,72,153,0.06)}
-        .sidebar-bottom{padding-top:12px;border-top:1px solid #f1eaea}
-
-        /* Main content */
-        .main-content{flex:1;padding:28px 36px;}
-
-        /* Make menu scroll only - hide body scroll when inside dashboard */
-        .main-content{overflow:auto}
-
-        @media(max-width:900px){
-            .sidebar{width:100%;position:relative;}
-            .dashboard-container{flex-direction:column}
-        }
-    </style>
-</head>
-
-<body class="dashboard-body">
-
-    <div class="dashboard-container">
-        @include('dashboard.sidebar')
-        <main class="main-content">
-            @yield('content')
-        </main>
-    </div>
-
-    {{-- Page-specific scripts --}}
-    @stack('scripts')
-
 </body>
 </html>
