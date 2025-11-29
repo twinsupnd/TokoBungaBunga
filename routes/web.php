@@ -44,12 +44,8 @@ Route::get('/dashboard/profil', [ProfileController::class, 'show'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard.profile');
 
-// ====================
-// Analitik
-// ====================
-Route::get('/dashboard/analitik', [App\Http\Controllers\AnalyticsController::class, 'financialAnalytics'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard.analytics');
+// Analytics route
+Route::get('/dashboard/analitik', [App\Http\Controllers\AnalyticsController::class, 'financialAnalytics'])->middleware(['auth', 'verified'])->name('dashboard.analytics');
 
 // ====================
 // Manager Dashboard
