@@ -51,17 +51,7 @@ Route::get('/dashboard/profil', [ProfileController::class, 'show'])
 // Analytics route
 Route::get('/dashboard/analitik', [App\Http\Controllers\AnalyticsController::class, 'financialAnalytics'])->middleware(['auth', 'verified'])->name('dashboard.analytics');
 
-// ====================
-// Kalendar / Events (Admin & Manager)
-// ====================
-Route::middleware(['auth', 'verified', 'role:admin,manager'])->prefix('dashboard/admin')->name('dashboard.admin.')->group(function () {
-    Route::get('/', [App\Http\Controllers\EventController::class, 'index'])->name('index');
-    Route::get('/create', [App\Http\Controllers\EventController::class, 'create'])->name('create');
-    Route::post('/', [App\Http\Controllers\EventController::class, 'store'])->name('store');
-    Route::get('/{event}/edit', [App\Http\Controllers\EventController::class, 'edit'])->name('edit');
-    Route::put('/{event}', [App\Http\Controllers\EventController::class, 'update'])->name('update');
-    Route::delete('/{event}', [App\Http\Controllers\EventController::class, 'destroy'])->name('destroy');
-});
+// (calendar removed) — no dashboard/admin routes defined
 
 // ====================
 // Manager Dashboard
