@@ -6,6 +6,32 @@
 
     <nav style="display: flex; gap: 30px; align-items: center;">
         <a href="/" style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Katalog</a>
+        
+        <!-- Jenis Bunga Dropdown -->
+        <div style="position: relative; display: inline-block;">
+            <button class="nav-dropdown-btn" style="background: none; border: none; cursor: pointer; color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s; display: flex; align-items: center; gap: 6px; padding: 0;">
+                JENIS BUNGA <span style="font-size: 12px;">▼</span>
+            </button>
+            <div class="nav-dropdown-menu" style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; display: none; z-index: 1001; margin-top: 8px;">
+                <a href="/bunga/mawar" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌹 Mawar</a>
+                <a href="/bunga/lily" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌺 Lily</a>
+                <a href="/bunga/tulip" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌷 Tulip</a>
+                <a href="/bunga/matahari" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌻 Matahari</a>
+                <a href="/bunga/baby-breath" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; transition: background 0.2s;">👶 Baby Breath</a>
+            </div>
+        </div>
+
+        <!-- Model Bunga Dropdown -->
+        <div style="position: relative; display: inline-block;">
+            <button class="nav-dropdown-btn" style="background: none; border: none; cursor: pointer; color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s; display: flex; align-items: center; gap: 6px; padding: 0;">
+                MODEL BUNGA <span style="font-size: 12px;">▼</span>
+            </button>
+            <div class="nav-dropdown-menu" style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; display: none; z-index: 1001; margin-top: 8px;">
+                <a href="/model/asli" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌸 Bunga Asli</a>
+                <a href="/model/tiruan" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; transition: background 0.2s;">🎀 Bunga Tiruan</a>
+            </div>
+        </div>
+
         <a href="#about" style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Tentang Kami</a>
 
         @auth
@@ -65,6 +91,26 @@
             console.log('Error loading cart:', e);
         }
     }
+
+    // Navigation dropdown menus
+    document.querySelectorAll('.nav-dropdown-btn').forEach(btn => {
+        const menu = btn.nextElementSibling;
+        if (menu && menu.classList.contains('nav-dropdown-menu')) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('div[style*="position: relative"]')) {
+            document.querySelectorAll('.nav-dropdown-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }
+    });
 
     // User menu dropdown
     const userMenuBtn = document.getElementById('user-menu-toggle');

@@ -14,6 +14,10 @@ use Illuminate\Http\Request;
 Route::get('/', [JenisController::class, 'landing']);
 Route::get('/jenis/{jenis:slug}', [JenisController::class, 'show'])->name('jenis.show');
 
+// Category routes
+Route::get('/bunga/{type}', [App\Http\Controllers\CategoryController::class, 'showFlowerType'])->name('category.flower-type');
+Route::get('/model/{model}', [App\Http\Controllers\CategoryController::class, 'showModel'])->name('category.flower-model');
+
 // ====================
 // Cart
 // ====================
@@ -65,25 +69,7 @@ Route::get('/manager', function () {
 // Kelola Admin (Manager Only) — FIXED
 // ====================
 Route::middleware(['auth', 'verified', 'role:manager'])->group(function () {
-
-    // Inilah route yang kamu mau
-    Route::get('/dashboard/manage-admins', [AdminController::class, 'index'])
-        ->name('manager.kelolaAdmin');
-
-    // CRUD for admins (Manager only)
-    Route::get('/dashboard/manage-admins/create', [AdminController::class, 'create'])
-        ->name('manager.kelola.create');
-    Route::post('/dashboard/manage-admins', [AdminController::class, 'store'])
-        ->name('manager.kelola.store');
-    Route::get('/dashboard/manage-admins/{user}/edit', [AdminController::class, 'edit'])
-        ->name('manager.kelola.edit');
-    Route::put('/dashboard/manage-admins/{user}', [AdminController::class, 'update'])
-        ->name('manager.kelola.update');
-    Route::delete('/dashboard/manage-admins/{user}', [AdminController::class, 'destroy'])
-        ->name('manager.kelola.destroy');
-
-    // (Laporan route removed per request)
-
+    // Manager-specific routes go here
 });
 
 // ====================
