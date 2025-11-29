@@ -47,7 +47,7 @@
 
         <div>
             <button type="submit" style="background:var(--accent);color:white;padding:10px 14px;border-radius:6px;border:none;font-weight:700;">Simpan</button>
-            <a href="{{ route('manager.kelolaAdmin') }}" style="margin-left:12px;">Batal</a>
+            <a href="{{ route('manager.kelola.index') }}" style="margin-left:12px;">Batal</a>
         </div>
     </form>
 </div>
