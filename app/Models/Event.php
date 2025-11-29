@@ -3,32 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
     use HasFactory;
 
+    // Events table intentionally doesn't include Laravel timestamps
+    public $timestamps = false;
+
+    // Adjusted to match the existing DB columns: nama_acara, tanggal, waktu_mulai, waktu_selesai, tempat, kategori
     protected $fillable = [
-        'title',
-        'description',
-        'start_at',
-        'end_at',
-        'all_day',
-        'category',
-        'color',
-        'created_by',
+        'nama_acara',
+        'tanggal',
+        'waktu_mulai',
+        'waktu_selesai',
+        'tempat',
+        'kategori',
     ];
 
     protected $casts = [
-        'start_at' => 'datetime',
-        'end_at' => 'datetime',
-        'all_day' => 'boolean',
+        // tanggal holds the date of the event
+        'tanggal' => 'date',
+        // waktu_mulai / waktu_selesai are stored as time strings (H:i)
     ];
 
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
+    // No creator relation — events table intentionally contains only the requested columns
 }

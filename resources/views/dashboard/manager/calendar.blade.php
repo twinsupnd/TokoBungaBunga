@@ -26,9 +26,12 @@
     <div style="margin-top:12px;background:#fff5f5;padding:14px;border-radius:8px;border:1px solid #fee2e2;color:#9b1c1c;">
         <strong>Missing table columns:</strong>
         <div style="margin-top:6px; color:#6b7280;">The <code>events</code> table is missing required column(s): <strong>{{ implode(', ', $missingColumns) }}</strong>. Either run the latest migrations that add these columns or add them manually. Example migration snippet:
-            <pre style="background:#f8fafc;padding:8px;border-radius:6px;margin-top:6px;">$table->dateTime('start_at');
-$table->dateTime('end_at')->nullable();
-$table->boolean('all_day')->default(false);</pre>
+            <pre style="background:#f8fafc;padding:8px;border-radius:6px;margin-top:6px;">$table->string('nama_acara');
+$table->date('tanggal');
+$table->time('waktu_mulai');
+$table->time('waktu_selesai')->nullable();
+$table->string('tempat')->nullable();
+$table->string('kategori')->nullable();</pre>
         </div>
     </div>
 @endif
@@ -62,7 +65,8 @@ $table->boolean('all_day')->default(false);</pre>
 
                 $eventsByDay = [];
                 foreach($events as $e){
-                    $day = $e->start_at->format('j');
+                    // tanggal is a date column in the DB
+                    $day = $e->tanggal?->format('j');
                     $eventsByDay[$day][] = $e;
                 }
             @endphp
@@ -78,8 +82,8 @@ $table->boolean('all_day')->default(false);</pre>
 
                             <div style="margin-top:6px; display:flex; flex-direction:column; gap:6px;">
                                 @foreach($eventsByDay[$cell] ?? [] as $e)
-                                    <a href="{{ route('manager.calendar.edit', $e) }}" style="display:block; background:{{ $e->color ?? '#c7f9cc' }}; color:#04111b; padding:4px 6px; border-radius:4px; font-size:12px; text-decoration:none;">
-                                        {{ \Illuminate\Support\Str::limit($e->title, 28) }}
+                                    <a href="{{ route('manager.calendar.edit', $e) }}" style="display:block; background:#c7f9cc; color:#04111b; padding:4px 6px; border-radius:4px; font-size:12px; text-decoration:none;">
+                                        {{ \Illuminate\Support\Str::limit($e->nama_acara, 28) }}
                                     </a>
                                 @endforeach
                             </div>
@@ -89,15 +93,7 @@ $table->boolean('all_day')->default(false);</pre>
             </div>
         </div>
 
-        <div style="margin-top:12px; background:white;padding:12px;border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.06);">
-            <h4 style="margin:0 0 8px 0;">Event Filters</h4>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <label><input type="checkbox" checked /> View All</label>
-                <label><input type="checkbox" /> Personal</label>
-                <label><input type="checkbox" /> Business</label>
-                <label><input type="checkbox" /> Family</label>
-            </div>
-        </div>
+        <!-- Event Filters removed per request -->
     </div>
 
     <div style="flex:1;">
@@ -133,10 +129,10 @@ $table->boolean('all_day')->default(false);</pre>
                                         <div style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
                                             @foreach($eventsByDay[$day] ?? [] as $e)
                                                 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                                                    <a href="{{ route('manager.calendar.edit', $e) }}" style="display:block; flex:1; padding:6px 8px; background:{{ $e->color ?? '#eef8ff' }}; border-radius:999px; color:#04111b; text-decoration:none; font-weight:600; font-size:13px;">
-                                                        {{ \Illuminate\Support\Str::limit($e->title, 50) }}
+                                                    <a href="{{ route('manager.calendar.edit', $e) }}" style="display:block; flex:1; padding:6px 8px; background:#eef8ff; border-radius:999px; color:#04111b; text-decoration:none; font-weight:600; font-size:13px;">
+                                                        {{ \Illuminate\Support\Str::limit($e->nama_acara, 50) }}
                                                     </a>
-                                                    <form action="{{ route('manager.calendar.destroy', $e) }}" method="POST" onsubmit="return confirm('Hapus event {{ addslashes($e->title) }}?');">
+                                                    <form action="{{ route('manager.calendar.destroy', $e) }}" method="POST" onsubmit="return confirm('Hapus event {{ addslashes($e->nama_acara) }}?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" style="border:none;background:transparent;color:#ef4444;font-weight:700;">✕</button>
@@ -163,16 +159,15 @@ $table->boolean('all_day')->default(false);</pre>
                 <div style="margin-top:12px; overflow:auto;">
                     <table style="width:100%; border-collapse: collapse; min-width:900px;">
                         <thead>
-                            <tr style="text-align:left; border-bottom:1px solid #e6e7ea;">
+                                <tr style="text-align:left; border-bottom:1px solid #e6e7ea;">
                                 <th style="padding:10px; width:40px;">#</th>
-                                <th style="padding:10px">Title</th>
-                                <th style="padding:10px">Description</th>
-                                <th style="padding:10px">Start</th>
-                                <th style="padding:10px">End</th>
-                                <th style="padding:10px">All Day</th>
-                                <th style="padding:10px">Category</th>
-                                <th style="padding:10px">Color</th>
-                                <th style="padding:10px">Created By</th>
+                                <th style="padding:10px">Nama Acara</th>
+                                <th style="padding:10px">Tempat</th>
+                                <th style="padding:10px">Tanggal</th>
+                                <th style="padding:10px">Waktu Mulai</th>
+                                <th style="padding:10px">Waktu Selesai</th>
+                                <th style="padding:10px">Kategori</th>
+                                <!-- Created By column removed per requested schema -->
                                 <th style="padding:10px;text-align:right">Actions</th>
                             </tr>
                         </thead>
@@ -180,17 +175,16 @@ $table->boolean('all_day')->default(false);</pre>
                             @forelse($eventsList as $i => $e)
                                 <tr style="border-bottom:1px solid #f3f4f6;">
                                     <td style="padding:10px;vertical-align:middle;">{{ $eventsList->firstItem() + $i }}</td>
-                                    <td style="padding:10px;vertical-align:middle;font-weight:700;">{{ $e->title }}</td>
-                                    <td style="padding:10px;vertical-align:middle;color:#6b7280;">{{ \Illuminate\Support\Str::limit($e->description, 80) }}</td>
-                                    <td style="padding:10px;vertical-align:middle;">{{ optional($e->start_at)->format('Y-m-d H:i') }}</td>
-                                    <td style="padding:10px;vertical-align:middle;">{{ optional($e->end_at)->format('Y-m-d H:i') }}</td>
-                                    <td style="padding:10px;vertical-align:middle;">{{ $e->all_day ? 'Yes' : 'No' }}</td>
-                                    <td style="padding:10px;vertical-align:middle;">{{ $e->category ?? '-' }}</td>
-                                    <td style="padding:10px;vertical-align:middle;"><span style="display:inline-block;width:28px;height:18px;border-radius:6px;background:{{ $e->color ?? '#eee' }};border:1px solid #e9e9e9"></span></td>
-                                    <td style="padding:10px;vertical-align:middle;">{{ $e->creator?->name ?? '-' }}</td>
+                                    <td style="padding:10px;vertical-align:middle;font-weight:700;">{{ $e->nama_acara }}</td>
+                                    <td style="padding:10px;vertical-align:middle;color:#6b7280;">{{ $e->tempat ?? '-' }}</td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ optional($e->tanggal)->format('Y-m-d') }}</td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ $e->waktu_mulai ?? '-' }}</td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ $e->waktu_selesai ?? '-' }}</td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ $e->kategori ?? '-' }}</td>
+                                    <!-- created_by removed: not shown -->
                                     <td style="padding:10px;vertical-align:middle;text-align:right;">
                                         <a href="{{ route('manager.calendar.edit', $e) }}" style="margin-right:8px;color:#7c3aed;">Edit</a>
-                                        <form method="POST" action="{{ route('manager.calendar.destroy', $e) }}" style="display:inline;" onsubmit="return confirm('Delete event {{ addslashes($e->title) }}?');">
+                                        <form method="POST" action="{{ route('manager.calendar.destroy', $e) }}" style="display:inline;" onsubmit="return confirm('Delete event {{ addslashes($e->nama_acara) }}?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" style="background:none;border:none;color:#ef4444;font-weight:700;cursor:pointer;">Delete</button>
@@ -199,7 +193,7 @@ $table->boolean('all_day')->default(false);</pre>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10" style="padding:10px">No events found.</td>
+                                    <td colspan="8" style="padding:10px">No events found.</td>
                                 </tr>
                             @endforelse
                         </tbody>

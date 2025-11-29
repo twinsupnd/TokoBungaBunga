@@ -26,30 +26,63 @@
 
     <div style="display:grid; gap:12px;">
         <div>
-            <label>Title</label>
-            <input name="title" value="{{ old('title', $event->title) }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+            <label>Nama Acara</label>
+            <input name="nama_acara" value="{{ old('nama_acara', $event->nama_acara) }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
         </div>
 
-        <div>
-            <label>Description</label>
-            <textarea name="description" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" rows="4">{{ old('description', $event->description) }}</textarea>
-        </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div style="display:grid; grid-template-columns:1fr; gap:12px;">
             <div>
-                <label>Start</label>
-                <input type="datetime-local" name="start_at" value="{{ old('start_at', $event->start_at ? $event->start_at->format('Y-m-d\TH:i') : '') }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
-            </div>
-            <div>
-                <label>End</label>
-                <input type="datetime-local" name="end_at" value="{{ old('end_at', $event->end_at ? $event->end_at->format('Y-m-d\TH:i') : '') }}" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+                <label>Tanggal</label>
+                <input type="date" name="tanggal" value="{{ old('tanggal', $event->tanggal ? $event->tanggal->format('Y-m-d') : '') }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
             </div>
         </div>
 
-        <div style="display:flex; gap:12px; align-items:center;">
-            <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox" name="all_day" value="1" {{ old('all_day', $event->all_day) ? 'checked' : '' }}> All day</label>
-            <input name="category" placeholder="Category" value="{{ old('category', $event->category) }}" style="flex:1;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
-            <input type="color" name="color" value="{{ old('color', $event->color ?? '#c7f9cc') }}" style="width:48px; padding:4px; border-radius:6px; border:none;" />
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px;">
+            <div>
+                <label>Waktu Mulai</label>
+                @php
+                    $wm = old('waktu_mulai', $event->waktu_mulai);
+                    if ($wm) {
+                        $wm = preg_replace('/\s+/', '', str_replace('.', ':', $wm));
+                        if (preg_match('/^\d{1,2}:\d{2}:\d{2}$/', $wm)) {
+                            $wm = substr($wm, 0, 5);
+                        } elseif (preg_match('/^\d{3,4}$/', $wm)) {
+                            $wm = substr($wm, 0, -2) . ':' . substr($wm, -2);
+                        }
+                    }
+                @endphp
+                <input type="time" name="waktu_mulai" value="{{ $wm ?? '' }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+            </div>
+            <div>
+                <label>Waktu Selesai</label>
+                @php
+                    $ws = old('waktu_selesai', $event->waktu_selesai);
+                    if ($ws) {
+                        $ws = preg_replace('/\s+/', '', str_replace('.', ':', $ws));
+                        if (preg_match('/^\d{1,2}:\d{2}:\d{2}$/', $ws)) {
+                            $ws = substr($ws, 0, 5);
+                        } elseif (preg_match('/^\d{3,4}$/', $ws)) {
+                            $ws = substr($ws, 0, -2) . ':' . substr($ws, -2);
+                        }
+                    }
+                @endphp
+                <input type="time" name="waktu_selesai" value="{{ $ws ?? '' }}" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px;">
+            <div>
+                <label>Tempat</label>
+                <input name="tempat" value="{{ old('tempat', $event->tempat) }}" placeholder="Lokasi / Tempat" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+            </div>
+            <div>
+                <label>Kategori</label>
+                <select name="kategori" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;">
+                    <option value="">-- pilih kategori --</option>
+                    <option value="Personal" {{ old('kategori', $event->kategori) == 'Personal' ? 'selected' : '' }}>Personal</option>
+                    <option value="Business" {{ old('kategori', $event->kategori) == 'Business' ? 'selected' : '' }}>Business</option>
+                </select>
+            </div>
         </div>
 
         <div>

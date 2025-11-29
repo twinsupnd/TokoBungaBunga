@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Schema;
 
 class EventController extends Controller
@@ -31,7 +32,8 @@ class EventController extends Controller
             $missingTable = true;
         } else {
             // verify expected columns exist before running queries
-            $expected = ['start_at', 'title', 'description', 'end_at', 'all_day', 'category', 'color', 'created_by'];
+            // expected columns based on the existing DB schema (as provided)
+            $expected = ['tanggal', 'nama_acara', 'waktu_mulai', 'waktu_selesai', 'tempat', 'kategori'];
             foreach ($expected as $col) {
                 if (! Schema::hasColumn('events', $col)) {
                     $missingColumns[] = $col;
@@ -39,16 +41,28 @@ class EventController extends Controller
             }
 
             if (empty($missingColumns)) {
-                // safe to query
-                $events = Event::whereBetween('start_at', [$start->toDateTimeString(), $end->toDateTimeString()])
-                    ->orderBy('start_at')
+                // safe to query: use tanggal (date) and waktu_mulai for ordering
+                $events = Event::whereBetween('tanggal', [$start->toDateString(), $end->toDateString()])
+                    ->orderBy('tanggal')
+                    ->orderBy('waktu_mulai')
                     ->get();
 
-                // provide a paginated event list view for manager with creators
-                $eventsList = Event::with('creator')
-                    ->orderBy('start_at', 'desc')
+                // provide a paginated event list view for manager
+                $eventsList = Event::query()
+                    ->orderBy('tanggal', 'desc')
+                    ->orderBy('waktu_mulai', 'desc')
                     ->paginate(15)
                     ->withQueryString();
+            }
+        }
+
+        // If there is no table or required columns, make sure $eventsList behaves like a paginator
+        // so view calls like ->total(), ->firstItem(), and ->links() won't fail.
+        if (! $eventsList instanceof LengthAwarePaginator) {
+            $eventsList = new LengthAwarePaginator([], 0, 15, $request->query('page', 1));
+            // preserve query string on pagination links
+            if (method_exists($eventsList, 'withQueryString')) {
+                $eventsList = $eventsList->withQueryString();
             }
         }
 
@@ -63,7 +77,8 @@ class EventController extends Controller
     public function store(StoreEventRequest $request)
     {
         $data = $request->validated();
-        $data['created_by'] = auth()->id();
+        // Ensure kategori has a sane default as an extra-safety (validation should already enforce this)
+        $data['kategori'] = $data['kategori'] ?? 'Personal';
         Event::create($data);
 
         return redirect()->route('manager.dashboard')->with('success', 'Event dibuat.');

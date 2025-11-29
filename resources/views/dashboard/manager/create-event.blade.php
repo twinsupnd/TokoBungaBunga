@@ -25,30 +25,40 @@
 
     <div style="display:grid; gap:12px;">
         <div>
-            <label>Title</label>
-            <input name="title" value="{{ old('title') }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
-        </div>
-
-        <div>
-            <label>Description</label>
-            <textarea name="description" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" rows="4">{{ old('description') }}</textarea>
+            <label>Nama Acara</label>
+            <input name="nama_acara" value="{{ old('nama_acara') }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
             <div>
-                <label>Start</label>
-                <input type="datetime-local" name="start_at" value="{{ old('start_at') }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+                <label>Tanggal</label>
+                <input type="date" name="tanggal" value="{{ old('tanggal') }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
             </div>
             <div>
-                <label>End</label>
-                <input type="datetime-local" name="end_at" value="{{ old('end_at') }}" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+                <label>Waktu Mulai</label>
+                <input type="time" name="waktu_mulai" value="{{ old('waktu_mulai') }}" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
             </div>
         </div>
 
-        <div style="display:flex; gap:12px; align-items:center;">
-            <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox" name="all_day" value="1"> All day</label>
-            <input name="category" placeholder="Category" style="flex:1;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
-            <input type="color" name="color" value="#c7f9cc" style="width:48px; padding:4px; border-radius:6px; border:none;" />
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px;">
+            <div>
+                <label>Waktu Selesai</label>
+                <input type="time" name="waktu_selesai" value="{{ old('waktu_selesai') }}" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+            </div>
+            <div>
+                <label>Tempat</label>
+                <input name="tempat" value="{{ old('tempat') }}" placeholder="Lokasi / Tempat" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
+            </div>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center; margin-top:6px;">
+            <label style="display:block; width:100%;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:6px;">Kategori</div>
+                <select name="kategori" required style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;">
+                    <option value="Personal" {{ old('kategori', 'Personal') == 'Personal' ? 'selected' : '' }}>Personal</option>
+                    <option value="Business" {{ old('kategori') == 'Business' ? 'selected' : '' }}>Business</option>
+                </select>
+            </label>
         </div>
 
         <div>
