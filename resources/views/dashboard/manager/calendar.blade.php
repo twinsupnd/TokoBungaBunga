@@ -17,6 +17,22 @@
     <div style="margin-top:12px;background:#ecfccb;padding:10px;border-radius:6px;color:#365314;">{{ session('success') }}</div>
 @endif
 
+@if(!empty($missingTable))
+    <div style="margin-top:12px;background:#fff5f5;padding:14px;border-radius:8px;border:1px solid #fee2e2;color:#9b1c1c;">
+        <strong>Database table missing:</strong>
+        <div style="margin-top:6px; color:#6b7280;">The <code>events</code> table does not exist in your database. Run <code>php artisan migrate</code> to create it.</div>
+    </div>
+@elseif(!empty($missingColumns))
+    <div style="margin-top:12px;background:#fff5f5;padding:14px;border-radius:8px;border:1px solid #fee2e2;color:#9b1c1c;">
+        <strong>Missing table columns:</strong>
+        <div style="margin-top:6px; color:#6b7280;">The <code>events</code> table is missing required column(s): <strong>{{ implode(', ', $missingColumns) }}</strong>. Either run the latest migrations that add these columns or add them manually. Example migration snippet:
+            <pre style="background:#f8fafc;padding:8px;border-radius:6px;margin-top:6px;">$table->dateTime('start_at');
+$table->dateTime('end_at')->nullable();
+$table->boolean('all_day')->default(false);</pre>
+        </div>
+    </div>
+@endif
+
 <div style="display:flex; gap:18px; margin-top:18px;">
     <div style="width:320px;">
         <div style="background:white;padding:12px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);">

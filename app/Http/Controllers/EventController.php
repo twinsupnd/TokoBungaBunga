@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Schema;
 
 class EventController extends Controller
 {
@@ -23,20 +24,35 @@ class EventController extends Controller
 
         $events = collect();
         $eventsList = collect();
+        $missingTable = false;
+        $missingColumns = [];
 
-        if (\Illuminate\Support\Facades\Schema::hasTable('events')) {
-            $events = Event::whereBetween('start_at', [$start->toDateTimeString(), $end->toDateTimeString()])
-                ->orderBy('start_at')
-                ->get();
+        if (! Schema::hasTable('events')) {
+            $missingTable = true;
+        } else {
+            // verify expected columns exist before running queries
+            $expected = ['start_at', 'title', 'description', 'end_at', 'all_day', 'category', 'color', 'created_by'];
+            foreach ($expected as $col) {
+                if (! Schema::hasColumn('events', $col)) {
+                    $missingColumns[] = $col;
+                }
+            }
 
-            // provide a paginated event list view for manager with creators
-            $eventsList = Event::with('creator')
-                ->orderBy('start_at', 'desc')
-                ->paginate(15)
-                ->withQueryString();
+            if (empty($missingColumns)) {
+                // safe to query
+                $events = Event::whereBetween('start_at', [$start->toDateTimeString(), $end->toDateTimeString()])
+                    ->orderBy('start_at')
+                    ->get();
+
+                // provide a paginated event list view for manager with creators
+                $eventsList = Event::with('creator')
+                    ->orderBy('start_at', 'desc')
+                    ->paginate(15)
+                    ->withQueryString();
+            }
         }
 
-        return view('dashboard.manager.calendar', compact('events', 'eventsList', 'start', 'end', 'month'));
+        return view('dashboard.manager.calendar', compact('events', 'eventsList', 'start', 'end', 'month', 'missingTable', 'missingColumns'));
     }
 
     public function create()
