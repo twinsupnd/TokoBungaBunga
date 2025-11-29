@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'role',
         'profile_photo_path',
+        'promoted_to_admin_at',
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'promoted_to_admin_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

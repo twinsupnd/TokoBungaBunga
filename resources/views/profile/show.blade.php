@@ -80,6 +80,13 @@
                 <div class="info-value">{{ auth()->user()->created_at->format('d M Y') }}</div>
             </div>
 
+            @if(auth()->user()->role === 'admin' && auth()->user()->promoted_to_admin_at)
+                <div class="info-row">
+                    <div class="info-label">Menjadi Admin Sejak</div>
+                    <div class="info-value">{{ auth()->user()->promoted_to_admin_at->format('d M Y H:i') }}</div>
+                </div>
+            @endif
+
             <div class="section-divider"></div>
 
             <div id="profile-view">
