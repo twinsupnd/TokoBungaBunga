@@ -25,6 +25,9 @@ Route::prefix('dashboard/jenis')->middleware(['auth', 'verified'])->group(functi
     Route::get('/{id}', [App\Http\Controllers\JenisController::class, 'adminShow'])->name('dashboard.jenis.show');
 });
 
+// Admin profile route
+Route::get('/dashboard/profil', [ProfileController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard.profile');
+
 // Manager dashboard (only accessible to manager role)
 Route::get('/manager', function () {
     if (! Auth::check() || Auth::user()->role !== 'manager') {
