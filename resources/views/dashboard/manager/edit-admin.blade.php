@@ -45,6 +45,14 @@
             <input type="password" name="password_confirmation" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;" />
         </div>
 
+        <div style="margin-bottom:14px;">
+            <label>Status</label>
+            <select name="status" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;">
+                <option value="active" {{ old('status', $user->email_verified_at ? 'active' : 'inactive') === 'active' ? 'selected' : '' }}>Active</option>
+                <option value="inactive" {{ old('status', $user->email_verified_at ? 'active' : 'inactive') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+            </select>
+        </div>
+
         <div>
             <button type="submit" style="background:var(--accent);color:white;padding:10px 14px;border-radius:6px;border:none;font-weight:700;">Simpan</button>
             <a href="{{ route('manager.kelola.index') }}" style="margin-left:12px;">Batal</a>

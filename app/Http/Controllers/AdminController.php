@@ -64,6 +64,7 @@ class AdminController extends Controller
 		]);
 	}
 
+	/**
 	 * Display a listing of admins.
 	 */
 	public function index(\Illuminate\Http\Request $request): View
@@ -155,6 +156,17 @@ class AdminController extends Controller
 			$data['password'] = Hash::make($data['password']);
 		} else {
 			unset($data['password']);
+		}
+
+		// Handle status update (active/inactive) — active sets email_verified_at, inactive clears it
+		if (array_key_exists('status', $data)) {
+			if ($data['status'] === 'active') {
+				$data['email_verified_at'] = $admin->email_verified_at ?? now();
+			} else {
+				// explicitly clear verification
+				$data['email_verified_at'] = null;
+			}
+			unset($data['status']);
 		}
 
 		$admin->update($data);

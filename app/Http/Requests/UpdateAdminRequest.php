@@ -22,6 +22,8 @@ class UpdateAdminRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $adminId],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            // status: active => email_verified_at set, inactive => email_verified_at null
+            'status' => ['nullable', 'in:active,inactive'],
         ];
     }
 }
