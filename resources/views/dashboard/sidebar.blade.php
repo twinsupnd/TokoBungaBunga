@@ -6,8 +6,8 @@
 
     <ul class="sidebar-menu">
         <li><a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a></li>
-        <li><a href="/dashboard/profil" class="{{ request()->is('dashboard/profil') ? 'active' : '' }}">Profil</a></li>
-        <li><a href="/dashboard/analitik" class="{{ request()->is('dashboard/analitik') ? 'active' : '' }}">Analitik Keuangan</a></li>
+        <li><a href="{{ route('dashboard.profile') }}" class="{{ request()->routeIs('dashboard.profile') ? 'active' : '' }}">Profil</a></li>
+        <li><a href="{{ route('dashboard.analytics') }}" class="{{ request()->routeIs('dashboard.analytics') ? 'active' : '' }}">Analitik Keuangan</a></li>
         <li><a href="/dashboard/admin" class="{{ request()->is('dashboard/admin') ? 'active' : '' }}">Data Admin</a></li>
         @if(auth()->check() && in_array(auth()->user()->role, ['admin','manager']))
             <li><a href="{{ route('dashboard.jenis.index') }}" class="{{ request()->is('dashboard/jenis*') ? 'active' : '' }}">Kelola Produk</a></li>

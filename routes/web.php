@@ -28,6 +28,9 @@ Route::prefix('dashboard/jenis')->middleware(['auth', 'verified'])->group(functi
 // Admin profile route
 Route::get('/dashboard/profil', [ProfileController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard.profile');
 
+// Analytics route
+Route::get('/dashboard/analitik', [App\Http\Controllers\AnalyticsController::class, 'financialAnalytics'])->middleware(['auth', 'verified'])->name('dashboard.analytics');
+
 // Manager dashboard (only accessible to manager role)
 Route::get('/manager', function () {
     if (! Auth::check() || Auth::user()->role !== 'manager') {
