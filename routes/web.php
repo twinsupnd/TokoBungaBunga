@@ -56,16 +56,9 @@ Route::get('/dashboard/analitik', [App\Http\Controllers\AnalyticsController::cla
 // ====================
 // Manager Dashboard
 // ====================
-Route::get('/manager', function () {
-
-    if (! Auth::check() || Auth::user()->role !== 'manager') {
-        abort(403);
-    }
-
-    $admins = App\Models\User::where('role', 'admin')->get();
-    return view('dashboard.manager', compact('admins'));
-
-})->middleware(['auth', 'verified'])->name('manager.dashboard');
+Route::get('/manager', [App\Http\Controllers\EventController::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:manager'])
+    ->name('manager.dashboard');
 
 // ====================
 // Kelola Admin (Manager Only)
@@ -92,6 +85,16 @@ Route::middleware(['auth', 'verified', 'role:manager'])->group(function () {
 
         // DELETE /manager/kelola-admin/{admin}
         Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('destroy');
+    });
+
+    // Calendar / Events management for Manager
+    Route::prefix('manager/calendar')->name('manager.calendar.')->group(function () {
+        Route::get('/', [App\Http\Controllers\EventController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\EventController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\EventController::class, 'store'])->name('store');
+        Route::get('/{event}/edit', [App\Http\Controllers\EventController::class, 'edit'])->name('edit');
+        Route::put('/{event}', [App\Http\Controllers\EventController::class, 'update'])->name('update');
+        Route::delete('/{event}', [App\Http\Controllers\EventController::class, 'destroy'])->name('destroy');
     });
 
     // Backwards-compatible routes that used the old URL structure
