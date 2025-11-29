@@ -29,8 +29,9 @@
         .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, var(--pastel-card), #FFF); border-right: 1px solid rgba(34,34,59,0.04); box-shadow: 0 6px 18px rgba(180,170,200,0.05); display: flex; flex-direction: column; }
 
         /* Make only the menu scrollable */
-        .sidebar .sidebar-header { padding: 20px; flex: 0 0 auto; }
-        .sidebar .sidebar-header a { text-decoration: none; color: var(--text); font-weight: 700; }
+        .sidebar .sidebar-header { padding: 16px; flex: 0 0 auto; display: flex; align-items: center; gap: 12px; }
+        .sidebar .sidebar-logo { width: 40px; height: 40px; object-fit: contain; border-radius: 8px; }
+        .sidebar .sidebar-header a { text-decoration: none; color: var(--text); font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 10px; }
         .sidebar .sidebar-menu-wrapper { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 16px; flex: 1; }
         .sidebar .sidebar-menu { list-style: none; margin: 0; padding: 0; }
         .sidebar .sidebar-menu li { margin-bottom: 6px; }
@@ -58,6 +59,7 @@
     <div id="app" class="dashboard-container">
         <aside class="sidebar" role="navigation" aria-label="Sidebar">
             <div class="sidebar-header">
+                <img src="{{ asset('images/logo.png') }}" alt="Toko Bunga Logo" class="sidebar-logo">
                 <a href="{{ route('dashboard') }}" class="brand">Toko Bunga</a>
             </div>
             <div class="sidebar-menu-wrapper">

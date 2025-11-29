@@ -6,98 +6,101 @@
 
 <style>
     .analytics-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
+        margin-bottom: 28px;
     }
 
     .analytics-title {
-        font-size: 2rem;
+        font-size: 28px;
         font-weight: 700;
-        color: var(--text-dark, #1f2937);
+        color: var(--text);
+        margin: 0 0 6px 0;
     }
 
     .analytics-subtitle {
-        font-size: 0.875rem;
-        color: var(--text-light, #6b7280);
-        margin-top: 0.25rem;
+        font-size: 14px;
+        color: var(--muted);
+        margin: 0;
     }
 
     .back-btn {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, #FFB5A7 0%, #FCD5CE 100%);
+        gap: 8px;
+        padding: 10px 18px;
+        background: linear-gradient(135deg, var(--pastel-accent), var(--pastel-accent-2));
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-weight: 600;
         cursor: pointer;
         text-decoration: none;
         transition: all 0.3s ease;
+        font-size: 14px;
+        margin-top: 16px;
     }
 
     .back-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 16px rgba(199,183,255,0.3);
     }
 
     .analytics-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 18px;
+        margin-bottom: 28px;
     }
 
     .metric-card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        border-left: 4px solid var(--primary-color, #FFB5A7);
+        background: var(--pastel-card);
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: 0 8px 20px rgba(34,34,59,0.04);
+        border: 1px solid rgba(199,183,255,0.1);
+        border-left: 4px solid var(--pastel-accent);
         transition: all 0.3s ease;
     }
 
     .metric-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 24px rgba(199,183,255,0.15);
     }
 
     .metric-label {
-        font-size: 0.875rem;
-        color: var(--text-light, #6b7280);
+        font-size: 12px;
+        color: var(--muted);
         text-transform: uppercase;
         font-weight: 600;
-        margin-bottom: 0.5rem;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
     }
 
     .metric-value {
-        font-size: 1.875rem;
+        font-size: 24px;
         font-weight: 700;
-        color: var(--text-dark, #1f2937);
+        color: var(--pastel-accent);
     }
 
     .metric-subtext {
-        font-size: 0.75rem;
-        color: var(--text-light, #6b7280);
-        margin-top: 0.5rem;
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 8px;
     }
 
     .chart-container {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
+        background: var(--pastel-card);
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: 0 8px 20px rgba(34,34,59,0.04);
+        border: 1px solid rgba(199,183,255,0.1);
+        margin-bottom: 28px;
     }
 
     .chart-title {
-        font-size: 1.25rem;
+        font-size: 16px;
         font-weight: 700;
-        color: var(--text-dark, #1f2937);
-        margin-bottom: 1.5rem;
+        color: var(--text);
+        margin: 0 0 18px 0;
     }
 
     .chart-wrapper {
@@ -105,9 +108,9 @@
         justify-content: center;
         align-items: center;
         min-height: 300px;
-        background: linear-gradient(135deg, rgba(255, 181, 167, 0.05) 0%, rgba(252, 213, 206, 0.05) 100%);
-        border-radius: 8px;
-        padding: 2rem;
+        background: linear-gradient(135deg, rgba(199,183,255,0.06), rgba(255,214,224,0.06));
+        border-radius: 10px;
+        padding: 24px;
     }
 
     .pie-chart {
@@ -115,14 +118,14 @@
         height: 150px;
         border-radius: 50%;
         background: conic-gradient(
-            #FFB5A7 0% 94%,
-            #FCD5CE 94% 100%
+            var(--pastel-accent) 0% 94%,
+            var(--pastel-accent-2) 94% 100%
         );
         display: flex;
         align-items: center;
         justify-content: center;
         position: relative;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 16px rgba(199,183,255,0.2);
     }
 
     .pie-chart::after {
@@ -130,30 +133,31 @@
         position: absolute;
         width: 120px;
         height: 120px;
-        background: white;
+        background: var(--pastel-card);
         border-radius: 50%;
     }
 
     .pie-label {
         position: absolute;
         font-weight: 700;
-        font-size: 1.5rem;
-        color: var(--text-dark, #1f2937);
+        font-size: 18px;
+        color: var(--pastel-accent);
         z-index: 1;
     }
 
     .pie-stats {
         display: flex;
-        gap: 2rem;
-        margin-top: 1.5rem;
+        gap: 28px;
+        margin-top: 16px;
         justify-content: center;
     }
 
     .pie-stat {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        font-size: 0.875rem;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--text);
     }
 
     .pie-stat-dot {
@@ -165,49 +169,52 @@
     .bar-chart {
         display: flex;
         align-items: flex-end;
-        gap: 1rem;
+        gap: 12px;
         height: 200px;
         justify-content: space-around;
-        padding: 1rem 0;
+        padding: 12px 0;
     }
 
     .bar {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: 8px;
     }
 
     .bar-column {
-        background: linear-gradient(180deg, #FFB5A7 0%, #FCD5CE 100%);
-        border-radius: 4px 4px 0 0;
+        background: linear-gradient(180deg, var(--pastel-accent), var(--pastel-accent-2));
+        border-radius: 6px 6px 0 0;
         min-width: 40px;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(199,183,255,0.2);
     }
 
     .bar-column:hover {
-        opacity: 0.8;
+        opacity: 0.85;
+        box-shadow: 0 6px 12px rgba(199,183,255,0.3);
     }
 
     .bar-label {
-        font-size: 0.75rem;
-        color: var(--text-light, #6b7280);
+        font-size: 12px;
+        color: var(--muted);
         font-weight: 600;
     }
 
     .bar-value {
-        font-size: 0.75rem;
-        color: var(--text-dark, #1f2937);
+        font-size: 12px;
+        color: var(--text);
         font-weight: 700;
     }
 
     .table-container {
         overflow-x: auto;
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
+        background: var(--pastel-card);
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: 0 8px 20px rgba(34,34,59,0.04);
+        border: 1px solid rgba(199,183,255,0.1);
+        margin-bottom: 28px;
     }
 
     table {
@@ -216,61 +223,56 @@
     }
 
     th {
-        background: linear-gradient(135deg, rgba(255,181,167,0.08) 0%, rgba(252,213,206,0.08) 100%);
-        padding: 1rem;
+        background: linear-gradient(90deg, rgba(199,183,255,0.08), rgba(255,214,224,0.08));
+        padding: 14px;
         text-align: left;
         font-weight: 600;
-        color: var(--text-dark, #1f2937);
-        font-size: 0.875rem;
+        color: var(--text);
+        font-size: 12px;
         text-transform: uppercase;
-        border-bottom: 2px solid #e5e7eb;
+        border-bottom: 2px solid rgba(199,183,255,0.1);
     }
 
     td {
-        padding: 1rem;
-        border-bottom: 1px solid #e5e7eb;
-        color: var(--text-dark, #1f2937);
+        padding: 14px;
+        border-bottom: 1px solid rgba(199,183,255,0.08);
+        color: var(--text);
+        font-size: 14px;
     }
 
     tr:hover {
-        background: #f9fafb;
+        background: rgba(199,183,255,0.04);
     }
 
     .badge {
         display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
         font-weight: 600;
     }
 
     .badge-success {
-        background: #d1fae5;
-        color: #065f46;
+        background: rgba(199,183,255,0.15);
+        color: var(--pastel-accent);
     }
 
     .badge-warning {
-        background: #fed7aa;
-        color: #92400e;
+        background: rgba(255,214,224,0.3);
+        color: var(--pastel-accent-2);
     }
 
     .badge-danger {
-        background: #fee2e2;
-        color: #7f1d1d;
+        background: rgba(255,107,107,0.15);
+        color: #FF6B6B;
     }
 
     .currency {
         font-weight: 600;
-        color: var(--primary-color, #FFB5A7);
+        color: var(--pastel-accent);
     }
 
     @media (max-width: 768px) {
-        .analytics-header {
-            flex-direction: column;
-            gap: 1rem;
-            align-items: flex-start;
-        }
-
         .analytics-grid {
             grid-template-columns: 1fr;
         }
@@ -279,26 +281,12 @@
             min-height: 250px;
         }
 
-        .bar-chart {
-            height: 150px;
-            gap: 0.75rem;
-        }
-
-        .bar-column {
-            min-width: 30px;
-        }
-
-        .pie-stats {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
         table {
-            font-size: 0.875rem;
+            font-size: 12px;
         }
 
         th, td {
-            padding: 0.75rem;
+            padding: 10px;
         }
     }
 </style>
@@ -308,7 +296,7 @@
         <h1 class="analytics-title">📊 Analitik Keuangan</h1>
         <p class="analytics-subtitle">Laporan performa dan transaksi bulan {{ $financialData['currentMonth'] }}</p>
     </div>
-    <a href="{{ route('dashboard') }}" class="back-btn">← Kembali ke Dashboard</a>
+    <a href="{{ route('dashboard') }}" class="back-btn">← Kembali</a>
 </div>
 
 <!-- Key Metrics -->
