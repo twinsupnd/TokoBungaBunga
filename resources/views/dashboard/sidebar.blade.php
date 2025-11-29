@@ -20,7 +20,7 @@
 
         {{-- PANEL MANAGER --}}
         @if(auth()->check() && auth()->user()->role === 'manager')
-            <li><a href="{{ route('manager.dashboard') }}" class="{{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">Panel Manager</a></li>
+            <li><a href="{{ route('manager.dashboard') }}" class="{{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">Kalendar</a></li>
             <li><a href="/dashboard/manage-admins" class="{{ request()->is('dashboard/manage-admins') ? 'active' : '' }}">Kelola Admin</a></li>
         @endif
         <li><a href="/dashboard/laporan" class="{{ request()->is('dashboard/laporan') ? 'active' : '' }}">Laporan</a></li>
