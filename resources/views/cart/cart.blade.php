@@ -18,7 +18,7 @@
             --color-pastel-bliss-2: #FCD5CE; /* Light Pink */
             --color-pastel-bliss-3: #F8EDEB; /* Off-White/Lightest Pink (Background) */
             --color-pastel-bliss-4: #F9DCC4; /* Light Peach (Accent Background) */
-            --color-pastel-bliss-5: #FEC89A; /* Peach/Orange Tone */
+            --color-pastel-bliss-5: #FCD5CE; /* Peach/Soft Pink Tone */
             
             --color-text-dark: #5A4B4B; 
             --color-text-light: #8C7878; 

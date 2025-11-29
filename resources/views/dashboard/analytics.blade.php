@@ -29,7 +29,7 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+        background: linear-gradient(135deg, #FFB5A7 0%, #FCD5CE 100%);
         color: white;
         border: none;
         border-radius: 8px;
@@ -56,7 +56,7 @@
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        border-left: 4px solid var(--primary-color, #ec4899);
+        border-left: 4px solid var(--primary-color, #FFB5A7);
         transition: all 0.3s ease;
     }
 
@@ -105,7 +105,7 @@
         justify-content: center;
         align-items: center;
         min-height: 300px;
-        background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%);
+        background: linear-gradient(135deg, rgba(255, 181, 167, 0.05) 0%, rgba(252, 213, 206, 0.05) 100%);
         border-radius: 8px;
         padding: 2rem;
     }
@@ -115,8 +115,8 @@
         height: 150px;
         border-radius: 50%;
         background: conic-gradient(
-            #ec4899 0% 94%,
-            #f97316 94% 100%
+            #FFB5A7 0% 94%,
+            #FCD5CE 94% 100%
         );
         display: flex;
         align-items: center;
@@ -179,7 +179,7 @@
     }
 
     .bar-column {
-        background: linear-gradient(180deg, #ec4899 0%, #f97316 100%);
+        background: linear-gradient(180deg, #FFB5A7 0%, #FCD5CE 100%);
         border-radius: 4px 4px 0 0;
         min-width: 40px;
         transition: all 0.3s ease;
@@ -216,7 +216,7 @@
     }
 
     th {
-        background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
+        background: linear-gradient(135deg, rgba(255,181,167,0.08) 0%, rgba(252,213,206,0.08) 100%);
         padding: 1rem;
         text-align: left;
         font-weight: 600;
@@ -261,7 +261,7 @@
 
     .currency {
         font-weight: 600;
-        color: var(--primary-color, #ec4899);
+        color: var(--primary-color, #FFB5A7);
     }
 
     @media (max-width: 768px) {
@@ -313,13 +313,13 @@
 
 <!-- Key Metrics -->
 <div class="analytics-grid">
-    <div class="metric-card" style="border-left-color: #ec4899;">
+    <div class="metric-card" style="border-left-color: #FFB5A7;">
         <div class="metric-label">Penjualan Bulan Ini</div>
         <div class="metric-value"><span class="currency">Rp</span> {{ number_format($financialData['salesThisMonth'], 0, ',', '.') }}</div>
         <div class="metric-subtext">Total transaksi: {{ $financialData['totalTransactions'] }}</div>
     </div>
 
-    <div class="metric-card" style="border-left-color: #f97316;">
+    <div class="metric-card" style="border-left-color: #FCD5CE;">
         <div class="metric-label">Penjualan Minggu Ini</div>
         <div class="metric-value"><span class="currency">Rp</span> {{ number_format($financialData['salesThisWeek'], 0, ',', '.') }}</div>
         <div class="metric-subtext">Per minggu (7 hari)</div>
@@ -345,11 +345,11 @@
                     <div class="pie-stats">
                         <div style="display: flex; flex-direction: column; gap: 1rem;">
                             <div class="pie-stat">
-                                <div class="pie-stat-dot" style="background: #ec4899;"></div>
+                                <div class="pie-stat-dot" style="background: #FFB5A7;"></div>
                                 <span>Sukses: {{ $financialData['transactionStatus']['completed'] }}</span>
                             </div>
                             <div class="pie-stat">
-                                <div class="pie-stat-dot" style="background: #f97316;"></div>
+                                <div class="pie-stat-dot" style="background: #FCD5CE;"></div>
                                 <span>Pending: {{ $financialData['transactionStatus']['pending'] }}</span>
                             </div>
                             <div class="pie-stat">

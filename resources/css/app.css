@@ -7,7 +7,7 @@
     --color-pastel-bliss-2: #FCD5CE; /* Light Pink */
     --color-pastel-bliss-3: #F8EDEB; /* Off-White/Lightest Pink (Background) */
     --color-pastel-bliss-4: #F9DCC4; /* Light Peach */
-    --color-pastel-bliss-5: #FEC89A; /* Peach/Orange Tone (Accent) */
+    --color-pastel-bliss-5: #FCD5CE; /* Peach/Soft Pink Tone (Accent) */
     
     /* Warna tambahan untuk teks dan tombol agar kontras */
     --color-text-dark: #5A4B4B; /* Darker tone for readability */
@@ -31,18 +31,49 @@ body {
 
 a { text-decoration: none; }
 
+/* === SHIMMER/SPARKLE EFFECT === */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 181, 167, 0.5), 0 4px 15px rgba(255, 181, 167, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(254, 200, 154, 0.7), 0 4px 20px rgba(254, 200, 154, 0.4);
+    }
+}
+
+.shimmer-effect {
+    background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+.glow-effect {
+    animation: glow 2s ease-in-out infinite;
+}
+
 /*1. WELCOME */
 /* --- HEADER & NAVIGASI --- */
 .header {
     position: fixed;
     top: 0; left: 0; right: 0;
-    background-color: var(--color-pastel-bliss-3); 
-    padding: 15px 50px;
+    background: linear-gradient(135deg, var(--color-pastel-bliss-3) 0%, rgba(255, 181, 167, 0.08) 100%);
+    backdrop-filter: blur(8px);
+    padding: 18px 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(237, 56, 120, 0.08);
     z-index: 1000;
+    border-bottom: 1px solid rgba(255, 181, 167, 0.15);
 }
 
 .logo-container {
@@ -56,45 +87,58 @@ a { text-decoration: none; }
 }
 
 .nav a { 
-    margin-left: 25px;
+    margin-left: 30px;
     text-decoration: none;
     color: var(--color-text-dark);
-    font-weight: 500;
-    transition: color 0.3s;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    font-size: 15px;
+}
+
+.nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-accent-strong);
+    transition: width 0.3s ease;
 }
 
 .nav a:hover {
-    color: var(--color-pastel-bliss-1); 
+    color: var(--color-accent-strong);
+}
+
+.nav a:hover::after {
+    width: 100%;
 }
 
 .nav-button {
-    padding: 10px 25px; 
+    padding: 12px 28px; 
     border-radius: 25px; 
-    background-color: var(--color-button-primary); 
+    background: linear-gradient(135deg, var(--color-pastel-bliss-1) 0%, var(--color-pastel-bliss-2) 100%);
     color: white !important;
-    font-weight: 600;
-    transition: all 0.4s ease-in-out; 
+    font-weight: 700;
+    transition: all 0.3s ease; 
     border: none; 
+    cursor: pointer;
     position: relative; 
     z-index: 1; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-    
-    /* Background transisi baru */
-    background-image: linear-gradient(
-        45deg, 
-        var(--color-pastel-bliss-5) 0%, 
-        var(--color-accent-strong) 50%, 
-        var(--color-button-primary) 100% 
-    );
-    background-size: 200% 100%; 
-    background-position: right bottom; 
+    box-shadow: 0 6px 20px rgba(237, 56, 120, 0.15); 
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .nav-button:hover {
-    background-position: left bottom; 
-    color: white !important; 
-    transform: translateY(-2px); 
-    box-shadow: 0 8px 20px rgba(237, 56, 120, 0.4); 
+    transform: translateY(-3px); 
+    box-shadow: 0 12px 30px rgba(237, 56, 120, 0.25); 
+}
+
+.nav-button:active {
+    transform: translateY(-1px);
 }
 
 /* --- USER MENU --- */
@@ -104,21 +148,25 @@ a { text-decoration: none; }
 }
 
 .user-menu-btn {
-    padding: 10px 25px;
+    padding: 12px 28px;
     border-radius: 25px;
-    background-color: var(--color-button-primary);
+    background: linear-gradient(135deg, var(--color-pastel-bliss-1) 0%, var(--color-pastel-bliss-2) 100%);
     color: white;
-    font-weight: 600;
+    font-weight: 700;
     border: none;
     cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(237, 56, 120, 0.15);
+    font-size: 14px;
 }
 
 .user-menu-btn:hover {
-    background-color: var(--color-accent-strong);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(237, 56, 120, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(237, 56, 120, 0.25);
+}
+
+.user-menu-btn:active {
+    transform: translateY(-1px);
 }
 
 .user-dropdown {
@@ -126,16 +174,17 @@ a { text-decoration: none; }
     top: 100%;
     right: 0;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    min-width: 200px;
-    margin-top: 10px;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(237, 56, 120, 0.15);
+    min-width: 220px;
+    margin-top: 12px;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-10px);
+    transform: translateY(-15px);
     transition: all 0.3s ease;
     z-index: 100;
     overflow: hidden;
+    border: 1px solid rgba(255, 181, 167, 0.2);
 }
 
 .user-dropdown.active {
@@ -220,7 +269,7 @@ a { text-decoration: none; }
     font-weight: 700;
     font-size: 18px;
     
-    background-color: var(--color-pastel-bliss-1); 
+    background: linear-gradient(135deg, var(--color-pastel-bliss-1) 0%, var(--color-pastel-bliss-5) 100%);
     transition: all 0.3s ease-in-out; 
     
     position: relative; 
@@ -231,7 +280,7 @@ a { text-decoration: none; }
     display: inline-flex; 
     align-items: center; 
     gap: 10px; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 4px 15px rgba(255, 181, 167, 0.4);
 }
 
 /* BARU: Pseudo-element untuk Efek Kilauan (Shine/Swoosh) */
@@ -249,10 +298,10 @@ a { text-decoration: none; }
 }
 
 .hero-content .cta-button:hover {
-    background-color: var(--color-accent-strong); 
+    background: linear-gradient(135deg, var(--color-accent-strong) 0%, var(--color-pastel-bliss-1) 100%);
     color: white; 
-    box-shadow: 0 8px 25px rgba(237, 56, 120, 0.4); 
-    transform: translateY(-2px); 
+    box-shadow: 0 12px 35px rgba(237, 56, 120, 0.5); 
+    transform: translateY(-3px) scale(1.05); 
 }
 
 /* BARU: Animasi kilauan saat hover */
@@ -361,14 +410,16 @@ a { text-decoration: none; }
     background-color: white;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 5px 20px rgba(255, 181, 167, 0.1);
+    transition: all 0.4s;
     text-align: left;
+    border: 2px solid #FCD5CE;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(255, 181, 167, 0.25);
+    border-color: #FFB5A7;
 }
 
 .product-card img {
@@ -564,6 +615,36 @@ a { text-decoration: none; }
     color: var(--color-button-login);
 }
 
+/* Button: Lihat Semua Produk (Pastel Bliss) */
+.btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 36px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--color-pastel-bliss-1) 0%, var(--color-pastel-bliss-2) 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    box-shadow: 0 8px 30px rgba(237,56,120,0.12);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    border: none;
+    cursor: pointer;
+}
+.btn-view-all:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 50px rgba(237,56,120,0.16);
+}
+.btn-view-all:active { 
+    transform: translateY(-1px); 
+}
+
+.btn-view-all.center {
+    display: block;
+    margin: 40px auto 0;
+}
 
 /* Responsif Mobile */
 @media (max-width: 768px) {
