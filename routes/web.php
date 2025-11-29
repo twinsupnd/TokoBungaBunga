@@ -39,8 +39,16 @@ Route::get('/dashboard', function () {
 Route::prefix('dashboard/jenis')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [JenisController::class, 'index'])->name('dashboard.jenis.index');
     Route::post('/', [JenisController::class, 'store'])->name('dashboard.jenis.store');
+    Route::get('/{jenis}/edit', [JenisController::class, 'edit'])->name('dashboard.jenis.edit');
+    Route::put('/{jenis}', [JenisController::class, 'update'])->name('dashboard.jenis.update');
+    Route::delete('/{jenis}', [JenisController::class, 'destroy'])->name('dashboard.jenis.destroy');
     Route::get('/{id}', [JenisController::class, 'adminShow'])->name('dashboard.jenis.show');
 });
+
+// ====================
+// Catalog Preview (Admin / Manager)
+// ====================
+Route::get('/dashboard/catalog', [JenisController::class, 'catalog'])->middleware(['auth', 'verified'])->name('dashboard.catalog');
 
 // ====================
 // Profil

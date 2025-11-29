@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateJenisRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateJenisRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::check() && in_array(Auth::user()->role, ['admin', 'manager']);
     }
 
     /**
@@ -22,7 +23,10 @@ class UpdateJenisRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'price' => 'nullable|string|max:100',
+            'description' => 'nullable|string',
+            'image' => 'nullable|file|image|max:2048',
         ];
     }
 }

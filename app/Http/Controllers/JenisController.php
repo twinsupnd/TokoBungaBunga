@@ -100,11 +100,28 @@ class JenisController extends Controller
     }
 
     /**
+     * Catalog preview page for admin to see customer view.
+     */
+    public function catalog()
+    {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
+        $products = Jenis::orderBy('id')->get();
+        return view('catalog', compact('products'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Jenis $jenis)
     {
-        //
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
+        return view('dashboard.jenis.edit', compact('jenis'));
     }
 
     /**
@@ -112,7 +129,27 @@ class JenisController extends Controller
      */
     public function update(UpdateJenisRequest $request, Jenis $jenis)
     {
-        //
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($jenis->image && file_exists(public_path('images/' . $jenis->image))) {
+                unlink(public_path('images/' . $jenis->image));
+            }
+
+            $file = $request->file('image');
+            $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '_', $file->getClientOriginalName());
+            $file->move(public_path('images'), $filename);
+            $data['image'] = $filename;
+        }
+
+        $jenis->update($data);
+
+        return redirect()->route('dashboard.jenis.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
     /**
@@ -120,6 +157,17 @@ class JenisController extends Controller
      */
     public function destroy(Jenis $jenis)
     {
-        //
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
+        // Delete image if exists
+        if ($jenis->image && file_exists(public_path('images/' . $jenis->image))) {
+            unlink(public_path('images/' . $jenis->image));
+        }
+
+        $jenis->delete();
+
+        return redirect()->route('dashboard.jenis.index')->with('success', 'Produk berhasil dihapus.');
     }
 }

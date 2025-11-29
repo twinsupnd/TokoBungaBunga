@@ -51,6 +51,8 @@
     .link-delete { color: #FF6B6B; background: rgba(255,107,107,0.1); }
     .link-delete:hover { background: rgba(255,107,107,0.2); }
 
+    .inline-form { display: inline; }
+
     .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
     .empty-icon { font-size: 48px; margin-bottom: 12px; }
 
@@ -117,6 +119,12 @@
                                 <td>
                                     <div class="action-cell">
                                         <a href="{{ route('dashboard.jenis.show', $item->id) }}" class="action-link link-view">👁 Lihat</a>
+                                        <a href="{{ route('dashboard.jenis.edit', $item->id) }}" class="action-link link-edit">✏️ Edit</a>
+                                        <form action="{{ route('dashboard.jenis.destroy', $item->id) }}" method="POST" class="inline-form" onsubmit="return confirm('Yakin hapus produk ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-link link-delete" style="border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">🗑️ Hapus</button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
