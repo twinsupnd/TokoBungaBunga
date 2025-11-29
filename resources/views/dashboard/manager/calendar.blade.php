@@ -137,9 +137,60 @@
             </div>
         </div>
 
-        <div style="margin-top:12px;">
-            <div style="display:flex; gap:12px; align-items:center;">
-                <div class="stat-card" style="flex:1; padding:10px;">Total events: <strong>{{ $events->count() }}</strong></div>
+        <div style="margin-top:18px;">
+            <div style="background:#fff;padding:12px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="margin:0;">All Events</h3>
+                    <div style="font-size:13px;color:#6b7280;">Total: <strong>{{ $eventsList->total() ?? 0 }}</strong></div>
+                </div>
+
+                <div style="margin-top:12px; overflow:auto;">
+                    <table style="width:100%; border-collapse: collapse; min-width:900px;">
+                        <thead>
+                            <tr style="text-align:left; border-bottom:1px solid #e6e7ea;">
+                                <th style="padding:10px; width:40px;">#</th>
+                                <th style="padding:10px">Title</th>
+                                <th style="padding:10px">Description</th>
+                                <th style="padding:10px">Start</th>
+                                <th style="padding:10px">End</th>
+                                <th style="padding:10px">All Day</th>
+                                <th style="padding:10px">Category</th>
+                                <th style="padding:10px">Color</th>
+                                <th style="padding:10px">Created By</th>
+                                <th style="padding:10px;text-align:right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($eventsList as $i => $e)
+                                <tr style="border-bottom:1px solid #f3f4f6;">
+                                    <td style="padding:10px;vertical-align:middle;">{{ $eventsList->firstItem() + $i }}</td>
+                                    <td style="padding:10px;vertical-align:middle;font-weight:700;">{{ $e->title }}</td>
+                                    <td style="padding:10px;vertical-align:middle;color:#6b7280;">{{ \Illuminate\Support\Str::limit($e->description, 80) }}</td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ optional($e->start_at)->format('Y-m-d H:i') }}</td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ optional($e->end_at)->format('Y-m-d H:i') }}</td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ $e->all_day ? 'Yes' : 'No' }}</td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ $e->category ?? '-' }}</td>
+                                    <td style="padding:10px;vertical-align:middle;"><span style="display:inline-block;width:28px;height:18px;border-radius:6px;background:{{ $e->color ?? '#eee' }};border:1px solid #e9e9e9"></span></td>
+                                    <td style="padding:10px;vertical-align:middle;">{{ $e->creator?->name ?? '-' }}</td>
+                                    <td style="padding:10px;vertical-align:middle;text-align:right;">
+                                        <a href="{{ route('manager.calendar.edit', $e) }}" style="margin-right:8px;color:#7c3aed;">Edit</a>
+                                        <form method="POST" action="{{ route('manager.calendar.destroy', $e) }}" style="display:inline;" onsubmit="return confirm('Delete event {{ addslashes($e->title) }}?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" style="background:none;border:none;color:#ef4444;font-weight:700;cursor:pointer;">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="10" style="padding:10px">No events found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top:12px; display:flex; justify-content:flex-end;">{{ $eventsList->links() }}</div>
+                </div>
             </div>
         </div>
     </div>

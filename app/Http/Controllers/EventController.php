@@ -22,13 +22,21 @@ class EventController extends Controller
         $end = (clone $start)->endOfMonth();
 
         $events = collect();
+        $eventsList = collect();
+
         if (\Illuminate\Support\Facades\Schema::hasTable('events')) {
             $events = Event::whereBetween('start_at', [$start->toDateTimeString(), $end->toDateTimeString()])
                 ->orderBy('start_at')
                 ->get();
+
+            // provide a paginated event list view for manager with creators
+            $eventsList = Event::with('creator')
+                ->orderBy('start_at', 'desc')
+                ->paginate(15)
+                ->withQueryString();
         }
 
-        return view('dashboard.manager.calendar', compact('events', 'start', 'end', 'month'));
+        return view('dashboard.manager.calendar', compact('events', 'eventsList', 'start', 'end', 'month'));
     }
 
     public function create()
