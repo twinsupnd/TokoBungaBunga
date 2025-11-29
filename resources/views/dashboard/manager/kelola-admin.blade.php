@@ -32,12 +32,7 @@
                 @endforeach
             </select>
 
-            <select name="plan" style="padding:10px;border-radius:8px;border:1px solid #e6e7ea; min-width:150px;">
-                <option value="">Select Plan</option>
-                <option value="enterprise" {{ request('plan')==='enterprise' ? 'selected' : '' }}>Enterprise</option>
-                <option value="team" {{ request('plan')==='team' ? 'selected' : '' }}>Team</option>
-                <option value="basic" {{ request('plan')==='basic' ? 'selected' : '' }}>Basic</option>
-            </select>
+            {{-- plan selector removed (no Plan table) --}}
 
             <select name="status" style="padding:10px;border-radius:8px;border:1px solid #e6e7ea; min-width:140px;">
                 <option value="">Select Status</option>
@@ -78,7 +73,7 @@
                         <th style="padding:10px">User</th>
                         <th style="padding:10px">Email</th>
                         <th style="padding:10px">Role</th>
-                        <th style="padding:10px">Plan</th>
+                        {{-- Plan column removed --}}
                         <th style="padding:10px">Status</th>
                         <th style="padding:10px;text-align:right">Actions</th>
                     </tr>
@@ -113,12 +108,7 @@
                                     <span style="font-weight:700">{{ $roleLabel }}</span>
                                 </div>
                             </td>
-                            <td style="padding:10px;vertical-align:middle;">
-                                @php
-                                    $plan = $admin->role === 'admin' ? 'Enterprise' : ($admin->role === 'manager' ? 'Team' : '-');
-                                @endphp
-                                <span style="color:#374151">{{ $plan }}</span>
-                            </td>
+                            {{-- Plan column removed — kept table columns aligned --}}
                             <td style="padding:10px;vertical-align:middle;">
                                 @if($admin->email_verified_at)
                                     <span style="background:#dcfce7;color:#14532d;padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px;">Active</span>
