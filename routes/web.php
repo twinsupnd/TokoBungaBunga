@@ -21,9 +21,10 @@ Route::get('/model/{model}', [App\Http\Controllers\CategoryController::class, 's
 // ====================
 // Cart
 // ====================
-Route::get('/cart', function () {
-    return view('cart.cart');
-})->middleware(['auth', 'verified'])->name('cart');
+// Cart routes
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->middleware(['auth', 'verified'])->name('cart');
+Route::post('/cart/{cart}', [App\Http\Controllers\CartController::class, 'update'])->middleware(['auth', 'verified'])->name('cart.update');
+Route::delete('/cart/{cart}', [App\Http\Controllers\CartController::class, 'destroy'])->middleware(['auth', 'verified'])->name('cart.destroy');
 
 // ====================
 // Dashboard
