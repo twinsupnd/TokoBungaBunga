@@ -54,6 +54,7 @@ Route::get('/dashboard/analitik', [App\Http\Controllers\AnalyticsController::cla
 
 // Laporan (Reports) route
 Route::get('/dashboard/laporan', [App\Http\Controllers\ReportController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard.laporan');
+Route::post('/dashboard/laporan', [App\Http\Controllers\ReportController::class, 'store'])->middleware(['auth', 'verified'])->name('dashboard.laporan.store');
 Route::delete('/dashboard/laporan/{review}', [App\Http\Controllers\ReportController::class, 'destroy'])->middleware(['auth', 'verified'])->name('dashboard.laporan.destroy');
 
 // (calendar removed) — no dashboard/admin routes defined

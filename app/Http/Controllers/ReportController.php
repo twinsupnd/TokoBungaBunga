@@ -28,6 +28,24 @@ class ReportController extends Controller
     }
 
     /**
+     * Store a new review (from customer).
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'jenis_id' => 'required|exists:jenis,id',
+            'rating' => 'required|integer|between:1,5',
+            'comment' => 'required|string|min:3|max:1000',
+        ]);
+
+        $validated['user_id'] = Auth::id();
+
+        Review::create($validated);
+
+        return redirect()->back()->with('success', 'Terima kasih! Ulasan Anda telah diterima.');
+    }
+
+    /**
      * Delete a review.
      */
     public function destroy(Review $review): RedirectResponse
