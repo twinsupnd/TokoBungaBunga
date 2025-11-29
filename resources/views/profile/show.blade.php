@@ -7,7 +7,7 @@
     <title>{{ config('app.name') }} - Profil</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&family=playfair-display:700&family=quicksand:300,400,500,600,700&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/profile.css', 'resources/js/app.js'])
 </head>
 <body>
     <nav class="navbar">
@@ -15,7 +15,7 @@
         <div class="navbar-nav">
             <a href="/">🏠 Home</a>
             <a href="{{ route('profile.show') }}">👤 Profil</a>
-            <a href="{{ route('cart.index') }}">🛍️ Keranjang</a>
+            <a href="/cart">🛍️ Keranjang</a>
         </div>
     </nav>
 
