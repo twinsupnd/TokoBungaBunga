@@ -10,8 +10,15 @@
         <li><a href="{{ route('dashboard.analytics') }}" class="{{ request()->routeIs('dashboard.analytics') ? 'active' : '' }}">Analitik Keuangan</a></li>
         <li><a href="/dashboard/admin" class="{{ request()->is('dashboard/admin') ? 'active' : '' }}">Data Admin</a></li>
         @if(auth()->check() && in_array(auth()->user()->role, ['admin','manager']))
-            <li><a href="{{ route('dashboard.jenis.index') }}" class="{{ request()->is('dashboard/jenis*') ? 'active' : '' }}">Kelola Produk</a></li>
+            <li>
+                <a href="{{ route('dashboard.jenis.index') }}"
+                   class="{{ request()->is('dashboard/jenis*') ? 'active' : '' }}">
+                    Kelola Produk
+                </a>
+            </li>
         @endif
+
+        {{-- PANEL MANAGER --}}
         @if(auth()->check() && auth()->user()->role === 'manager')
             <li><a href="{{ route('manager.dashboard') }}" class="{{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">Panel Manager</a></li>
             <li><a href="/dashboard/manage-admins" class="{{ request()->is('dashboard/manage-admins') ? 'active' : '' }}">Kelola Admin</a></li>

@@ -368,23 +368,78 @@
 <div class="chart-container">
     <h3 class="chart-title">Penjualan Harian (Minggu Ini)</h3>
     <div class="chart-wrapper">
-        <div class="bar-chart">
-            @php
-                $maxSales = max(array_column($financialData['dailySales'], 'amount'));
-            @endphp
-            @foreach($financialData['dailySales'] as $day)
-                @php
-                    $height = ($day['amount'] / $maxSales) * 100;
-                @endphp
-                <div class="bar">
-                    <div class="bar-value">Rp {{ number_format($day['amount'] / 1000000, 1) }}M</div>
-                    <div class="bar-column" style="height: {{ $height }}%;"></div>
-                    <div class="bar-label">{{ $day['day'] }}</div>
-                </div>
-            @endforeach
+            <div style="width:100%;">
+            <canvas id="dailySalesChart" aria-label="Grafik penjualan harian" role="img" style="display:block; width:100%; height:260px;"></canvas>
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <!-- Chart.js via CDN (lightweight & widely used) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+    <script>
+        (function () {
+            // Prepare data from server-rendered PHP variable
+            const daily = @json($financialData['dailySales']);
+
+            const labels = daily.map(d => d.day);
+            const values = daily.map(d => Math.round(d.amount / 1000)); // use in thousands for readable axis
+
+            const ctx = document.getElementById('dailySalesChart');
+            if (!ctx) return;
+
+            // Responsive chart: determine locale currency formatting
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-light') || '#6b7280' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(val){
+                                // Tick label converting back to full currency
+                                return 'Rp ' + (val * 1000).toLocaleString('id-ID');
+                            },
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-light') || '#6b7280'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx){
+                                const n = ctx.parsed.y * 1000; // reverse the /1000
+                                return 'Rp ' + n.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Destroy existing if any (hot-reload safe)
+            if (ctx._chart) ctx._chart.destroy();
+
+            ctx._chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: '#ec4899',
+                        borderRadius: 6,
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: options
+            });
+        })();
+    </script>
+@endpush
 
 <!-- Top Products Table -->
 <div class="table-container">
