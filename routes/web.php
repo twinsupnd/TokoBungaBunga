@@ -66,10 +66,28 @@ Route::get('/manager', function () {
 })->middleware(['auth', 'verified'])->name('manager.dashboard');
 
 // ====================
-// Kelola Admin (Manager Only) — FIXED
+// Kelola Admin (Manager Only)
 // ====================
 Route::middleware(['auth', 'verified', 'role:manager'])->group(function () {
-    // Manager-specific routes go here
+    Route::prefix('manager/kelola-admin')->name('manager.kelola.')->group(function () {
+        // GET /manager/kelola-admin
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+
+        // GET /manager/kelola-admin/create
+        Route::get('/create', [AdminController::class, 'create'])->name('create');
+
+        // POST /manager/kelola-admin
+        Route::post('/', [AdminController::class, 'store'])->name('store');
+
+        // GET /manager/kelola-admin/{admin}/edit
+        Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('edit');
+
+        // PUT/PATCH /manager/kelola-admin/{admin}
+        Route::put('/{admin}', [AdminController::class, 'update'])->name('update');
+
+        // DELETE /manager/kelola-admin/{admin}
+        Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('destroy');
+    });
 });
 
 // ====================

@@ -13,47 +13,67 @@ class AdminController extends Controller
 	/**
 	 * Display a listing of admins.
 	 */
-	public function index(): RedirectResponse
+	public function index(): View
 	{
-		return redirect()->route('dashboard')->with('info', 'Fitur pengelolaan admin dinonaktifkan.');
+		// List all admin users (role = admin) for management
+		$admins = User::where('role', 'admin')->orderBy('created_at', 'desc')->get();
+		return view('dashboard.manager.kelola-admin', compact('admins'));
 	}
 
 	/**
 	 * Show the form for creating a new admin.
 	 */
-	public function create(): RedirectResponse
+	public function create(): View
 	{
-		return redirect()->route('dashboard')->with('info', 'Fitur pembuatan admin dinonaktifkan.');
+		return view('dashboard.manager.create-admin');
 	}
 
 	/**
 	 * Store a newly created admin in database.
 	 */
-	public function store(Request $request): RedirectResponse
+	public function store(\App\Http\Requests\StoreAdminRequest $request): RedirectResponse
 	{
-		return redirect()->route('dashboard')->with('info', 'Fitur pembuatan admin dinonaktifkan.');
+		$data = $request->validated();
+		$data['role'] = 'admin';
+
+		// Hash password explicitly for clarity
+		$data['password'] = Hash::make($data['password']);
+
+		$admin = User::create($data + ['promoted_to_admin_at' => now()]);
+
+		return redirect()->route('manager.kelola.index')->with('success', "Admin {$admin->name} berhasil dibuat.");
 	}
 
 	/**
 	 * Show the form for editing an admin.
 	 */
-	public function edit(User $admin): RedirectResponse
+	public function edit(User $admin): View
 	{
 		if (!in_array($admin->role, ['admin', 'manager'])) {
 			abort(403, 'User bukan admin atau manager');
 		}
-		return redirect()->route('dashboard')->with('info', 'Fitur pengubahan admin dinonaktifkan.');
+		return view('dashboard.manager.edit-admin', ['user' => $admin]);
 	}
 
 	/**
 	 * Update the specified admin in database.
 	 */
-	public function update(Request $request, User $admin): RedirectResponse
+	public function update(\App\Http\Requests\UpdateAdminRequest $request, User $admin): RedirectResponse
 	{
 		if (!in_array($admin->role, ['admin', 'manager'])) {
 			abort(403, 'User bukan admin atau manager');
 		}
-		return redirect()->route('dashboard')->with('info', 'Fitur pengubahan admin dinonaktifkan.');
+		$data = $request->validated();
+
+		if (!empty($data['password'] ?? null)) {
+			$data['password'] = Hash::make($data['password']);
+		} else {
+			unset($data['password']);
+		}
+
+		$admin->update($data);
+
+		return redirect()->route('manager.kelola.index')->with('success', "Admin {$admin->name} berhasil diperbarui.");
 	}
 
 	/**
@@ -64,6 +84,19 @@ class AdminController extends Controller
 		if (!in_array($admin->role, ['admin', 'manager'])) {
 			abort(403, 'User bukan admin atau manager');
 		}
-		return redirect()->route('dashboard')->with('info', 'Fitur penghapusan admin dinonaktifkan.');
+		// Prevent deleting last remaining admin
+		$totalAdmins = User::where('role', 'admin')->count();
+		if ($totalAdmins <= 1 && $admin->role === 'admin') {
+			return back()->with('error', 'Tidak dapat menghapus admin terakhir.');
+		}
+
+		// Prevent deleting account in use by the authenticated user
+		if (auth()->check() && auth()->id() === $admin->id) {
+			return back()->with('error', 'Tidak dapat menghapus akun yang sedang digunakan.');
+		}
+
+		$admin->delete();
+
+		return redirect()->route('manager.kelola.index')->with('success', "Admin {$admin->name} berhasil dihapus.");
 	}
 }
