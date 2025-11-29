@@ -1,5 +1,34 @@
 ﻿/* Profile CSS - Clean styling without duplicates */
 
+:root {
+    /* Fallbacks / sensible defaults (will not override project-level variables) */
+    --profile-radius: 20px;
+    --profile-shadow: 0 10px 35px rgba(237, 56, 120, 0.1);
+    --btn-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --transition-fast: 180ms;
+    --transition-medium: 260ms;
+    --color-accent-strong: var(--color-accent-strong, #ed3878);
+    --color-pastel-bliss-1: var(--color-pastel-bliss-1, #fce9ef);
+    --color-pastel-bliss-2: var(--color-pastel-bliss-2, #ffd6df);
+    --color-pastel-bliss-5: var(--color-pastel-bliss-5, #f8cbd8);
+    --color-button-primary: var(--color-button-primary, #7a5a3c);
+    --color-text-dark: var(--color-text-dark, #222);
+    --color-text-light: var(--color-text-light, #7a7a7a);
+}
+
+/* Accessibility helpers */
+.sr-only {
+    position: absolute !important;
+    height: 1px; width: 1px;
+    overflow: hidden; clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap; border: 0; padding: 0; margin: -1px;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+}
+
 .navbar {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -8,7 +37,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 15px rgba(237, 56, 120, 0.1);
+    box-shadow: 0 2px 15px rgba(237, 56, 120, 0.08);
+    backdrop-filter: blur(6px);
     z-index: 1000;
 }
 
@@ -44,7 +74,7 @@
     background: rgba(255, 255, 255, 0.8);
     color: var(--color-text-dark);
     border: 2px solid var(--color-pastel-bliss-2);
-    border-radius: 25px;
+    border-radius: 24px;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s;
@@ -60,10 +90,10 @@
     padding: 60px 50px;
     text-align: center;
     color: white;
-    border-radius: 20px;
+    border-radius: var(--profile-radius);
     margin: 30px auto;
     max-width: 900px;
-    box-shadow: 0 15px 40px rgba(237, 56, 120, 0.2);
+    box-shadow: 0 15px 40px rgba(237, 56, 120, 0.18);
 }
 
 .profile-header h1 {
@@ -81,9 +111,10 @@
 
 .profile-card {
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 35px rgba(237, 56, 120, 0.1);
+    border-radius: var(--profile-radius);
+    box-shadow: var(--profile-shadow);
     padding: 45px;
+    transition: transform var(--transition-medium), box-shadow var(--transition-medium);
 }
 
 .profile-photo-wrapper {
@@ -94,12 +125,15 @@
 }
 
 .profile-photo {
-    width: 160px;
-    height: 160px;
+    width: 100%;
+    height: 100%;
+    max-width: 160px;
+    max-height: 160px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border: 5px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .upload-photo-btn {
@@ -116,7 +150,7 @@
     justify-content: center;
     font-size: 24px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s;
+    transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .upload-photo-btn:hover {
@@ -143,9 +177,12 @@
 .info-row {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 12px;
     padding: 15px 0;
     border-bottom: 1px solid #f0f0f0;
-    transition: all 0.3s;
+    transition: background var(--transition-fast), padding var(--transition-fast);
+    flex-wrap: wrap;
 }
 
 .info-row:hover {
@@ -167,6 +204,12 @@
     text-align: right;
 }
 
+/* Layout tweak: label/value widths for medium and small screens */
+@media (max-width: 480px) {
+    .info-label, .info-value { width: 100%; text-align: left; }
+    .info-row { padding-left: 4px; padding-right: 4px; }
+}
+
 .profile-actions {
     display: flex;
     gap: 15px;
@@ -182,9 +225,16 @@
     cursor: pointer;
     text-decoration: none;
     text-align: center;
-    transition: all 0.3s;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
     font-size: 13px;
 }
+
+.btn:focus {
+    box-shadow: 0 0 0 4px rgba(237,56,120,0.12);
+    outline: none;
+}
+
+.btn:active { transform: translateY(1px) scale(0.998); }
 
 .btn-edit {
     background: var(--color-button-primary);
@@ -193,7 +243,7 @@
 
 .btn-edit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(178, 150, 125, 0.3);
+    box-shadow: var(--btn-shadow);
 }
 
 .btn-logout {
@@ -203,7 +253,7 @@
 
 .btn-logout:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(237, 56, 120, 0.3);
+    box-shadow: var(--btn-shadow);
 }
 
 .btn-primary {
@@ -269,13 +319,16 @@
     border-radius: 8px;
     font-size: 14px;
     font-family: var(--font-body);
-    transition: border 0.3s;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--color-accent-strong);
+    box-shadow: 0 6px 20px rgba(122, 90, 60, 0.06);
 }
+
+.form-input::placeholder { color: #bdbdbd; }
 
 .form-input:disabled {
     background-color: #f5f5f5;
@@ -307,4 +360,6 @@
     .profile-card { padding: 25px; }
     .profile-actions, .form-actions { flex-direction: column; }
     .btn { width: 100%; }
+    .profile-photo-wrapper { width: 120px; height: 120px; }
+    .profile-photo { max-width: 120px; max-height: 120px; }
 }
