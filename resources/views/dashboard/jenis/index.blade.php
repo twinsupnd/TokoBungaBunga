@@ -113,7 +113,7 @@
                         @foreach($items as $item)
                             <tr>
                                 <td><strong>{{ $item->name }}</strong></td>
-                                <td style="color: var(--pastel-accent); font-weight: 600;">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                                <td style="color: var(--pastel-accent); font-weight: 600;">Rp {{ number_format((float) $item->price, 0, ',', '.') }}</td>
                                 <td>
                                     <div class="action-cell">
                                         <a href="{{ route('dashboard.jenis.show', $item->id) }}" class="action-link link-view">👁 Lihat</a>
