@@ -11,6 +11,59 @@ use Illuminate\Http\RedirectResponse;
 class AdminController extends Controller
 {
 	/**
+	 * Export the current admin listing as CSV (spreadsheet-like) using active filters.
+	 */
+	public function export(\Illuminate\Http\Request $request)
+	{
+		// Build the same query as index to respect filters
+		$query = User::query();
+
+		if ($request->filled('role')) {
+			$query->where('role', $request->input('role'));
+		} else {
+			$query->where('role', 'admin');
+		}
+
+		if ($request->filled('status')) {
+			if ($request->input('status') === 'active') {
+				$query->whereNotNull('email_verified_at');
+			} elseif ($request->input('status') === 'inactive') {
+				$query->whereNull('email_verified_at');
+			}
+		}
+
+		if ($request->filled('q')) {
+			$q = $request->input('q');
+			$query->where(function ($qbuilder) use ($q) {
+				$qbuilder->where('name', 'like', "%{$q}%")
+					->orWhere('email', 'like', "%{$q}%");
+			});
+		}
+
+		$users = $query->orderBy('created_at', 'desc')->get();
+
+		$filename = 'admins-export-' . now()->format('Y-m-d_His') . '.csv';
+
+		return response()->streamDownload(function () use ($users) {
+			$handle = fopen('php://output', 'w');
+			// CSV header
+			fputcsv($handle, ['Name', 'Email', 'Role', 'Status', 'Created At']);
+			foreach ($users as $u) {
+				fputcsv($handle, [
+					$u->name,
+					$u->email,
+					$u->role,
+					$u->email_verified_at ? 'Active' : 'Inactive',
+					$u->created_at ? $u->created_at->toDateTimeString() : '',
+				]);
+			}
+			fclose($handle);
+		}, $filename, [
+			'Content-Type' => 'text/csv; charset=utf-8',
+			'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+		]);
+	}
+
 	 * Display a listing of admins.
 	 */
 	public function index(\Illuminate\Http\Request $request): View

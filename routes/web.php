@@ -78,6 +78,9 @@ Route::middleware(['auth', 'verified', 'role:manager'])->group(function () {
         // GET /manager/kelola-admin/create
         Route::get('/create', [AdminController::class, 'create'])->name('create');
 
+        // GET /manager/kelola-admin/export
+        Route::get('/export', [AdminController::class, 'export'])->name('export');
+
         // POST /manager/kelola-admin
         Route::post('/', [AdminController::class, 'store'])->name('store');
 

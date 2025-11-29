@@ -47,10 +47,10 @@
 
         <div style="display:flex; gap:10px; align-items:center;">
             <div style="display:flex; gap:8px; align-items:center;">
-                <button style="display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:8px;border:1px solid #e6e7ea; background:#fff;"> 
+                <a href="{{ route('manager.kelola.export') }}{{ request()->getQueryString() ? ('?' . request()->getQueryString()) : '' }}" style="display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:8px;border:1px solid #e6e7ea; background:#fff; text-decoration:none; color:inherit;"> 
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 10l5 5 5-5" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Export
-                </button>
+                </a>
             </div>
 
             <form method="GET" action="{{ route('manager.kelola.index') }}" style="display:inline-block;">
