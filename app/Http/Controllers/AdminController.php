@@ -126,7 +126,18 @@ class AdminController extends Controller
 		// Hash password explicitly for clarity
 		$data['password'] = Hash::make($data['password']);
 
+		// handle status: if provided, set email_verified_at accordingly after create
+		$status = $data['status'] ?? 'active';
+		unset($data['status']);
+
 		$admin = User::create($data + ['promoted_to_admin_at' => now()]);
+
+		if ($status === 'active') {
+			$admin->email_verified_at = $admin->email_verified_at ?? now();
+		} else {
+			$admin->email_verified_at = null;
+		}
+		$admin->save();
 
 		return redirect()->route('manager.kelola.index')->with('success', "Admin {$admin->name} berhasil dibuat.");
 	}
