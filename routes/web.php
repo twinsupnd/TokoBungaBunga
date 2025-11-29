@@ -31,6 +31,13 @@ Route::get('/dashboard/profil', [ProfileController::class, 'show'])->middleware(
 // Analytics route
 Route::get('/dashboard/analitik', [App\Http\Controllers\AnalyticsController::class, 'financialAnalytics'])->middleware(['auth', 'verified'])->name('dashboard.analytics');
 
+// Reports/Reviews route
+Route::get('/dashboard/laporan', [App\Http\Controllers\ReportController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard.laporan');
+Route::delete('/dashboard/laporan/{review}', [App\Http\Controllers\ReportController::class, 'destroy'])->middleware(['auth', 'verified'])->name('dashboard.laporan.destroy');
+
+// Admin CRUD routes removed: admins are not allowed to manage other admins in this application.
+// If you need to re-enable admin management, restore the routes and corresponding controller/views.
+
 // Manager dashboard (only accessible to manager role)
 Route::get('/manager', function () {
     if (! Auth::check() || Auth::user()->role !== 'manager') {
