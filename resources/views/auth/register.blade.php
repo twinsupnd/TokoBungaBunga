@@ -28,10 +28,9 @@
     </div>
 
     <div class="form-group">
-        <label for="signup-role">Role</label>
+        <label for="signup-role">Role (Opsi, default: Customer)</label>
         <select id="signup-role" name="role" class="form-input">
-            <option value="">Select your role</option>
-            <option value="user">User</option>
+            <option value="customer" selected>Customer</option>
             <option value="admin">Admin</option>
             <option value="manager">Manager</option>
         </select>
