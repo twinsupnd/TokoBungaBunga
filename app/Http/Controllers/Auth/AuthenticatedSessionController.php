@@ -28,8 +28,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Use Fortify 'home' config as the post-login fallback (supports intended())
+        // Role-based redirect: admin & manager -> dashboard, others -> Fortify home
         $fallback = config('fortify.home', '/');
+        $user = $request->user();
+
+        if ($user && isset($user->role) && in_array($user->role, ['admin', 'manager'], true)) {
+            return redirect()->intended(route('dashboard'));
+        }
+
         return redirect()->intended($fallback);
     }
 

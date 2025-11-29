@@ -1,3 +1,6 @@
+@import './product-detail.css';
+@import './dashboard.css';
+
 /* Variabel CSS untuk Palet Warna "Pastel Bliss" */
 :root {
     --color-pastel-bliss-1: #FFB5A7; /* Primer Pink */

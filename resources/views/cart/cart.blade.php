@@ -425,8 +425,13 @@
             
             // PENTING: Update Cart Count di Header! (Perbaikan)
             const cartCountElement = document.getElementById('cart-count');
+            const cartBadgeElement = document.getElementById('cart-count-badge');
+            const totalQuantity = cartData.items.reduce((sum, item) => sum + item.quantity, 0);
             if (cartCountElement) {
                 cartCountElement.textContent = cartData.items.length;
+            }
+            if (cartBadgeElement) {
+                cartBadgeElement.textContent = totalQuantity;
             }
             
             // Tampilkan/Sembunyikan summary
@@ -448,28 +453,7 @@
 </head>
 <body class="min-h-screen">
 
-    <header class="header container mx-auto px-4 max-w-7xl">
-        <a href="#" class="logo-container">
-            <div class="text-2xl font-bold title-display text-accent-strong">Whispering Flora</div>
-        </a>
-        
-        <nav class="hidden md:flex space-x-8 text-sm font-medium">
-            <a href="#" class="header-nav-link">KATALOG</a>
-            <a href="#" class="header-nav-link">TENTANG KAMI</a>
-            <a href="#" class="header-nav-link">HUBUNGI KAMI</a>
-        </nav>
-
-        <div class="flex items-center space-x-6">
-            <i data-lucide="heart" class="w-5 h-5 text-text-light cursor-pointer hover:text-accent-strong"></i>
-            <i data-lucide="user" class="w-5 h-5 text-text-light cursor-pointer hover:text-accent-strong"></i>
-            <div class="relative">
-                <i data-lucide="shopping-bag" class="w-5 h-5 text-text-dark cursor-pointer"></i>
-                <span id="cart-count" class="absolute -top-3 -right-3 text-xs bg-accent-strong text-white rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                    0 
-                </span>
-            </div>
-        </div>
-    </header>
+    @include('components.header')
 
 
     <div class="container mx-auto px-4 py-8 max-w-7xl">

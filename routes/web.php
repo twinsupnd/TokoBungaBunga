@@ -1,5 +1,3 @@
-// File: routes/web.php
-
 <?php
 
 use App\Http\Controllers\ProfileController;
@@ -13,12 +11,30 @@ Route::get('/jenis/{jenis:slug}', [JenisController::class, 'show'])->name('jenis
 
 // Cart route
 Route::get('/cart', function () {
-    return view('auth.cart');
+    return view('cart.cart');
 })->middleware(['auth', 'verified'])->name('cart');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('dashboard.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Admin/manager routes to manage Jenis (products)
+Route::prefix('dashboard/jenis')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/', [App\Http\Controllers\JenisController::class, 'index'])->name('dashboard.jenis.index');
+    Route::post('/', [App\Http\Controllers\JenisController::class, 'store'])->name('dashboard.jenis.store');
+    Route::get('/{id}', [App\Http\Controllers\JenisController::class, 'adminShow'])->name('dashboard.jenis.show');
+});
+
+// Manager dashboard (only accessible to manager role)
+Route::get('/manager', function () {
+    if (! Auth::check() || Auth::user()->role !== 'manager') {
+        abort(403);
+    }
+
+    // Load admin users for manager to manage
+    $admins = App\Models\User::where('role', 'admin')->get();
+    return view('dashboard.manager', compact('admins'));
+})->middleware(['auth', 'verified'])->name('manager.dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

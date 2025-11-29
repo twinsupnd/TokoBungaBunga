@@ -11,7 +11,9 @@ class StoreJenisRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // Only allow authenticated admins or managers to create products
+        $user = $this->user();
+        return $user && in_array($user->role, ['admin', 'manager'], true);
     }
 
     /**
@@ -22,7 +24,10 @@ class StoreJenisRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'price' => ['nullable', 'string', 'max:100'],
+            'description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:2048'],
         ];
     }
 }
