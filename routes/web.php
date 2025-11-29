@@ -88,6 +88,16 @@ Route::middleware(['auth', 'verified', 'role:manager'])->group(function () {
         // DELETE /manager/kelola-admin/{admin}
         Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('destroy');
     });
+
+    // Backwards-compatible routes that used the old URL structure
+    Route::prefix('dashboard/manage-admins')->name('dashboard.manage-admins.')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::get('/create', [AdminController::class, 'create'])->name('create');
+        Route::post('/', [AdminController::class, 'store'])->name('store');
+        Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('edit');
+        Route::put('/{admin}', [AdminController::class, 'update'])->name('update');
+        Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('destroy');
+    });
 });
 
 // ====================
