@@ -13,11 +13,44 @@ class AdminController extends Controller
 	/**
 	 * Display a listing of admins.
 	 */
-	public function index(): View
+	public function index(\Illuminate\Http\Request $request): View
 	{
-		// List all admin users (role = admin) for management
-		$admins = User::where('role', 'admin')->orderBy('created_at', 'desc')->get();
-		return view('dashboard.manager.kelola-admin', compact('admins'));
+		// List users from users table for management. Support filters and search.
+		$query = User::query();
+
+		// Only treat 'admin' role listing by default, but allow filtering by role param
+		if ($request->filled('role')) {
+			$query->where('role', $request->input('role'));
+		} else {
+			// Default to showing admin accounts only on this page
+			$query->where('role', 'admin');
+		}
+
+		// Status filter: active = email_verified_at not null, inactive = null
+		if ($request->filled('status')) {
+			if ($request->input('status') === 'active') {
+				$query->whereNotNull('email_verified_at');
+			} elseif ($request->input('status') === 'inactive') {
+				$query->whereNull('email_verified_at');
+			}
+		}
+
+		// Simple search across name and email
+		if ($request->filled('q')) {
+			$q = $request->input('q');
+			$query->where(function ($qbuilder) use ($q) {
+				$qbuilder->where('name', 'like', "%{$q}%")
+					->orWhere('email', 'like', "%{$q}%");
+			});
+		}
+
+		// Order and pagination
+		$admins = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+
+		// Provide available roles for filters
+		$roles = User::select('role')->distinct()->pluck('role')->filter()->values();
+
+		return view('dashboard.manager.kelola-admin', compact('admins', 'roles'));
 	}
 
 	/**
