@@ -12,12 +12,19 @@
         </li>
     @endif
 
-    {{-- PANEL MANAGER --}}
-    @if(auth()->check() && auth()->user()->role === 'manager')
-        <li><a href="{{ route('manager.dashboard') }}" class="{{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">Panel Manager</a></li>
-    @endif
+        {{-- PANEL MANAGER --}}
+        @if(auth()->check() && auth()->user()->role === 'manager')
+            <li><a href="{{ route('manager.dashboard') }}" class="{{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">Panel Manager</a></li>
+            <li><a href="/dashboard/manage-admins" class="{{ request()->is('dashboard/manage-admins') ? 'active' : '' }}">Kelola Admin</a></li>
+        @endif
+        <li><a href="/dashboard/laporan" class="{{ request()->is('dashboard/laporan') ? 'active' : '' }}">Laporan</a></li>
+    </ul>
 
-    @if(auth()->check() && in_array(auth()->user()->role, ['admin','manager']))
-        <li><a href="{{ route('dashboard.laporan') }}" class="{{ request()->routeIs('dashboard.laporan') ? 'active' : '' }}">Laporan</a></li>
-    @endif
-</ul>
+    <div class="sidebar-bottom">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+</div>

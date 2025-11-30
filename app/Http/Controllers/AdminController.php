@@ -11,13 +11,100 @@ use Illuminate\Http\RedirectResponse;
 class AdminController extends Controller
 {
 	/**
+	 * Export the current admin listing as CSV (spreadsheet-like) using active filters.
+	 */
+	public function export(\Illuminate\Http\Request $request)
+	{
+		// Build the same query as index to respect filters
+		$query = User::query();
+
+		if ($request->filled('role')) {
+			$query->where('role', $request->input('role'));
+		} else {
+			$query->where('role', 'admin');
+		}
+
+		if ($request->filled('status')) {
+			if ($request->input('status') === 'active') {
+				$query->whereNotNull('email_verified_at');
+			} elseif ($request->input('status') === 'inactive') {
+				$query->whereNull('email_verified_at');
+			}
+		}
+
+		if ($request->filled('q')) {
+			$q = $request->input('q');
+			$query->where(function ($qbuilder) use ($q) {
+				$qbuilder->where('name', 'like', "%{$q}%")
+					->orWhere('email', 'like', "%{$q}%");
+			});
+		}
+
+		$users = $query->orderBy('created_at', 'desc')->get();
+
+		$filename = 'admins-export-' . now()->format('Y-m-d_His') . '.csv';
+
+		return response()->streamDownload(function () use ($users) {
+			$handle = fopen('php://output', 'w');
+			// CSV header
+			fputcsv($handle, ['Name', 'Email', 'Role', 'Status', 'Created At']);
+			foreach ($users as $u) {
+				fputcsv($handle, [
+					$u->name,
+					$u->email,
+					$u->role,
+					$u->email_verified_at ? 'Active' : 'Inactive',
+					$u->created_at ? $u->created_at->toDateTimeString() : '',
+				]);
+			}
+			fclose($handle);
+		}, $filename, [
+			'Content-Type' => 'text/csv; charset=utf-8',
+			'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+		]);
+	}
+
+	/**
 	 * Display a listing of admins.
 	 */
-	public function index(): View
+	public function index(\Illuminate\Http\Request $request): View
 	{
-		// List all admin users (role = admin) for management
-		$admins = User::where('role', 'admin')->orderBy('created_at', 'desc')->get();
-		return view('dashboard.manager.kelola-admin', compact('admins'));
+		// List users from users table for management. Support filters and search.
+		$query = User::query();
+
+		// Only treat 'admin' role listing by default, but allow filtering by role param
+		if ($request->filled('role')) {
+			$query->where('role', $request->input('role'));
+		} else {
+			// Default to showing admin accounts only on this page
+			$query->where('role', 'admin');
+		}
+
+		// Status filter: active = email_verified_at not null, inactive = null
+		if ($request->filled('status')) {
+			if ($request->input('status') === 'active') {
+				$query->whereNotNull('email_verified_at');
+			} elseif ($request->input('status') === 'inactive') {
+				$query->whereNull('email_verified_at');
+			}
+		}
+
+		// Simple search across name and email
+		if ($request->filled('q')) {
+			$q = $request->input('q');
+			$query->where(function ($qbuilder) use ($q) {
+				$qbuilder->where('name', 'like', "%{$q}%")
+					->orWhere('email', 'like', "%{$q}%");
+			});
+		}
+
+		// Order and pagination
+		$admins = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+
+		// Provide available roles for filters
+		$roles = User::select('role')->distinct()->pluck('role')->filter()->values();
+
+		return view('dashboard.manager.kelola-admin', compact('admins', 'roles'));
 	}
 
 	/**
@@ -39,7 +126,18 @@ class AdminController extends Controller
 		// Hash password explicitly for clarity
 		$data['password'] = Hash::make($data['password']);
 
+		// handle status: if provided, set email_verified_at accordingly after create
+		$status = $data['status'] ?? 'active';
+		unset($data['status']);
+
 		$admin = User::create($data + ['promoted_to_admin_at' => now()]);
+
+		if ($status === 'active') {
+			$admin->email_verified_at = $admin->email_verified_at ?? now();
+		} else {
+			$admin->email_verified_at = null;
+		}
+		$admin->save();
 
 		return redirect()->route('manager.kelola.index')->with('success', "Admin {$admin->name} berhasil dibuat.");
 	}
@@ -69,6 +167,17 @@ class AdminController extends Controller
 			$data['password'] = Hash::make($data['password']);
 		} else {
 			unset($data['password']);
+		}
+
+		// Handle status update (active/inactive) — active sets email_verified_at, inactive clears it
+		if (array_key_exists('status', $data)) {
+			if ($data['status'] === 'active') {
+				$data['email_verified_at'] = $admin->email_verified_at ?? now();
+			} else {
+				// explicitly clear verification
+				$data['email_verified_at'] = null;
+			}
+			unset($data['status']);
 		}
 
 		$admin->update($data);
