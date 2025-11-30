@@ -59,8 +59,12 @@ class JenisController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
+            $dir = public_path('images');
+            if (! is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
             $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '_', $file->getClientOriginalName());
-            $file->move(public_path('images'), $filename);
+            $file->move($dir, $filename);
             $data['image'] = $filename;
         }
 
@@ -72,13 +76,13 @@ class JenisController extends Controller
     /**
      * Admin view for a single Jenis (product)
      */
-    public function adminShow($id)
+    public function adminShow(Jenis $jenis)
     {
         if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
             abort(403);
         }
-
-        $item = Jenis::findOrFail($id);
+        // adminShow now uses route-model-binding (Jenis resolved by slug)
+        $item = $jenis;
         return view('dashboard.jenis.show', compact('item'));
     }
 

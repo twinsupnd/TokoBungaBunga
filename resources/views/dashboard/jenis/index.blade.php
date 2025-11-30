@@ -118,9 +118,9 @@
                                 <td style="color: var(--pastel-accent); font-weight: 600;">Rp {{ number_format((float) $item->price, 0, ',', '.') }}</td>
                                 <td>
                                     <div class="action-cell">
-                                        <a href="{{ route('dashboard.jenis.show', $item->id) }}" class="action-link link-view">👁 Lihat</a>
-                                        <a href="{{ route('dashboard.jenis.edit', $item->id) }}" class="action-link link-edit">✏️ Edit</a>
-                                        <form action="{{ route('dashboard.jenis.destroy', $item->id) }}" method="POST" class="inline-form" onsubmit="return confirm('Yakin hapus produk ini?');">
+                                        <a href="{{ route('dashboard.jenis.show', $item->slug) }}" class="action-link link-view">👁 Lihat</a>
+                                        <a href="{{ route('dashboard.jenis.edit', $item->slug) }}" class="action-link link-edit">✏️ Edit</a>
+                                        <form action="{{ route('dashboard.jenis.destroy', $item->slug) }}" method="POST" class="inline-form" onsubmit="return confirm('Yakin hapus produk ini?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-link link-delete" style="border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">🗑️ Hapus</button>

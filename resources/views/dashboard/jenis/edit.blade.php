@@ -8,7 +8,7 @@
     </div>
 
     <div class="edit-form-container">
-        <form action="{{ route('dashboard.jenis.update', $jenis->id) }}" method="POST" enctype="multipart/form-data" class="form-card">
+        <form action="{{ route('dashboard.jenis.update', $jenis->slug) }}" method="POST" enctype="multipart/form-data" class="form-card">
             @csrf
             @method('PUT')
 
