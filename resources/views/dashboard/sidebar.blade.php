@@ -19,12 +19,3 @@
         @endif
         <li><a href="/dashboard/laporan" class="{{ request()->is('dashboard/laporan') ? 'active' : '' }}">Laporan</a></li>
     </ul>
-
-    <div class="sidebar-bottom">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button class="logout-btn">Logout</button>
-        </form>
-    </div>
-
-</div>
