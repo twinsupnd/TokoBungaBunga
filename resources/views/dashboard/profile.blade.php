@@ -22,8 +22,8 @@
     }
 
     .profile-header h1 {
-        font-size: 32px;
-        font-weight: 800;
+        font-size: 28px;
+        font-weight: 700;
         color: var(--text-dark);
         margin: 0 0 8px 0;
     }
@@ -36,27 +36,25 @@
 
     .profile-container {
         display: grid;
-        grid-template-columns: 300px 1fr;
-        gap: 32px;
+        grid-template-columns: 280px 1fr;
+        gap: 28px;
         margin-bottom: 40px;
     }
 
     .profile-sidebar {
-        background: var(--accent-light);
-        border-radius: 16px;
-        padding: 32px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border-light);
+        background: linear-gradient(135deg, #FFF8FB 0%, #FFFAFC 100%);
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(199,183,255,0.08);
+        border: 1px solid rgba(199,183,255,0.15);
         height: fit-content;
-        position: sticky;
-        top: 28px;
     }
 
     .profile-photo-wrapper {
         position: relative;
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 20px;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 18px;
     }
 
     .profile-photo {
@@ -64,109 +62,119 @@
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid var(--primary);
+        border: 3px solid #C7B7FF;
         box-shadow: 0 4px 12px rgba(199,183,255,0.2);
     }
 
     .upload-photo-btn {
         position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 40px;
-        height: 40px;
+        bottom: -2px;
+        right: -2px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border: 3px solid white;
+        background: linear-gradient(135deg, #C7B7FF, #FFD6E0);
+        border: 2px solid white;
         cursor: pointer;
-        font-size: 18px;
+        font-size: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(199,183,255,0.25);
+        box-shadow: 0 2px 8px rgba(199,183,255,0.25);
     }
 
     .upload-photo-btn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 16px rgba(199,183,255,0.3);
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(199,183,255,0.3);
     }
 
     .profile-name {
-        font-size: 20px;
-        font-weight: 800;
+        font-size: 18px;
+        font-weight: 700;
         color: var(--text-dark);
-        margin: 0 0 8px 0;
+        margin: 0 0 6px 0;
         text-align: center;
     }
 
     .profile-role {
-        display: inline-flex;
-        margin: 0 auto;
-        background: linear-gradient(135deg, rgba(199,183,255,0.15), rgba(255,214,224,0.15));
-        color: var(--primary);
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 12px;
+        display: flex;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(199,183,255,0.2), rgba(255,214,224,0.2));
+        color: #8B5A9E;
+        padding: 5px 14px;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 11px;
         text-transform: uppercase;
+        margin-bottom: 16px;
     }
 
     .profile-info-section {
-        margin-top: 24px;
-        padding-top: 24px;
-        border-top: 1px solid var(--border-light);
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(199,183,255,0.15);
     }
 
     .profile-info-item {
-        margin-bottom: 12px;
-        font-size: 13px;
+        margin-bottom: 14px;
+        font-size: 12px;
     }
 
     .profile-info-label {
-        color: var(--text-muted);
+        color: #8B5A9E;
         font-weight: 700;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
     }
 
     .profile-info-value {
         color: var(--text-dark);
-        margin-top: 4px;
-        word-break: break-all;
+        font-size: 13px;
+        word-break: break-word;
+        font-weight: 500;
     }
 
     .profile-main {
-        background: var(--accent-light);
-        border-radius: 16px;
-        padding: 32px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border-light);
+        background: white;
+        border-radius: 14px;
+        padding: 28px;
+        box-shadow: 0 4px 12px rgba(199,183,255,0.08);
+        border: 1px solid rgba(199,183,255,0.15);
     }
 
     .profile-main h2 {
         font-size: 20px;
-        font-weight: 800;
+        font-weight: 700;
         color: var(--text-dark);
-        margin: 0 0 24px 0;
+        margin: 0 0 28px 0;
+        padding-bottom: 16px;
+        border-bottom: 2px solid rgba(199,183,255,0.1);
     }
 
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 22px;
     }
 
     .form-group label {
         display: block;
-        font-weight: 700;
-        font-size: 14px;
+        font-weight: 600;
+        font-size: 13px;
         color: var(--text-dark);
-        margin-bottom: 10px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
     }
 
     .form-input,
     .form-select,
     .form-textarea {
         width: 100%;
-        padding: 12px 14px;
-        border: 1px solid rgba(199,183,255,0.2);
-        border-radius: 10px;
+        padding: 11px 13px;
+        border: 1.5px solid rgba(199,183,255,0.2);
+        border-radius: 9px;
         font-size: 14px;
         font-family: inherit;
         background: white;
@@ -175,30 +183,35 @@
         box-sizing: border-box;
     }
 
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+        color: #9D8FB0;
+    }
+
     .form-input:focus,
     .form-select:focus,
     .form-textarea:focus {
         outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(199,183,255,0.1);
-        background: #faf8ff;
+        border-color: #C7B7FF;
+        box-shadow: 0 0 0 3px rgba(199,183,255,0.12);
+        background: #FFFAFC;
     }
 
     .form-textarea {
         resize: vertical;
-        min-height: 100px;
+        min-height: 90px;
     }
 
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
+        gap: 18px;
     }
 
     .radio-group {
         display: flex;
-        gap: 20px;
-        margin-top: 10px;
+        gap: 22px;
+        margin-top: 8px;
     }
 
     .radio-label {
@@ -215,6 +228,7 @@
         cursor: pointer;
         width: 16px;
         height: 16px;
+        accent-color: #C7B7FF;
     }
 
     .btn-group {
@@ -222,68 +236,80 @@
         gap: 12px;
         margin-top: 28px;
         padding-top: 20px;
-        border-top: 1px solid var(--border-light);
+        border-top: 1px solid rgba(199,183,255,0.1);
     }
 
     .btn {
-        padding: 12px 24px;
+        padding: 11px 28px;
         border: none;
-        border-radius: 10px;
+        border-radius: 9px;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 13px;
         cursor: pointer;
         transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
     }
 
     .btn-save {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background: linear-gradient(135deg, #C7B7FF, #FFD6E0);
         color: white;
         flex: 1;
     }
 
     .btn-save:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(199,183,255,0.3);
+        box-shadow: 0 6px 16px rgba(199,183,255,0.35);
     }
 
     .btn-cancel {
         background: white;
-        color: var(--primary);
-        border: 2px solid var(--primary);
+        color: #C7B7FF;
+        border: 1.5px solid #C7B7FF;
         flex: 1;
     }
 
     .btn-cancel:hover {
-        background: rgba(199,183,255,0.05);
+        background: rgba(199,183,255,0.08);
     }
 
     .alert {
-        padding: 14px 18px;
-        border-radius: 10px;
+        padding: 14px 16px;
+        border-radius: 9px;
         margin-bottom: 24px;
-        border: 1px solid;
+        border-left: 4px solid;
+        font-size: 13px;
+        font-weight: 500;
     }
 
     .alert-success {
-        background: rgba(76,175,80,0.1);
-        border-color: rgba(76,175,80,0.3);
+        background: rgba(76,175,80,0.08);
+        border-left-color: #4CAF50;
         color: #2e7d32;
     }
 
     .alert-error {
-        background: rgba(255,107,107,0.1);
-        border-color: rgba(255,107,107,0.3);
-        color: #FF6B6B;
+        background: rgba(239,68,68,0.08);
+        border-left-color: #EF4444;
+        color: #B91C1C;
     }
 
     .error-message {
-        color: #FF6B6B;
-        font-size: 13px;
-        margin-top: 6px;
+        color: #DC2626;
+        font-size: 12px;
+        margin-top: 5px;
+        font-weight: 500;
     }
 
     .file-input {
         display: none;
+    }
+
+    .verified-badge {
+        color: #16A34A;
+        font-size: 12px;
+        margin-top: 5px;
+        font-weight: 600;
     }
 
     @media (max-width: 1024px) {
@@ -292,8 +318,18 @@
         }
 
         .profile-sidebar {
-            position: relative;
-            top: 0;
+            display: grid;
+            grid-template-columns: 100px auto 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .profile-photo-wrapper {
+            margin: 0;
+        }
+
+        .profile-name {
+            text-align: left;
         }
     }
 
@@ -304,6 +340,15 @@
 
         .btn-group {
             flex-direction: column;
+        }
+
+        .profile-sidebar {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .profile-name {
+            text-align: center;
         }
     }
 </style>
@@ -417,7 +462,7 @@
                 >
                 @error('email') <div class="error-message">{{ $message }}</div> @enderror
                 @if(auth()->user()->email_verified_at)
-                    <div style="color: #2e7d32; font-size: 13px; margin-top: 6px;">✓ Terverifikasi</div>
+                    <div class="verified-badge">✓ Terverifikasi</div>
                 @endif
             </div>
 
@@ -491,7 +536,7 @@
 
             <div class="btn-group">
                 <button type="submit" class="btn btn-save">Simpan Perubahan</button>
-                <a href="{{ route('dashboard.index') }}" class="btn btn-cancel" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">✕ Batal</a>
+                <a href="{{ route('dashboard.index') }}" class="btn btn-cancel" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">Batal</a>
             </div>
         </form>
     </div>
