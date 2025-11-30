@@ -8,7 +8,7 @@
             <a href="{{ route('dashboard.jenis.index') }}" class="{{ request()->is('dashboard/jenis*') ? 'active' : '' }}">Kelola Produk</a>
         </li>
         <li>
-            <a href="{{ route('dashboard.catalog') }}" class="{{ request()->routeIs('dashboard.catalog') ? 'active' : '' }}">📋 Lihat Katalog</a>
+            <a href="{{ route('dashboard.catalog') }}" class="{{ request()->routeIs('dashboard.catalog') ? 'active' : '' }}">Lihat Katalog</a>
         </li>
     @endif
 

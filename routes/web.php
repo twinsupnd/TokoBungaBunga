@@ -39,10 +39,11 @@ Route::get('/dashboard', function () {
 Route::prefix('dashboard/jenis')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [JenisController::class, 'index'])->name('dashboard.jenis.index');
     Route::post('/', [JenisController::class, 'store'])->name('dashboard.jenis.store');
-    Route::get('/{jenis}/edit', [JenisController::class, 'edit'])->name('dashboard.jenis.edit');
-    Route::put('/{jenis}', [JenisController::class, 'update'])->name('dashboard.jenis.update');
-    Route::delete('/{jenis}', [JenisController::class, 'destroy'])->name('dashboard.jenis.destroy');
-    Route::get('/{id}', [JenisController::class, 'adminShow'])->name('dashboard.jenis.show');
+    // use slug-based model binding for admin routes so IDs and public slugs are consistent
+    Route::get('/{jenis:slug}', [JenisController::class, 'adminShow'])->name('dashboard.jenis.show');
+    Route::get('/{jenis:slug}/edit', [JenisController::class, 'edit'])->name('dashboard.jenis.edit');
+    Route::put('/{jenis:slug}', [JenisController::class, 'update'])->name('dashboard.jenis.update');
+    Route::delete('/{jenis:slug}', [JenisController::class, 'destroy'])->name('dashboard.jenis.destroy');
 });
 
 // ====================

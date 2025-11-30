@@ -35,7 +35,7 @@
 <div class="dashboard-header">
     <div>
         <h1>Dashboard</h1>
-        <p>Ringkasan performa dan aktivitas.</p>
+        <p>Ringkasan Performa dan Aktivitas.</p>
     </div>
 
     <div class="user-info">
