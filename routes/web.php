@@ -39,6 +39,7 @@ Route::get('/tentang-kami', function () {
     return view('about.index');
 })->name('about.index');
 Route::get('/jenis/{jenis:slug}', [JenisController::class, 'show'])->name('jenis.show');
+Route::get('/katalog', [JenisController::class, 'publicCatalog'])->name('public.catalog');
 
 // Category routes
 Route::get('/bunga/{type}', [App\Http\Controllers\CategoryController::class, 'showFlowerType'])->name('category.flower-type');
@@ -47,9 +48,10 @@ Route::get('/model/{model}', [App\Http\Controllers\CategoryController::class, 's
 // ====================
 // Cart
 // ====================
-Route::get('/cart', function () {
-    return view('cart.cart');
-})->middleware(['auth', 'verified'])->name('cart');
+// Cart routes
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->middleware(['auth', 'verified'])->name('cart');
+Route::post('/cart/{cart}', [App\Http\Controllers\CartController::class, 'update'])->middleware(['auth', 'verified'])->name('cart.update');
+Route::delete('/cart/{cart}', [App\Http\Controllers\CartController::class, 'destroy'])->middleware(['auth', 'verified'])->name('cart.destroy');
 
 // ====================
 // Dashboard
@@ -64,8 +66,17 @@ Route::get('/dashboard', function () {
 Route::prefix('dashboard/jenis')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [JenisController::class, 'index'])->name('dashboard.jenis.index');
     Route::post('/', [JenisController::class, 'store'])->name('dashboard.jenis.store');
-    Route::get('/{id}', [JenisController::class, 'adminShow'])->name('dashboard.jenis.show');
+    // use slug-based model binding for admin routes so IDs and public slugs are consistent
+    Route::get('/{jenis:slug}', [JenisController::class, 'adminShow'])->name('dashboard.jenis.show');
+    Route::get('/{jenis:slug}/edit', [JenisController::class, 'edit'])->name('dashboard.jenis.edit');
+    Route::put('/{jenis:slug}', [JenisController::class, 'update'])->name('dashboard.jenis.update');
+    Route::delete('/{jenis:slug}', [JenisController::class, 'destroy'])->name('dashboard.jenis.destroy');
 });
+
+// ====================
+// Catalog Preview (Admin / Manager)
+// ====================
+Route::get('/dashboard/catalog', [JenisController::class, 'catalog'])->middleware(['auth', 'verified'])->name('dashboard.catalog');
 
 // ====================
 // Profil
@@ -76,6 +87,11 @@ Route::get('/dashboard/profil', [ProfileController::class, 'show'])
 
 // Analytics route
 Route::get('/dashboard/analitik', [App\Http\Controllers\AnalyticsController::class, 'financialAnalytics'])->middleware(['auth', 'verified'])->name('dashboard.analytics');
+
+// Laporan (Reports) route
+Route::get('/dashboard/laporan', [App\Http\Controllers\ReportController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard.laporan');
+Route::post('/dashboard/laporan', [App\Http\Controllers\ReportController::class, 'store'])->middleware(['auth', 'verified'])->name('dashboard.laporan.store');
+Route::delete('/dashboard/laporan/{review}', [App\Http\Controllers\ReportController::class, 'destroy'])->middleware(['auth', 'verified'])->name('dashboard.laporan.destroy');
 
 // (calendar removed) — no dashboard/admin routes defined
 

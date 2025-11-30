@@ -59,8 +59,12 @@ class JenisController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
+            $dir = public_path('images');
+            if (! is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
             $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '_', $file->getClientOriginalName());
-            $file->move(public_path('images'), $filename);
+            $file->move($dir, $filename);
             $data['image'] = $filename;
         }
 
@@ -72,13 +76,13 @@ class JenisController extends Controller
     /**
      * Admin view for a single Jenis (product)
      */
-    public function adminShow($id)
+    public function adminShow(Jenis $jenis)
     {
         if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
             abort(403);
         }
-
-        $item = Jenis::findOrFail($id);
+        // adminShow now uses route-model-binding (Jenis resolved by slug)
+        $item = $jenis;
         return view('dashboard.jenis.show', compact('item'));
     }
 
@@ -100,40 +104,15 @@ class JenisController extends Controller
     }
 
     /**
-     * Public catalog page (full listing with carousel UI)
-     */
-    public function catalog()
-    {
-        $products = Jenis::orderBy('id')->get();
-        return view('katalog.index', compact('products'));
-    }
-
-    /**
-     * Search listing for products (query param: q)
-     */
-    public function search(Request $request)
-    {
-        $q = trim($request->query('q', ''));
-
-        if ($q === '') {
-            $products = collect();
-        } else {
-            // basic search: name or description
-            $products = Jenis::where('name', 'LIKE', "%{$q}%")
-                ->orWhere('description', 'LIKE', "%{$q}%")
-                ->orderBy('id', 'desc')
-                ->get();
-        }
-
-        return view('search.results', compact('products', 'q'));
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Jenis $jenis)
     {
-        //
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
+        return view('dashboard.jenis.edit', compact('jenis'));
     }
 
     /**
@@ -141,7 +120,27 @@ class JenisController extends Controller
      */
     public function update(UpdateJenisRequest $request, Jenis $jenis)
     {
-        //
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($jenis->image && file_exists(public_path('images/' . $jenis->image))) {
+                unlink(public_path('images/' . $jenis->image));
+            }
+
+            $file = $request->file('image');
+            $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '_', $file->getClientOriginalName());
+            $file->move(public_path('images'), $filename);
+            $data['image'] = $filename;
+        }
+
+        $jenis->update($data);
+
+        return redirect()->route('dashboard.jenis.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
     /**
@@ -149,6 +148,17 @@ class JenisController extends Controller
      */
     public function destroy(Jenis $jenis)
     {
-        //
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
+        // Delete image if exists
+        if ($jenis->image && file_exists(public_path('images/' . $jenis->image))) {
+            unlink(public_path('images/' . $jenis->image));
+        }
+
+        $jenis->delete();
+
+        return redirect()->route('dashboard.jenis.index')->with('success', 'Produk berhasil dihapus.');
     }
 }

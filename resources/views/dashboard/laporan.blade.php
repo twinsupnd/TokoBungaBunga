@@ -1,58 +1,57 @@
 @extends('dashboard.layout')
 
-@section('title', 'Laporan')
+@section('title', 'Laporan Pemesanan')
 
 @section('content')
 
 <style>
     .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        gap: 1rem;
+        margin-bottom: 28px;
     }
 
     .page-title {
-        font-size: 2rem;
+        font-size: 28px;
         font-weight: 700;
-        color: #1f2937;
+        color: var(--text);
+        margin: 0 0 6px 0;
     }
 
     .page-subtitle {
-        font-size: 0.875rem;
-        color: #6b7280;
-        margin-top: 0.25rem;
+        font-size: 14px;
+        color: var(--muted);
+        margin: 0;
     }
 
     .alert-success {
-        background: #d1fae5;
-        color: #065f46;
-        border: 1px solid #a7f3d0;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, rgba(199,183,255,0.1), rgba(255,214,224,0.1));
+        color: var(--pastel-accent);
+        border: 1px solid rgba(199,183,255,0.3);
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin-bottom: 24px;
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 12px;
         font-weight: 500;
+        font-size: 14px;
     }
 
     .reviews-container {
-        background: white;
-        border-radius: 12px;
+        background: var(--pastel-card);
+        border-radius: 14px;
         overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 20px rgba(34,34,59,0.04);
+        border: 1px solid rgba(199,183,255,0.1);
     }
 
     .review-item {
-        padding: 1.5rem;
-        border-bottom: 1px solid #e5e7eb;
+        padding: 22px;
+        border-bottom: 1px solid rgba(199,183,255,0.1);
         transition: background 0.2s ease;
     }
 
     .review-item:hover {
-        background: #f9fafb;
+        background: rgba(199,183,255,0.04);
     }
 
     .review-item:last-child {
@@ -63,78 +62,101 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 1rem;
-        gap: 1rem;
+        margin-bottom: 16px;
+        gap: 16px;
     }
 
     .reviewer-info {
         display: flex;
-        gap: 1rem;
+        gap: 14px;
         flex: 1;
     }
 
     .reviewer-avatar {
-        width: 48px;
-        height: 48px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+        background: linear-gradient(135deg, var(--pastel-accent), var(--pastel-accent-2));
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-weight: 700;
-        font-size: 1rem;
+        font-size: 16px;
         flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(199,183,255,0.2);
     }
 
     .reviewer-details {
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
+        gap: 4px;
+        justify-content: center;
     }
 
     .reviewer-name {
-        font-weight: 600;
-        color: #1f2937;
-        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+        font-size: 15px;
+    }
+
+    .review-meta {
+        display: flex;
+        gap: 16px;
+        font-size: 13px;
+        color: var(--muted);
     }
 
     .review-date {
-        font-size: 0.75rem;
-        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
     .review-product {
-        font-size: 0.85rem;
-        color: #ec4899;
-        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--pastel-accent);
+        font-weight: 600;
+    }
+
+    .rating-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 
     .rating-stars {
         display: flex;
-        gap: 0.25rem;
-        margin: 0.5rem 0;
+        gap: 2px;
     }
 
     .star {
-        color: #fbbf24;
-        font-size: 1rem;
+        color: #FFD700;
+        font-size: 18px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .star-empty {
+        color: rgba(199,183,255,0.2);
     }
 
     .review-comment {
-        color: #374151;
-        line-height: 1.6;
-        margin: 1rem 0;
-        padding: 0.75rem;
-        background: #f9fafb;
-        border-left: 3px solid #ec4899;
-        border-radius: 4px;
-        font-size: 0.95rem;
+        color: var(--text);
+        line-height: 1.7;
+        margin: 16px 0;
+        padding: 14px;
+        background: rgba(199,183,255,0.06);
+        border-left: 4px solid var(--pastel-accent);
+        border-radius: 8px;
+        font-size: 14px;
+        word-break: break-word;
     }
 
     .review-actions {
         display: flex;
-        gap: 0.5rem;
+        gap: 12px;
         justify-content: flex-end;
     }
 
@@ -142,118 +164,88 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: #fee2e2;
-        color: #dc2626;
-        border: none;
-        border-radius: 6px;
+        gap: 6px;
+        padding: 8px 14px;
+        background: linear-gradient(135deg, rgba(199,183,255,0.15), rgba(255,214,224,0.15));
+        color: var(--pastel-accent);
+        border: 1px solid var(--pastel-accent);
+        border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-size: 0.875rem;
+        font-size: 13px;
     }
 
     .btn-delete:hover {
-        background: #fecaca;
+        background: linear-gradient(135deg, var(--pastel-accent), var(--pastel-accent-2));
+        color: white;
+        border-color: transparent;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(199,183,255,0.3);
     }
 
     .empty-state {
         text-align: center;
-        padding: 3rem 1rem;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 48px 24px;
+        background: var(--pastel-card);
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(34,34,59,0.04);
+        border: 1px solid rgba(199,183,255,0.1);
     }
 
     .empty-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.7;
     }
 
     .empty-title {
-        font-size: 1.25rem;
+        font-size: 18px;
         font-weight: 700;
-        color: #1f2937;
-        margin-bottom: 0.5rem;
+        color: var(--text);
+        margin-bottom: 8px;
     }
 
     .empty-subtitle {
-        color: #6b7280;
+        color: var(--muted);
+        font-size: 14px;
     }
 
     .pagination-wrapper {
-        margin-top: 2rem;
+        margin-top: 28px;
         display: flex;
         justify-content: center;
-    }
-
-    .pagination {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-    }
-
-    .pagination a,
-    .pagination span {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 6px;
-        border: 1px solid #e5e7eb;
-        color: #1f2937;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-weight: 500;
-    }
-
-    .pagination a:hover {
-        background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
-        color: white;
-        border-color: transparent;
-    }
-
-    .pagination .active span {
-        background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
-        color: white;
-        border-color: transparent;
     }
 
     @media (max-width: 768px) {
         .page-header {
-            flex-direction: column;
-            align-items: flex-start;
+            margin-bottom: 20px;
         }
 
         .review-header {
             flex-direction: column;
-            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .rating-section {
+            justify-content: space-between;
+            width: 100%;
         }
 
         .review-actions {
             width: 100%;
-            margin-top: 1rem;
+            margin-top: 12px;
         }
 
         .btn-delete {
             flex: 1;
-            justify-content: center;
-        }
-
-        .pagination {
-            flex-wrap: wrap;
         }
     }
 </style>
 
 <div class="page-header">
-    <div>
-        <h1 class="page-title">📋 Laporan & Komentar</h1>
-        <p class="page-subtitle">Kelola komentar dan ulasan dari pelanggan</p>
-    </div>
+    <h1 class="page-title">Laporan & Ulasan Pelanggan</h1>
+    <p class="page-subtitle">Kelola Komentar dan Ulasan dari Pelanggan</p>
 </div>
 
 @if(session('success'))
@@ -273,21 +265,25 @@
                         </div>
                         <div class="reviewer-details">
                             <div class="reviewer-name">{{ $review->user->name }}</div>
-                            <div class="review-date">
-                                {{ $review->created_at->format('d M Y H:i') }}
-                            </div>
-                            <div class="review-product">
-                                📦 {{ $review->jenis->nama ?? 'Produk Tidak Diketahui' }}
+                            <div class="review-meta">
+                                <div class="review-date">
+                                    📅 {{ $review->created_at->format('d M Y') }}
+                                </div>
+                                <div class="review-product">
+                                    📦 {{ $review->jenis->nama ?? 'Produk Tidak Diketahui' }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="rating-stars">
-                        @for($i = 0; $i < $review->rating; $i++)
-                            <span class="star">★</span>
-                        @endfor
-                        @for($i = $review->rating; $i < 5; $i++)
-                            <span class="star" style="color: #d1d5db;">★</span>
-                        @endfor
+                    <div class="rating-section">
+                        <div class="rating-stars">
+                            @for($i = 0; $i < $review->rating; $i++)
+                                <span class="star">★</span>
+                            @endfor
+                            @for($i = $review->rating; $i < 5; $i++)
+                                <span class="star star-empty">★</span>
+                            @endfor
+                        </div>
                     </div>
                 </div>
 
@@ -299,8 +295,8 @@
                     <form method="POST" action="{{ route('dashboard.laporan.destroy', $review->id) }}" style="display: inline;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn-delete" onclick="return confirm('Yakin ingin menghapus laporan ini?')">
-                            🗑 Hapus
+                        <button type="submit" class="btn-delete" onclick="return confirm('Yakin ingin menghapus ulasan ini?')">
+                            Hapus
                         </button>
                     </form>
                 </div>
@@ -316,8 +312,8 @@
 @else
     <div class="empty-state">
         <div class="empty-icon">📭</div>
-        <div class="empty-title">Belum Ada Laporan</div>
-        <div class="empty-subtitle">Pelanggan belum memberikan komentar atau ulasan</div>
+        <div class="empty-title">Belum Ada Ulasan</div>
+        <div class="empty-subtitle">Pelanggan belum memberikan komentar atau ulasan untuk produk kami</div>
     </div>
 @endif
 

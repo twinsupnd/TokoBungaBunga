@@ -224,6 +224,22 @@
             };
         }
 
+        // If server provided cart items (authenticated user), use them instead
+        @if(isset($items) && count($items) > 0)
+            cartData.items = [
+                @foreach($items as $it)
+                {
+                    id: {{ $it->id }},
+                    name: "{{ addslashes($it->jenis->name ?? 'Produk') }}",
+                    price: {{ $it->price ?? (int)preg_replace('/[^0-9]/','', $it->jenis->price ?? 0) }},
+                    quantity: {{ $it->quantity }},
+                    imageUrl: "{{ asset('images/' . ($it->jenis->image ?? 'babybreath.jpg')) }}"
+                },
+                @endforeach
+            ];
+            cartData.summary = calculateSummaryLocally(cartData.items);
+        @endif
+
         // --- FUNGSI HELPER ---
 
         // Memformat angka ke format Rupiah
