@@ -2,38 +2,45 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
     <title>Katalog - Whispering Flora</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
       .catalog-hero { padding: 60px 40px; text-align:center; background: linear-gradient(180deg,#fff6f6,#fff); }
-      .catalog-hero h1 { font-family: 'Playfair Display', serif; font-size: 2.6rem; margin: 0 0 8px; }
-      .catalog-hero p { color: #6b7280; margin: 0; }
+      .catalog-hero h1 { font-family: 'Playfair Display', serif; font-size: 2.6rem; margin: 0 0 8px; color: #1f2937; }
+      .catalog-hero p { color: #6b7280; margin: 0; font-size: 16px; }
 
       .carousel { max-width: 1100px; margin: 40px auto; position: relative; overflow: hidden; }
       .carousel-track { display: flex; transition: transform 0.4s ease; }
       .carousel-slide { min-width: 100%; box-sizing: border-box; padding: 20px; display: flex; gap: 24px; align-items: center; }
-
+      
       .slide-image { flex: 0 0 50%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
       .slide-image img { width: 100%; height: 100%; object-fit: cover; display:block; }
-
+      
       .slide-info { flex: 1; padding: 12px 18px; }
-      .slide-info h2 { margin: 0 0 10px; font-size: 26px; color: #1f2937; }
-      .slide-info p { color: #6b7280; line-height: 1.5; }
+      .slide-info h2 { margin: 0 0 10px; font-size: 26px; color: #1f2937; font-weight: 700; }
+      .slide-info p { color: #6b7280; line-height: 1.5; font-size: 15px; }
       .slide-info .price { margin-top: 16px; font-weight: 700; color: #ec4899; font-size: 20px; }
-
-      .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; background: rgba(255,255,255,0.9); border-radius: 999px; display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(0,0,0,0.12); cursor:pointer; }
+      
+      .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; background: rgba(255,255,255,0.9); border-radius: 999px; display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(0,0,0,0.12); cursor:pointer; border: none; font-size: 20px; transition: all 0.3s ease; font-weight: bold; color: #333; }
+      .carousel-btn:hover { background: rgba(255,255,255,1); box-shadow: 0 8px 24px rgba(0,0,0,0.16); transform: translateY(-50%) scale(1.05); }
       .carousel-btn.prev { left: 12px; }
       .carousel-btn.next { right: 12px; }
 
       .carousel-pagination { text-align:center; margin-top: 14px; }
-      .dot { display:inline-block; width: 10px; height: 10px; border-radius: 999px; background: #e5e7eb; margin: 0 6px; cursor:pointer; }
+      .dot { display:inline-block; width: 10px; height: 10px; border-radius: 999px; background: #e5e7eb; margin: 0 6px; cursor:pointer; border: none; transition: all 0.3s ease; }
+      .dot:hover { background: #d1d5db; }
       .dot.active { background: #ec4899; }
 
       @media (max-width: 900px) {
         .carousel-slide { flex-direction: column; }
         .slide-image { width: 100%; flex: 0 0 auto; }
         .slide-info { width: 100%; }
+        .catalog-hero h1 { font-size: 1.8rem; }
       }
     </style>
   </head>
@@ -43,14 +50,14 @@
 
     <main>
       <section class="catalog-hero">
-        <h1>✨ Katalog Produk</h1>
-        <p>Temukan semua bunga pilihan — gunakan tombol prev / next untuk menelusuri produk.</p>
+        <h1>🌸 Katalog Produk</h1>
+        <p>Temukan semua bunga pilihan kami — gunakan tombol prev / next untuk menelusuri produk.</p>
       </section>
 
       <div style="padding: 24px 20px;">
         <div class="breadcrumb" style="max-width:1100px;margin: 14px auto; display:flex; gap:8px; align-items:center; color:#6b7280;">
           <a href="{{ route('catalog.index') }}" style="text-decoration:none; font-weight:600; color: inherit;">Katalog</a>
-          <span style="color:#e5e7eb">›</span>
+          <span style="color:#e5e7eb">|</span>
           <span>Semua Produk</span>
         </div>
 
@@ -73,8 +80,8 @@
               @endforeach
             </div>
 
-            <button class="carousel-btn prev" id="carousel-prev" aria-label="Previous">◀</button>
-            <button class="carousel-btn next" id="carousel-next" aria-label="Next">▶</button>
+            <button class="carousel-btn prev" id="carousel-prev" aria-label="Previous">←</button>
+            <button class="carousel-btn next" id="carousel-next" aria-label="Next">→</button>
           </div>
 
           <div class="carousel-pagination" id="carousel-dots" aria-hidden="false"></div>

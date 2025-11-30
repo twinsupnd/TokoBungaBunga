@@ -59,7 +59,21 @@
         border: 1px solid rgba(199,183,255,0.1);
         border-left: 4px solid var(--pastel-accent);
         transition: all 0.3s ease;
+        animation: slideInUp 0.6s ease-out forwards;
+        transform: translateY(20px);
+        opacity: 0;
     }
+
+    @keyframes slideInUp {
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .metric-card:nth-child(1) { animation-delay: 0.1s; }
+    .metric-card:nth-child(2) { animation-delay: 0.2s; }
+    .metric-card:nth-child(3) { animation-delay: 0.3s; }
 
     .metric-card:hover {
         transform: translateY(-2px);
@@ -79,6 +93,7 @@
         font-size: 24px;
         font-weight: 700;
         color: var(--pastel-accent);
+        min-height: 32px;
     }
 
     .metric-subtext {
@@ -303,19 +318,19 @@
 <div class="analytics-grid">
     <div class="metric-card" style="border-left-color: #FFB5A7;">
         <div class="metric-label">Penjualan Bulan Ini</div>
-        <div class="metric-value"><span class="currency">Rp</span> {{ number_format($financialData['salesThisMonth'], 0, ',', '.') }}</div>
+        <div class="metric-value"><span class="currency">Rp</span> <span class="animate-number" data-value="{{ $financialData['salesThisMonth'] }}">0</span></div>
         <div class="metric-subtext">Total transaksi: {{ $financialData['totalTransactions'] }}</div>
     </div>
 
     <div class="metric-card" style="border-left-color: #FCD5CE;">
         <div class="metric-label">Penjualan Minggu Ini</div>
-        <div class="metric-value"><span class="currency">Rp</span> {{ number_format($financialData['salesThisWeek'], 0, ',', '.') }}</div>
+        <div class="metric-value"><span class="currency">Rp</span> <span class="animate-number" data-value="{{ $financialData['salesThisWeek'] }}">0</span></div>
         <div class="metric-subtext">Per minggu (7 hari)</div>
     </div>
 
     <div class="metric-card" style="border-left-color: #10b981;">
         <div class="metric-label">Tingkat Sukses</div>
-        <div class="metric-value">{{ $financialData['successRate'] }}%</div>
+        <div class="metric-value"><span class="animate-number" data-value="{{ $financialData['successRate'] }}">0</span>%</div>
         <div class="metric-subtext">Transaksi berhasil</div>
     </div>
 </div>
@@ -366,12 +381,46 @@
     <!-- Chart.js via CDN (lightweight & widely used) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
     <script>
+        // Animated number counter
+        function animateNumbers() {
+            const elements = document.querySelectorAll('.animate-number');
+            elements.forEach((el, idx) => {
+                setTimeout(() => {
+                    const target = parseInt(el.dataset.value);
+                    const duration = 1200;
+                    const start = Date.now();
+                    
+                    const animate = () => {
+                        const elapsed = Date.now() - start;
+                        const progress = Math.min(elapsed / duration, 1);
+                        
+                        // Easing function: easeOutQuad
+                        const easeProgress = 1 - Math.pow(1 - progress, 2);
+                        const current = Math.floor(target * easeProgress);
+                        
+                        el.textContent = current.toLocaleString('id-ID');
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            el.textContent = target.toLocaleString('id-ID');
+                        }
+                    };
+                    
+                    animate();
+                }, idx * 150);
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', animateNumbers);
+
         (function () {
             // Prepare data from server-rendered PHP variable
             const daily = @json($financialData['dailySales']);
 
             const labels = daily.map(d => d.day);
-            const values = daily.map(d => Math.round(d.amount / 1000)); // use in thousands for readable axis
+            const values = daily.map(d => Math.round(d.amount / 1000000)); // use in millions for readable axis
 
             const ctx = document.getElementById('dailySalesChart');
             if (!ctx) return;
@@ -380,28 +429,46 @@
             const options = {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
+                },
                 scales: {
                     x: {
-                        grid: { display: false },
-                        ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-light') || '#6b7280' }
+                        grid: { display: false, color: 'rgba(199,183,255,0.05)' },
+                        ticks: { 
+                            color: '#6b7280',
+                            font: { weight: '600', size: 13 }
+                        }
                     },
                     y: {
                         beginAtZero: true,
+                        grid: { color: 'rgba(199,183,255,0.1)' },
                         ticks: {
                             callback: function(val){
-                                // Tick label converting back to full currency
-                                return 'Rp ' + (val * 1000).toLocaleString('id-ID');
+                                return 'Rp ' + val + 'M';
                             },
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-light') || '#6b7280'
+                            color: '#6b7280',
+                            font: { weight: '600', size: 13 }
                         }
                     }
                 },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
+                        backgroundColor: 'rgba(34,34,59,0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        titleFont: { weight: '700', size: 13 },
+                        bodyFont: { size: 13 },
+                        borderColor: 'rgba(199,183,255,0.3)',
+                        borderWidth: 1,
+                        usePointStyle: true,
+                        cornerRadius: 8,
                         callbacks: {
                             label: function(ctx){
-                                const n = ctx.parsed.y * 1000; // reverse the /1000
+                                const n = ctx.parsed.y * 1000000;
                                 return 'Rp ' + n.toLocaleString('id-ID');
                             }
                         }
@@ -413,14 +480,23 @@
             if (ctx._chart) ctx._chart.destroy();
 
             ctx._chart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
+                        label: 'Penjualan',
                         data: values,
-                        backgroundColor: '#ec4899',
-                        borderRadius: 6,
-                        barPercentage: 0.6,
+                        borderColor: '#5B21B6',
+                        backgroundColor: 'rgba(91, 33, 182, 0.08)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#5B21B6',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: '#7C3AED',
+                        borderWidth: 3,
                     }]
                 },
                 options: options
