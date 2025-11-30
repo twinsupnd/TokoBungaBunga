@@ -58,11 +58,11 @@
         </div>
 
         <div class="action-buttons">
-            <a href="#" class="btn btn-primary">✏️ Edit Produk</a>
-            <form method="POST" action="#" style="flex: 1;" onsubmit="return confirm('Yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.')">
+            <a href="{{ route('dashboard.jenis.edit', $item->slug) }}" class="btn btn-primary">✏️ Edit Produk</a>
+            <form method="POST" action="{{ route('dashboard.jenis.destroy', $item->slug) }}" style="flex: 1;" onsubmit="return confirm('Yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.')">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger" style="width: 100%;">🗑️ Hapus Produk</button>
+                <button type="submit" class="btn btn-danger" style="width: 100%">🗑️ Hapus Produk</button>
             </form>
         </div>
     </div>
