@@ -117,6 +117,15 @@ class JenisController extends Controller
     }
 
     /**
+     * Public catalog page - accessible to all users (no login required).
+     */
+    public function publicCatalog()
+    {
+        $products = Jenis::orderBy('id')->get();
+        return view('public-catalog', compact('products'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Jenis $jenis)

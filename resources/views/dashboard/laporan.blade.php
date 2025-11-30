@@ -1,6 +1,6 @@
 @extends('dashboard.layout')
 
-@section('title', 'Laporan')
+@section('title', 'Laporan Pemesanan')
 
 @section('content')
 
@@ -244,8 +244,8 @@
 </style>
 
 <div class="page-header">
-    <h1 class="page-title">📋 Laporan & Ulasan Pelanggan</h1>
-    <p class="page-subtitle">Kelola komentar dan ulasan dari pelanggan</p>
+    <h1 class="page-title">Laporan & Ulasan Pelanggan</h1>
+    <p class="page-subtitle">Kelola Komentar dan Ulasan dari Pelanggan</p>
 </div>
 
 @if(session('success'))
@@ -296,7 +296,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn-delete" onclick="return confirm('Yakin ingin menghapus ulasan ini?')">
-                            🗑️ Hapus
+                            Hapus
                         </button>
                     </form>
                 </div>

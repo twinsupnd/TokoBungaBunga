@@ -61,9 +61,12 @@
     }
 </style>
 
-<div class="page-header">
-    <h1 class="page-title">📦 Kelola Produk</h1>
-    <p class="page-subtitle">Tambah, edit, dan kelola semua produk bunga Anda</p>
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+    <div>
+        <h1 class="page-title">📦 Kelola Produk</h1>
+        <p class="page-subtitle">Tambah, edit, dan kelola semua produk bunga Anda</p>
+    </div>
+    <a href="{{ route('public.catalog') }}" class="btn btn-secondary" style="white-space: nowrap; margin-top: 4px;">📊 Cek Dashboard</a>
 </div>
 
 @if(session('success'))

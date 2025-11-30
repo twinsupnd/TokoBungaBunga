@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 // ====================
 Route::get('/', [JenisController::class, 'landing']);
 Route::get('/jenis/{jenis:slug}', [JenisController::class, 'show'])->name('jenis.show');
+Route::get('/katalog', [JenisController::class, 'publicCatalog'])->name('public.catalog');
 
 // Category routes
 Route::get('/bunga/{type}', [App\Http\Controllers\CategoryController::class, 'showFlowerType'])->name('category.flower-type');
