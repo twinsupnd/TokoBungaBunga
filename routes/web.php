@@ -6,12 +6,38 @@ use App\Http\Controllers\AdminController; // <-- Controller yang kamu pakai
 use App\Http\Controllers\AdminManagementController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
+// (Request is imported earlier)
 
 // ====================
 // Public Routes
 // ====================
 Route::get('/', [JenisController::class, 'landing']);
+Route::get('/katalog', [JenisController::class, 'catalog'])->name('catalog.index');
+// Search products
+Route::get('/search', [JenisController::class, 'search'])->name('search');
+
+use Illuminate\Http\Request;
+
+// Simple subscribe endpoint (store email in session & log)
+Route::post('/subscribe', function (Request $request) {
+    $data = $request->validate([
+        'email' => 'required|email|max:255',
+    ]);
+
+    // for now store in session and log; in real app you'd persist to DB or send to mail service
+    $subscribers = session()->get('subscribers', []);
+    $subscribers[] = ['email' => $data['email'], 'created_at' => now()->toDateTimeString()];
+    session()->put('subscribers', $subscribers);
+
+    \Log::info('New newsletter sign up: ' . $data['email']);
+
+    session()->flash('subscribed', true);
+    return redirect()->back();
+})->name('subscribe');
+// About page — attractive company information
+Route::get('/tentang-kami', function () {
+    return view('about.index');
+})->name('about.index');
 Route::get('/jenis/{jenis:slug}', [JenisController::class, 'show'])->name('jenis.show');
 
 // Category routes

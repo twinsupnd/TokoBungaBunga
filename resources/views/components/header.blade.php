@@ -4,8 +4,20 @@
         <img src="{{ asset('images/logo.png') }}" alt="Whispering Flora Logo" style="height: 40px; width: auto;">
     </a>
 
-    <nav style="display: flex; gap: 30px; align-items: center;">
-        <a href="/" style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Katalog</a>
+    <nav style="display: flex; gap: 18px; align-items: center;">
+        <!-- Search (icon + dropdown) -->
+        <div style="position: relative; display: inline-block;">
+            <button id="open-search-box" aria-haspopup="true" aria-expanded="false" style="background:none;border:none;cursor:pointer;font-size:18px;padding:6px;color:var(--color-text-dark);">
+                🔍
+            </button>
+            <div id="header-search-dropdown" style="position: absolute; top: 100%; left: -40px; transform: translateY(8px); display: none; background: white; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); padding: 12px; z-index: 1200; min-width: 340px;">
+                <form action="{{ route('search') }}" method="get" style="display:flex; gap:8px; align-items:center;">
+                    <input type="search" name="q" placeholder="Cari Bunga..." aria-label="Cari bunga" style="flex:1; padding:10px 12px; border-radius:999px; border:1px solid #eee;">
+                    <button type="submit" style="padding:8px 10px; border-radius:999px; background:#f9739c; color:white; border:none; font-weight:700;">Cari</button>
+                </form>
+            </div>
+        </div>
+        <a href="{{ route('catalog.index') }}" style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Katalog</a>
         
         <!-- Jenis Bunga Dropdown -->
         <div style="position: relative; display: inline-block;">
@@ -32,7 +44,7 @@
             </div>
         </div>
 
-        <a href="#about" style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Tentang Kami</a>
+        <a href="{{ route('about.index') }}" style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Tentang Kami</a>
 
         @auth
             <div style="display: flex; align-items: center; gap: 20px;">
@@ -125,6 +137,29 @@
         document.addEventListener('click', (e) => {
             if (!e.target.closest('[style*="position: relative"]') && userDropdown) {
                 userDropdown.style.display = 'none';
+            }
+        });
+    }
+
+    // Header search dropdown
+    const searchToggle = document.getElementById('open-search-box');
+    const searchDropdown = document.getElementById('header-search-dropdown');
+    if (searchToggle && searchDropdown) {
+        searchToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isOpen = searchDropdown.style.display === 'block';
+            searchDropdown.style.display = isOpen ? 'none' : 'block';
+            searchToggle.setAttribute('aria-expanded', String(!isOpen));
+            if (!isOpen) {
+                const input = searchDropdown.querySelector('input[name="q"]');
+                if (input) setTimeout(() => input.focus(), 30);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#open-search-box') && !e.target.closest('#header-search-dropdown')) {
+                searchDropdown.style.display = 'none';
+                searchToggle.setAttribute('aria-expanded', 'false');
             }
         });
     }

@@ -100,6 +100,35 @@ class JenisController extends Controller
     }
 
     /**
+     * Public catalog page (full listing with carousel UI)
+     */
+    public function catalog()
+    {
+        $products = Jenis::orderBy('id')->get();
+        return view('katalog.index', compact('products'));
+    }
+
+    /**
+     * Search listing for products (query param: q)
+     */
+    public function search(Request $request)
+    {
+        $q = trim($request->query('q', ''));
+
+        if ($q === '') {
+            $products = collect();
+        } else {
+            // basic search: name or description
+            $products = Jenis::where('name', 'LIKE', "%{$q}%")
+                ->orWhere('description', 'LIKE', "%{$q}%")
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
+        return view('search.results', compact('products', 'q'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Jenis $jenis)

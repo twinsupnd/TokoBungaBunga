@@ -243,8 +243,8 @@
             <div class="text-2xl font-bold title-display text-accent-strong">Whispering Flora</div>
         </a>
         <nav class="hidden md:flex space-x-8 text-sm font-medium">
-            <a href="#" class="header-nav-link">KATALOG</a>
-            <a href="#" class="header-nav-link">TENTANG KAMI</a>
+            <a href="{{ route('catalog.index') }}" class="header-nav-link">KATALOG</a>
+            <a href="{{ route('about.index') }}" class="header-nav-link">TENTANG KAMI</a>
             <a href="#" class="header-nav-link">HUBUNGI KAMI</a>
         </nav>
         <div class="flex items-center space-x-6">

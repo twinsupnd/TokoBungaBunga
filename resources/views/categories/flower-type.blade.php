@@ -159,7 +159,7 @@
             </div>
 
             <div class="breadcrumb">
-                <a href="/">Katalog</a>
+                <a href="{{ route('catalog.index') }}">Katalog</a>
                 <span>›</span>
                 <span>{{ $flowerName }}</span>
             </div>
