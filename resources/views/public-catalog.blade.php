@@ -113,7 +113,7 @@
                     <div class="product-card">
                         <div class="product-image">
                             @if($product->image)
-                                <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->name }}">
+                                <img src="{{ Storage::disk('public')->url($product->image) }}" alt="{{ $product->name }}">
                             @else
                                 <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 14px;">No Image</div>
                             @endif
@@ -122,6 +122,13 @@
                             <h3 class="product-name">{{ $product->name }}</h3>
                             <p class="product-description">{{ \Illuminate\Support\Str::limit($product->description, 100) }}</p>
                             <div class="product-price">Rp {{ number_format((float) $product->price, 0, ',', '.') }}</div>
+                            <div style="margin-bottom:10px;">
+                                @if($product->stock > 0)
+                                    <span style="background:#e0ffe0; color:#2ecc40; font-weight:600; padding:3px 12px; border-radius:8px; font-size:13px;">Stok: {{ $product->stock }} unit</span>
+                                @else
+                                    <span style="background:#ffe0e0; color:#ff3b3b; font-weight:600; padding:3px 12px; border-radius:8px; font-size:13px;">Stok Habis</span>
+                                @endif
+                            </div>
                             <div class="product-actions">
                                 <a href="{{ route('jenis.show', $product->slug) }}" class="btn btn-view">👁 Lihat Detail</a>
                                 @if(auth()->check())

@@ -27,6 +27,7 @@ class StoreJenisRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'price' => ['nullable', 'string', 'max:100'],
             'description' => ['nullable', 'string'],
+            'stock' => ['nullable', 'integer', 'min:0'],
             'image' => ['nullable', 'image', 'max:2048'],
         ];
     }

@@ -26,6 +26,13 @@ class User extends Authenticatable
         'role',
         'profile_photo_path',
         'promoted_to_admin_at',
+        'last_name',
+        'phone',
+        'date_of_birth',
+        'address',
+        'location',
+        'postal_code',
+        'gender',
     ];
 
     /**

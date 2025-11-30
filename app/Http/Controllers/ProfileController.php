@@ -17,7 +17,7 @@ class ProfileController extends Controller
      */
     public function show(Request $request): View
     {
-        return view('profile.show', [
+        return view('dashboard.profil', [
             'user' => $request->user(),
         ]);
     }
@@ -45,7 +45,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('dashboard.profile')->with('status', 'profile-updated');
     }
 
     /**
@@ -90,6 +90,6 @@ class ProfileController extends Controller
 
         $user->update(['profile_photo_path' => $path]);
 
-        return Redirect::route('profile.show')->with('success', 'Foto profil berhasil diperbarui!');
+        return Redirect::route('dashboard.profile')->with('success', 'Foto profil berhasil diperbarui!');
     }
 }

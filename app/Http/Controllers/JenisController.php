@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Jenis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreJenisRequest;
 use App\Http\Requests\UpdateJenisRequest;
 
@@ -65,13 +66,9 @@ class JenisController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $dir = public_path('images');
-            if (! is_dir($dir)) {
-                mkdir($dir, 0755, true);
-            }
-            $filename = time() . '' . preg_replace('/[^a-z0-9\.\-]/i', '', $file->getClientOriginalName());
-            $file->move($dir, $filename);
-            $data['image'] = $filename;
+            $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '', $file->getClientOriginalName());
+            $path = Storage::disk('public')->putFileAs('products', $file, $filename);
+            $data['image'] = $path;
         }
 
         Jenis::create($data);
@@ -165,14 +162,14 @@ class JenisController extends Controller
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
-            if ($jenis->image && file_exists(public_path('images/' . $jenis->image))) {
-                unlink(public_path('images/' . $jenis->image));
+            if ($jenis->image && Storage::disk('public')->exists($jenis->image)) {
+                Storage::disk('public')->delete($jenis->image);
             }
 
             $file = $request->file('image');
-            $filename = time() . '' . preg_replace('/[^a-z0-9\.\-]/i', '', $file->getClientOriginalName());
-            $file->move(public_path('images'), $filename);
-            $data['image'] = $filename;
+            $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '', $file->getClientOriginalName());
+            $path = Storage::disk('public')->putFileAs('products', $file, $filename);
+            $data['image'] = $path;
         }
 
         $jenis->update($data);
@@ -190,8 +187,8 @@ class JenisController extends Controller
         }
 
         // Delete image if exists
-        if ($jenis->image && file_exists(public_path('images/' . $jenis->image))) {
-            unlink(public_path('images/' . $jenis->image));
+        if ($jenis->image && Storage::disk('public')->exists($jenis->image)) {
+            Storage::disk('public')->delete($jenis->image);
         }
 
         $jenis->delete();

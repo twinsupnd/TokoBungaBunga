@@ -46,20 +46,24 @@
 <div class="detail-grid">
     <!-- Product Image -->
     <div class="card">
-        <img src="{{ asset('images/' . ($item->image ?? 'babybreath.jpg')) }}" alt="{{ $item->name }}">
+        @if ($jenis->image)
+            <img src="{{ Storage::disk('public')->url($jenis->image) }}" alt="{{ $jenis->name }}">
+        @else
+            <img src="{{ asset('images/babybreath.jpg') }}" alt="No image">
+        @endif
     </div>
 
     <!-- Product Details -->
     <div class="card product-details">
-        <h2>{{ $item->name }}</h2>
-        <div class="product-price">Rp {{ number_format($item->price, 0, ',', '.') }}</div>
+        <h2>{{ $jenis->name }}</h2>
+        <div class="product-price">Rp {{ number_format($jenis->price, 0, ',', '.') }}</div>
         <div class="product-description">
-            {{ $item->description ?: 'Tidak ada deskripsi produk.' }}
+            {{ $jenis->description ?: 'Tidak ada deskripsi produk.' }}
         </div>
 
         <div class="action-buttons">
-            <a href="{{ route('dashboard.jenis.edit', $item->slug) }}" class="btn btn-primary">✏️ Edit Produk</a>
-            <form method="POST" action="{{ route('dashboard.jenis.destroy', $item->slug) }}" style="flex: 1;" onsubmit="return confirm('Yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.')">
+            <a href="{{ route('dashboard.jenis.edit', $jenis->slug) }}" class="btn btn-primary">✏️ Edit Produk</a>
+            <form method="POST" action="{{ route('dashboard.jenis.destroy', $jenis->slug) }}" style="flex: 1;" onsubmit="return confirm('Yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger" style="width: 100%">🗑️ Hapus Produk</button>

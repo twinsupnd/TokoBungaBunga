@@ -26,6 +26,7 @@ class UpdateJenisRequest extends FormRequest
             'name' => 'required|string|max:255',
             'price' => 'nullable|string|max:100',
             'description' => 'nullable|string',
+            'stock' => 'nullable|integer|min:0',
             'image' => 'nullable|file|image|max:2048',
         ];
     }

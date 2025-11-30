@@ -101,6 +101,12 @@ Route::get('/manager', [App\Http\Controllers\EventController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:manager'])
     ->name('manager.dashboard');
 
+// Manager access to profile and analytics (same pages as dashboard)
+Route::middleware(['auth', 'verified', 'role:manager'])->group(function () {
+    Route::get('/manager/profil', [ProfileController::class, 'show'])->name('manager.profile');
+    Route::get('/manager/analitik', [App\Http\Controllers\AnalyticsController::class, 'financialAnalytics'])->name('manager.analytics');
+});
+
 // ====================
 // Kelola Admin (Manager Only)
 // ====================
@@ -159,6 +165,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/photo', [ProfileController::class, 'uploadPhoto'])->name('profile.uploadPhoto');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // If a user (or a browser) visits /logout via GET (e.g., old bookmark),
+    // just redirect them to the public welcome page instead of returning 419.
+    Route::get('/logout', function () {
+        return redirect('/');
+    });
 
     Route::post('/logout', function (Request $request) {
         Auth::logout();

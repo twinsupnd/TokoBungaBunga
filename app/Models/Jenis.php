@@ -16,6 +16,7 @@ class Jenis extends Model
         'image',
         'price',
         'description',
+        'stock',
     ];
 
     public function getRouteKeyName()

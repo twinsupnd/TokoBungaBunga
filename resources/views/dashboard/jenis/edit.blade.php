@@ -16,52 +16,32 @@
                 <h2>Informasi Produk</h2>
 
                 <!-- Nama Produk -->
-                <div class="form-group">
-                    <label for="name" class="form-label">Nama Produk</label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        class="form-control @error('name') is-invalid @enderror"
-                        value="{{ old('name', $jenis->name) }}"
-                        placeholder="Misalnya: Bunga Mawar Merah"
-                        required
-                    >
-                    @error('name')
-                        <span class="error-text">{{ $message }}</span>
-                    @enderror
-                </div>
+                    <div class="form-group">
+                        <label><span style="font-size:16px;">🌸</span> Nama Produk</label>
+                        <input type="text" name="name" class="form-input" value="{{ old('name', $jenis->name) }}" required style="font-size:15px;">
+                        @error('name') <div class="text-danger">{{ $message }}</div> @enderror
+                    </div>
 
                 <!-- Harga -->
-                <div class="form-group">
-                    <label for="price" class="form-label">Harga (Rp)</label>
-                    <input 
-                        type="text" 
-                        id="price" 
-                        name="price" 
-                        class="form-control @error('price') is-invalid @enderror"
-                        value="{{ old('price', $jenis->price) }}"
-                        placeholder="Misalnya: 150000"
-                    >
-                    @error('price')
-                        <span class="error-text">{{ $message }}</span>
-                    @enderror
-                </div>
+                    <div class="form-group">
+                        <label><span style="font-size:16px;">💸</span> Harga (Rp)</label>
+                        <input type="number" name="price" class="form-input" value="{{ old('price', $jenis->price) }}" min="0" required style="font-size:15px;">
+                        @error('price') <div class="text-danger">{{ $message }}</div> @enderror
+                    </div>
 
                 <!-- Deskripsi -->
-                <div class="form-group">
-                    <label for="description" class="form-label">Deskripsi Produk</label>
-                    <textarea 
-                        id="description" 
-                        name="description" 
-                        class="form-control @error('description') is-invalid @enderror"
-                        rows="4"
-                        placeholder="Jelaskan detail produk, warna, ukuran, dan keunikan bunga..."
-                    >{{ old('description', $jenis->description) }}</textarea>
-                    @error('description')
-                        <span class="error-text">{{ $message }}</span>
-                    @enderror
-                </div>
+                    <div class="form-group">
+                        <label><span style="font-size:16px;">📝</span> Deskripsi</label>
+                        <textarea name="description" class="form-input" rows="4" style="font-size:15px;">{{ old('description', $jenis->description) }}</textarea>
+                        @error('description') <div class="text-danger">{{ $message }}</div> @enderror
+                    </div>
+
+                <!-- Stok -->
+                    <div class="form-group">
+                        <label><span style="font-size:16px;">📦</span> Stok</label>
+                        <input type="number" name="stock" class="form-input" value="{{ old('stock', $jenis->stock) }}" min="0" style="font-size:15px;">
+                        @error('stock') <div class="text-danger">{{ $message }}</div> @enderror
+                    </div>
             </div>
 
             <!-- Gambar -->
@@ -71,8 +51,8 @@
                 @if ($jenis->image)
                     <div class="current-image">
                         <p class="image-label">Gambar Saat Ini:</p>
-                        <img src="{{ asset('images/' . $jenis->image) }}" alt="{{ $jenis->name }}" class="preview-image">
-                        <p class="image-filename">{{ $jenis->image }}</p>
+                        <img src="{{ Storage::disk('public')->url($jenis->image) }}" alt="{{ $jenis->name }}" class="preview-image">
+                        <p class="image-filename">{{ basename($jenis->image) }}</p>
                     </div>
                 @endif
 
