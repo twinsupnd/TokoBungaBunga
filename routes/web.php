@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 // Public Routes
 // ====================
 Route::get('/', [JenisController::class, 'landing']);
-Route::get('/katalog', [JenisController::class, 'catalog'])->name('catalog.index');
 // Search products
 Route::get('/search', [JenisController::class, 'search'])->name('search');
 
@@ -39,7 +38,7 @@ Route::get('/tentang-kami', function () {
     return view('about.index');
 })->name('about.index');
 Route::get('/jenis/{jenis:slug}', [JenisController::class, 'show'])->name('jenis.show');
-Route::get('/katalog', [JenisController::class, 'publicCatalog'])->name('public.catalog');
+Route::get('/katalog', [JenisController::class, 'publicCatalog'])->name('catalog.index');
 
 // Category routes
 Route::get('/bunga/{type}', [App\Http\Controllers\CategoryController::class, 'showFlowerType'])->name('category.flower-type');

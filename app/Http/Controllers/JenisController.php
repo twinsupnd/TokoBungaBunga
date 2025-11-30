@@ -57,13 +57,19 @@ class JenisController extends Controller
 
         $data['slug'] = Str::slug($data['name'] ?? 'jenis-' . time());
 
+        // Normalize price for storage (remove thousand separators/currency)
+        if (array_key_exists('price', $data) && $data['price'] !== null) {
+            $clean = preg_replace('/[^0-9]/', '', $data['price']);
+            $data['price'] = $clean === '' ? null : $clean;
+        }
+
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $dir = public_path('images');
             if (! is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
-            $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '_', $file->getClientOriginalName());
+            $filename = time() . '' . preg_replace('/[^a-z0-9\.\-]/i', '', $file->getClientOriginalName());
             $file->move($dir, $filename);
             $data['image'] = $filename;
         }
@@ -81,13 +87,11 @@ class JenisController extends Controller
         if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
             abort(403);
         }
-        // adminShow now uses route-model-binding (Jenis resolved by slug)
-        $item = $jenis;
-        return view('dashboard.jenis.show', compact('item'));
+        return view('dashboard.jenis.show', compact('jenis'));
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource (public view).
      */
     public function show(Jenis $jenis)
     {
@@ -101,6 +105,28 @@ class JenisController extends Controller
     {
         $products = Jenis::orderBy('id')->get();
         return view('welcome', compact('products'));
+    }
+
+    /**
+     * Public catalog page for customers to view all products.
+     */
+    public function publicCatalog()
+    {
+        $products = Jenis::orderBy('id')->get();
+        return view('public-catalog', compact('products'));
+    }
+
+    /**
+     * Catalog preview page for admin to see customer view.
+     */
+    public function catalog()
+    {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
+        $products = Jenis::orderBy('id')->get();
+        return view('catalog', compact('products'));
     }
 
     /**
@@ -126,6 +152,17 @@ class JenisController extends Controller
 
         $data = $request->validated();
 
+        // Normalize price: remove any non-digit characters (commas, dots, currency symbols)
+        if (array_key_exists('price', $data) && $data['price'] !== null) {
+            $clean = preg_replace('/[^0-9]/', '', $data['price']);
+            $data['price'] = $clean === '' ? null : $clean;
+        }
+
+        // Keep slug in sync with the name so edit results match expectations
+        if (array_key_exists('name', $data) && $data['name']) {
+            $data['slug'] = Str::slug($data['name']);
+        }
+
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($jenis->image && file_exists(public_path('images/' . $jenis->image))) {
@@ -133,7 +170,7 @@ class JenisController extends Controller
             }
 
             $file = $request->file('image');
-            $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '_', $file->getClientOriginalName());
+            $filename = time() . '' . preg_replace('/[^a-z0-9\.\-]/i', '', $file->getClientOriginalName());
             $file->move(public_path('images'), $filename);
             $data['image'] = $filename;
         }
