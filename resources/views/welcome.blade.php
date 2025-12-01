@@ -168,86 +168,82 @@
         <section class="section" id="katalog">
             <h2 class="section-title">Bunga Pilihan Mingguan</h2>
             <style>
-                /* Welcome products carousel */
-                .welcome-carousel {
-                    max-width: 1200px;
-                    margin: 24px auto;
-                    position: relative;
-                }
+   .welcome-carousel {
+    max-width: 1200px;
+    margin: 24px auto;
+    position: relative;
+    overflow: hidden;
+}
 
-                .welcome-track {
-                    display: flex;
-                    transition: transform 0.4s ease;
-                    gap: 24px;
-                    padding: 12px 6px;
-                }
+.welcome-track {
+    display: flex;
+    transition: transform 0.4s ease;
+    gap: 24px;
+    padding: 12px 6px;
+}
 
-                .welcome-slide {
-                    min-width: 100%;
-                    box-sizing: border-box;
-                }
+.welcome-slide {
+    min-width: calc(33.333% - 16px); /* SELALU 3 item */
+    box-sizing: border-box;
+}
 
-                .welcome-slide .product-card {
-                    height: 420px;
-                    display: flex;
-                    flex-direction: column;
-                }
+.welcome-slide .product-card {
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+}
 
-                .welcome-slide .product-card .product-info {
-                    flex: 0 0 auto;
-                }
+.welcome-slide .product-card .product-info {
+    flex: 0 0 auto;
+}
 
-                .welcome-btn {
-                    position: absolute;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    width: 44px;
-                    height: 44px;
-                    border-radius: 999px;
-                    background: rgba(255, 255, 255, 0.95);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-                    cursor: pointer;
-                }
+/* Buttons */
+.welcome-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
 
-                .welcome-btn.prev {
-                    left: 8px;
-                }
+.welcome-btn.prev { left: 8px; }
+.welcome-btn.next { right: 8px; }
 
-                .welcome-btn.next {
-                    right: 8px;
-                }
+/* Dots */
+.welcome-dots {
+    text-align: center;
+    margin-top: 14px;
+}
 
-                .welcome-dots {
-                    text-align: center;
-                    margin-top: 14px;
-                }
+.welcome-dots .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    margin: 0 6px;
+    cursor: pointer;
+}
 
-                .welcome-dots .dot {
-                    display: inline-block;
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 999px;
-                    background: #e5e7eb;
-                    margin: 0 6px;
-                    cursor: pointer;
-                }
+.welcome-dots .dot.active {
+    background: #ec4899;
+}
 
-                .welcome-dots .dot.active {
-                    background: #ec4899;
-                }
+/* Tinggi lebih kecil di mobile agar rapi */
+@media (max-width: 600px) {
+    .welcome-slide .product-card {
+        height: 320px;
+    }
+}
 
-                @media (min-width: 900px) {
-                    .welcome-slide {
-                        min-width: calc(33.333% - 16px);
-                    }
 
-                    .welcome-slide .product-card {
-                        height: 380px;
-                    }
-                }
             </style>
 
             <div class="welcome-carousel" id="welcome-carousel">
@@ -435,59 +431,85 @@
             });
         }
 
-        // Welcome page carousel (prev/next + dots + keyboard)
+        // Improved Welcome page carousel (support multi-item per view, proper paging)
         (function() {
             const carousel = document.getElementById('welcome-carousel');
             if (!carousel) return;
 
             const track = carousel.querySelector('.welcome-track');
-            const slides = Array.from(track.children);
-            let index = 0;
+            const slides = Array.from(track.querySelectorAll('.welcome-slide'));
+            if (!slides.length) return;
 
             const prevBtn = document.getElementById('welcome-prev');
             const nextBtn = document.getElementById('welcome-next');
             const dotsContainer = document.getElementById('welcome-dots');
 
-            function renderDots() {
-                dotsContainer.innerHTML = '';
-                slides.forEach((s, i) => {
-                    const dot = document.createElement('button');
-                    dot.className = 'dot' + (i === index ? ' active' : '');
-                    dot.addEventListener('click', () => goTo(i));
-                    dotsContainer.appendChild(dot);
-                });
+            let currentPage = 0;
+
+            function getGap() {
+                const gap = getComputedStyle(track).gap;
+                return gap ? parseFloat(gap) : 0;
             }
 
-            function goTo(i) {
-                index = (i + slides.length) % slides.length;
-                const target = slides[index];
-                // move track so target slide aligns with container
-                track.style.transform = `translateX(${-target.offsetLeft}px)`;
+            function slidesPerView() {
+                const slideW = slides[0].getBoundingClientRect().width + getGap();
+                return Math.max(1, Math.floor(carousel.clientWidth / slideW));
+            }
+
+            function pagesCount() {
+                return Math.max(1, Math.ceil(slides.length / slidesPerView()));
+            }
+
+            function renderDots() {
+                dotsContainer.innerHTML = '';
+                const pages = pagesCount();
+                for (let i = 0; i < pages; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'dot' + (i === currentPage ? ' active' : '');
+                    dot.addEventListener('click', () => goToPage(i));
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function goToPage(p) {
+                const pages = pagesCount();
+                currentPage = ((p % pages) + pages) % pages;
+                const spv = slidesPerView();
+                const gap = getGap();
+                const slideWidth = slides[0].getBoundingClientRect().width + gap;
+                const offset = currentPage * spv * slideWidth;
+                track.style.transform = `translateX(${-offset}px)`;
                 updateDots();
             }
 
             function updateDots() {
                 const dots = Array.from(dotsContainer.children);
-                dots.forEach((d, i) => d.classList.toggle('active', i === index));
+                dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
             }
 
-            prevBtn.addEventListener('click', () => goTo(index - 1));
-            nextBtn.addEventListener('click', () => goTo(index + 1));
+            if (prevBtn) prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+            if (nextBtn) nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
 
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') prevBtn.click();
-                if (e.key === 'ArrowRight') nextBtn.click();
+                if (e.key === 'ArrowLeft' && prevBtn) prevBtn.click();
+                if (e.key === 'ArrowRight' && nextBtn) nextBtn.click();
             });
 
-            // Reposition on resize
-            window.addEventListener('resize', () => goTo(index));
+            window.addEventListener('resize', () => {
+                // re-render dots (pages may change) and keep same logical page
+                const prevPages = dotsContainer.children.length;
+                renderDots();
+                // ensure currentPage still in range
+                const pages = pagesCount();
+                if (currentPage >= pages) currentPage = pages - 1;
+                goToPage(currentPage);
+            });
 
+            // init
             renderDots();
-            goTo(0);
+            goToPage(0);
         })();
     </script>
-
-    @include('auth._login-modal')
 
 </body>
 

@@ -222,7 +222,7 @@ a { text-decoration: none; }
     background-position: center center;
     background-size: cover;
     background-size: cover;
-    padding-top: 80px;
+    /* padding-top: 80px; */
     height: 90vh;
     display: flex;
     align-items: center;
