@@ -1,70 +1,284 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Whispering Flora - Aesthetic Landing</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
+    <title>Whispering Flora - Aesthetic Landing</title>
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <!-- Fonts: display = Playfair Display, body = Quicksand -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        /* Force consistent fonts on welcome page only to avoid mixing styles */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .section-title,
+        .hero-content h1 {
+            font-family: var(--font-display) !important;
+        }
+
+        body,
+        main,
+        p,
+        a,
+        li,
+        input,
+        button,
+        .product-card,
+        .product-info {
+            font-family: var(--font-body) !important;
+        }
+
+        /* Small tweak: ensure headings look balanced on smaller screens */
+        @media (max-width: 760px) {
+            .hero-content h1 {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+
 <body>
 
     @include('components.header')
 
     <main>
-        <section class="hero" style="background-image: url('{{ asset('images/bg.jpg') }}');">
+        <section class="hero"
+            style="background-image: url('{{ asset('images/Bungawelcome.png') }}'); background-position: center center; background-size: cover;">
             <div class="hero-content">
-                <h1>Temukan Makna Tersembunyi di Setiap Helai Bunga.</h1>
+                <h1>Whispering Flora</h1>
                 <p>Koleksi Bunga Pilihan Terbaik, Dirangkai dengan Sentuhan Hati dari Whispering Flora.</p>
                 <a href="#katalog" class="cta-button">Lihat Koleksi Kami</a>
             </div>
         </section>
-        
+
+        <!-- Feature highlights (landing) - polished visual -->
+        <section class="section" style="padding: 44px 12px; background: transparent;">
+            <style>
+                .landing-features {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    display: flex;
+                    gap: 48px;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    flex-wrap: wrap;
+                    padding: 10px 14px;
+                }
+
+                .landing-feature {
+                    display: flex;
+                    gap: 14px;
+                    align-items: flex-start;
+                    min-width: 200px;
+                    flex: 1;
+                }
+
+                .landing-feature .icon {
+                    width: 36px;
+                    height: 36px;
+                    display: block;
+                    flex: 0 0 36px;
+                }
+
+                .landing-feature h4 {
+                    margin: 0;
+                    font-size: 15px;
+                    font-weight: 800;
+                    color: #0b2545;
+                    letter-spacing: 0.1px
+                }
+
+                .landing-feature p {
+                    margin: 6px 0 0 0;
+                    font-size: 13px;
+                    color: #6b7280;
+                    line-height: 1.5;
+                    max-width: 260px;
+                }
+
+                @media (max-width:980px) {
+                    .landing-features {
+                        gap: 28px;
+                    }
+
+                    .landing-feature p {
+                        max-width: 100%;
+                    }
+                }
+
+                @media (max-width:640px) {
+                    .landing-features {
+                        flex-direction: column;
+                        gap: 16px;
+                    }
+
+                    .landing-feature {
+                        min-width: unset;
+                    }
+                }
+            </style>
+
+            {{-- <div class="landing-features">
+                <div class="landing-feature">
+                    <img class="icon" src="{{ asset('images/feature-personalized.svg') }}"
+                        alt="Personalized Services">
+                    <div>
+                        <h4>Personalized Services</h4>
+                        <p>Rekomendasi secara personal untuk occasion Anda. Gratis!</p>
+                    </div>
+                </div>
+
+                <div class="landing-feature">
+                    <img class="icon" src="{{ asset('images/feature-ontime.svg') }}" alt="Garansi Tepat Waktu">
+                    <div>
+                        <h4>Garansi Tepat Waktu</h4>
+                        <p>Pesanan Anda dijamin tiba sesuai jadwal</p>
+                    </div>
+                </div>
+
+                <div class="landing-feature">
+                    <img class="icon" src="{{ asset('images/feature-wide-reach.svg') }}" alt="Jangkauan Luas">
+                    <div>
+                        <h4>Jangkauan Luas</h4>
+                        <p>Kirim ke LEBIH dari 200++ Kota Di Indonesia</p>
+                    </div>
+                </div>
+
+                <div class="landing-feature">
+                    <img class="icon" src="{{ asset('images/feature-free-shipping.svg') }}" alt="Gratis Ongkir">
+                    <div>
+                        <h4>Gratis Ongkir</h4>
+                        <p>FREE ONGKIR* Pengiriman Dalam Kota.</p>
+                    </div>
+                </div>
+            </div> --}}
+        </section>
+
         <section class="section" id="katalog">
             <h2 class="section-title">Bunga Pilihan Mingguan</h2>
             <style>
                 /* Welcome products carousel */
-                .welcome-carousel { max-width:1200px; margin: 24px auto; position: relative; }
-                .welcome-track { display:flex; transition: transform 0.4s ease; gap:24px; padding: 12px 6px; }
-                .welcome-slide { min-width: 100%; box-sizing: border-box; }
-                .welcome-slide .product-card { height: 420px; display:flex; flex-direction:column; }
-                .welcome-slide .product-card .product-info { flex:0 0 auto; }
-                .welcome-btn { position:absolute; top:50%; transform: translateY(-50%); width:44px; height:44px; border-radius:999px; background: rgba(255,255,255,0.95); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,0.08); cursor:pointer; }
-                .welcome-btn.prev { left: 8px; }
-                .welcome-btn.next { right: 8px; }
-                .welcome-dots { text-align:center; margin-top:14px; }
-                .welcome-dots .dot { display:inline-block; width:10px; height:10px; border-radius:999px; background:#e5e7eb; margin: 0 6px; cursor:pointer; }
-                .welcome-dots .dot.active { background: #ec4899; }
+                .welcome-carousel {
+                    max-width: 1200px;
+                    margin: 24px auto;
+                    position: relative;
+                }
+
+                .welcome-track {
+                    display: flex;
+                    transition: transform 0.4s ease;
+                    gap: 24px;
+                    padding: 12px 6px;
+                }
+
+                .welcome-slide {
+                    min-width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .welcome-slide .product-card {
+                    height: 420px;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .welcome-slide .product-card .product-info {
+                    flex: 0 0 auto;
+                }
+
+                .welcome-btn {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 999px;
+                    background: rgba(255, 255, 255, 0.95);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+                    cursor: pointer;
+                }
+
+                .welcome-btn.prev {
+                    left: 8px;
+                }
+
+                .welcome-btn.next {
+                    right: 8px;
+                }
+
+                .welcome-dots {
+                    text-align: center;
+                    margin-top: 14px;
+                }
+
+                .welcome-dots .dot {
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 999px;
+                    background: #e5e7eb;
+                    margin: 0 6px;
+                    cursor: pointer;
+                }
+
+                .welcome-dots .dot.active {
+                    background: #ec4899;
+                }
 
                 @media (min-width: 900px) {
-                    .welcome-slide { min-width: calc(33.333% - 16px); }
-                    .welcome-slide .product-card { height: 380px; }
+                    .welcome-slide {
+                        min-width: calc(33.333% - 16px);
+                    }
+
+                    .welcome-slide .product-card {
+                        height: 380px;
+                    }
                 }
             </style>
 
             <div class="welcome-carousel" id="welcome-carousel">
-                @if(isset($products) && $products->count())
+                @if (isset($products) && $products->count())
                     <div class="welcome-track">
-                        @foreach($products as $product)
+                        @foreach ($products as $product)
                             <div class="welcome-slide" data-slug="{{ $product->slug }}">
-                                <a href="{{ route('jenis.show', $product->slug) }}" style="display:block; color:inherit; text-decoration:none;">
-                                    <div class="product-card" style="position: relative; border-radius: 10px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: white;">
-                                        <div style="position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;">
-                                            <img src="{{ asset('images/' . ($product->image ?? 'babybreath.jpg')) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease;">
-                                            <div style="position: absolute; top: 12px; left: 12px; background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--color-accent-strong, #d4847c); backdrop-filter: blur(4px);">
+                                <a href="{{ route('jenis.show', $product->slug) }}"
+                                    style="display:block; color:inherit; text-decoration:none;">
+                                    <div class="product-card"
+                                        style="position: relative; border-radius: 10px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: white;">
+                                        <div
+                                            style="position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;">
+                                            <img src="{{ asset('images/' . ($product->image ?? 'babybreath.jpg')) }}"
+                                                alt="{{ $product->name }}"
+                                                style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease;">
+                                            <div
+                                                style="position: absolute; top: 12px; left: 12px; background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--color-accent-strong, #d4847c); backdrop-filter: blur(4px);">
                                                 🌸 Favorit
                                             </div>
                                         </div>
                                         <div class="product-info" style="padding: 16px; background: #fff;">
-                                            <h3 style="margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--color-text-dark);">{{ $product->name }}</h3>
-                                            <p style="color: var(--color-text-light); font-size: 13px; margin: 0 0 10px; line-height: 1.4;">{{ \Illuminate\Support\Str::limit($product->description, 80) }}</p>
-                                            <p class="price" style="margin: 0; font-weight: 700; color: var(--color-accent-strong, #d4847c); font-size: 16px;">{{ $product->price }}</p>
+                                            <h3
+                                                style="margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--color-text-dark);">
+                                                {{ $product->name }}</h3>
+                                            <p
+                                                style="color: var(--color-text-light); font-size: 13px; margin: 0 0 10px; line-height: 1.4;">
+                                                {{ \Illuminate\Support\Str::limit($product->description, 80) }}</p>
+                                            <p class="price"
+                                                style="margin: 0; font-weight: 700; color: var(--color-accent-strong, #d4847c); font-size: 16px;">
+                                                {{ $product->price }}</p>
                                         </div>
                                     </div>
                                 </a>
@@ -81,77 +295,106 @@
                     </div>
                 @endif
             </div>
-            
-            <a href="{{ route('login') }}" class="cta-button" style="margin-top: 50px; display: inline-block;">Lihat Semua Produk &raquo;</a>
+
+            <a href="{{ route('login') }}" class="cta-button" style="margin-top: 50px; display: inline-block;">Lihat
+                Semua Produk &raquo;</a>
         </section>
-        
+
+
+
         <!-- Reviews / Testimonials -->
         <section class="section" id="reviews" style="padding: 48px 50px;">
             <h2 class="section-title">Ulasan Pelanggan</h2>
-            <p style="max-width:820px; margin: 8px auto 28px; color:var(--color-text-light); text-align:center;">Apa kata pelanggan kami — jujur, hangat, dan membantu orang memilih rangkaian yang tepat untuk momen mereka.</p>
+            <p style="max-width:820px; margin: 8px auto 28px; color:var(--color-text-light); text-align:center;">Apa
+                kata pelanggan kami — jujur, hangat, dan membantu orang memilih rangkaian yang tepat untuk momen mereka.
+            </p>
 
-            <div style="max-width:1200px; margin: 0 auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                <div style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.06); display:flex; gap:14px; align-items:flex-start;">
-                    <img src="{{ asset('images/review-1.jpg') }}" alt="avatar" style="width:64px; height:64px; border-radius:999px; object-fit:cover;">
+            <div
+                style="max-width:1200px; margin: 0 auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div
+                    style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.06); display:flex; gap:14px; align-items:flex-start;">
+                    <img src="{{ asset('images/review-1.jpg') }}" alt="avatar"
+                        style="width:64px; height:64px; border-radius:999px; object-fit:cover;">
                     <div style="flex:1;">
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
                             <div style="font-weight:700; color:var(--color-text-dark);">Nadia Putri</div>
                             <div style="color:#f9739c; font-weight:700;">★★★★★</div>
                         </div>
-                        <p style="margin:8px 0 0; color:var(--color-text-light); line-height:1.5;">“Cepat, rapi, dan komunikasinya ramah. Bunganya segar & packagingnya cantik — sesuai pesan saya.”</p>
+                        <p style="margin:8px 0 0; color:var(--color-text-light); line-height:1.5;">“Cepat, rapi, dan
+                            komunikasinya ramah. Bunganya segar & packagingnya cantik — sesuai pesan saya.”</p>
                     </div>
                 </div>
 
-                <div style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.06); display:flex; gap:14px; align-items:flex-start;">
-                    <img src="{{ asset('images/review-2.jpg') }}" alt="avatar" style="width:64px; height:64px; border-radius:999px; object-fit:cover;">
+                <div
+                    style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.06); display:flex; gap:14px; align-items:flex-start;">
+                    <img src="{{ asset('images/review-2.jpg') }}" alt="avatar"
+                        style="width:64px; height:64px; border-radius:999px; object-fit:cover;">
                     <div style="flex:1;">
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
                             <div style="font-weight:700; color:var(--color-text-dark);">Adel Bajideh</div>
                             <div style="color:#f9739c; font-weight:700;">★★★★★</div>
                         </div>
-                        <p style="margin:8px 0 0; color:var(--color-text-light); line-height:1.5;">“Pilihan bunga variatif dan harganya sesuai. Pengiriman tepat waktu, dan penerima sangat senang.”</p>
+                        <p style="margin:8px 0 0; color:var(--color-text-light); line-height:1.5;">“Pilihan bunga
+                            variatif dan harganya sesuai. Pengiriman tepat waktu, dan penerima sangat senang.”</p>
                     </div>
                 </div>
 
-                <div style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.06); display:flex; gap:14px; align-items:flex-start;">
-                    <img src="{{ asset('images/review-3.jpg') }}" alt="avatar" style="width:64px; height:64px; border-radius:999px; object-fit:cover;">
+                <div
+                    style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.06); display:flex; gap:14px; align-items:flex-start;">
+                    <img src="{{ asset('images/review-3.jpg') }}" alt="avatar"
+                        style="width:64px; height:64px; border-radius:999px; object-fit:cover;">
                     <div style="flex:1;">
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
                             <div style="font-weight:700; color:var(--color-text-dark);">Rina Wijaya</div>
                             <div style="color:#f9739c; font-weight:700;">★★★★★</div>
                         </div>
-                        <p style="margin:8px 0 0; color:var(--color-text-light); line-height:1.5;">“Kualitas bunga bagus, dan respon customer service membantu memilih rangkaian yang pas untuk acara keluarga.”</p>
+                        <p style="margin:8px 0 0; color:var(--color-text-light); line-height:1.5;">“Kualitas bunga
+                            bagus, dan respon customer service membantu memilih rangkaian yang pas untuk acara
+                            keluarga.”</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="section" id="about" style="background-color: var(--color-pastel-bliss-4); padding: 60px 50px;">
+        <section class="section" id="about"
+            style="background-color: var(--color-pastel-bliss-4); padding: 60px 50px;">
             <h2 class="section-title" style="margin-bottom: 20px;">Tentang Whispering Flora</h2>
             <p style="max-width: 700px; margin: 0 auto 30px; font-size: 16px; color: var(--color-text-dark);">
-                Kami percaya bahwa setiap bunga memiliki cerita dan pesan tersembunyi. Whispering Flora berdedikasi untuk memilih hanya bunga-bunga dengan kualitas terbaik, merangkainya dengan sentuhan hati agar pesan Anda tersampaikan dengan sempurna. Kami menyediakan sistem penjualan sederhana dengan fokus pada kemudahan pengelolaan data dan pengalaman pengguna yang lancar.
+                Kami percaya bahwa setiap bunga memiliki cerita dan pesan tersembunyi. Whispering Flora berdedikasi
+                untuk memilih hanya bunga-bunga dengan kualitas terbaik, merangkainya dengan sentuhan hati agar pesan
+                Anda tersampaikan dengan sempurna. Kami menyediakan sistem penjualan sederhana dengan fokus pada
+                kemudahan pengelolaan data dan pengalaman pengguna yang lancar.
             </p>
             <p style="font-style: italic; font-weight: 500; color: var(--color-accent-strong);">
                 "Biar bunga yang bicara, saat kata tak lagi cukup."
             </p>
         </section>
         <!-- Newsletter / Subscribe section (large) -->
-        <section style="background-image: linear-gradient(135deg, rgba(255,181,167,0.10), rgba(237,56,120,0.06)), url('{{ asset('images/bg.jpg') }}'); background-size: cover; color: var(--color-text-dark); padding: 64px 20px; margin-top: 18px;">
+        <section
+            style="background-image: linear-gradient(135deg, rgba(255,181,167,0.10), rgba(237,56,120,0.06)), url('{{ asset('images/bg.jpg') }}'); background-size: cover; color: var(--color-text-dark); padding: 64px 20px; margin-top: 18px;">
             <div style="max-width:1200px; margin: 0 auto; display:flex; gap:30px; align-items:center; flex-wrap:wrap;">
                 <div style="flex:1; min-width:300px; color: var(--color-text-dark);">
-                    <h2 style="font-family: var(--font-display); font-size: 44px; margin:0 0 8px; line-height:1.05; color:var(--color-text-dark);">JANGAN SAMPAI KETINGGALAN — DAPATKAN UPDATE & PROMO</h2>
-                    <p style="margin: 10px 0 18px; color: var(--color-text-light); max-width:620px;">Berlangganan untuk mendapatkan promo menarik, informasi produk baru, dan tips perawatan tanaman setiap bulan.</p>
+                    <h2
+                        style="font-family: var(--font-display); font-size: 44px; margin:0 0 8px; line-height:1.05; color:var(--color-text-dark);">
+                        JANGAN SAMPAI KETINGGALAN — DAPATKAN UPDATE & PROMO</h2>
+                    <p style="margin: 10px 0 18px; color: var(--color-text-light); max-width:620px;">Berlangganan untuk
+                        mendapatkan promo menarik, informasi produk baru, dan tips perawatan tanaman setiap bulan.</p>
                 </div>
 
                 <div style="flex:0 0 420px; min-width:260px;">
-                    <form action="{{ route('subscribe') }}" method="post" style="display:flex; gap:8px; align-items:center; background: rgba(255,255,255,0.06); padding:12px; border-radius:999px; backdrop-filter: blur(4px);">
+                    <form action="{{ route('subscribe') }}" method="post"
+                        style="display:flex; gap:8px; align-items:center; background: rgba(255,255,255,0.06); padding:12px; border-radius:999px; backdrop-filter: blur(4px);">
                         @csrf
-                        <input type="email" name="email" placeholder="Masukkan email Anda" required style="flex:1; padding:12px 16px; border-radius:999px; border: 1px solid rgba(0,0,0,0.06); background: rgba(255,255,255,0.96); color:var(--color-text-dark); outline: none;">
-                        <button type="submit" style="padding:10px 18px; background: linear-gradient(135deg,var(--color-pastel-bliss-1), var(--color-accent-strong)); border: none; color: white; border-radius:999px; font-weight:700;">BERLANGGANAN</button>
+                        <input type="email" name="email" placeholder="Masukkan email Anda" required
+                            style="flex:1; padding:12px 16px; border-radius:999px; border: 1px solid rgba(0,0,0,0.06); background: rgba(255,255,255,0.96); color:var(--color-text-dark); outline: none;">
+                        <button type="submit"
+                            style="padding:10px 18px; background: linear-gradient(135deg,var(--color-pastel-bliss-1), var(--color-accent-strong)); border: none; color: white; border-radius:999px; font-weight:700;">BERLANGGANAN</button>
                     </form>
 
-                    @if(session('subscribed'))
-                        <div style="margin-top:12px; background: rgba(255,255,255,0.96); padding:8px 12px; border-radius:8px; color: var(--color-text-dark); font-weight:600;">Terima kasih — email Anda sudah kami terima.</div>
+                    @if (session('subscribed'))
+                        <div
+                            style="margin-top:12px; background: rgba(255,255,255,0.96); padding:8px 12px; border-radius:8px; color: var(--color-text-dark); font-weight:600;">
+                            Terima kasih — email Anda sudah kami terima.</div>
                     @endif
                 </div>
             </div>
@@ -159,55 +402,9 @@
 
     </main>
 
-    <footer style="background: var(--color-pastel-bliss-3); padding:60px 18px 36px; margin-top:18px;">
-        <div style="max-width:1200px; margin: 0 auto; display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:18px; align-items:start;">
-            <div style="padding-right:12px;">
-                <div style="font-family: var(--font-display); font-size:20px; color:var(--color-text-dark); font-weight:700; margin-bottom:8px;">Whispering Flora</div>
-                <p style="color:var(--color-text-light); font-size:14px; margin:0;">Dari kelopak pertama hingga akhir, kami merangkai setiap bunga dengan ketulusan, kreativitas, dan perhatian pada detail.</p>
-            </div>
+    @include('components.footer')
 
-            <div>
-                <h4 style="font-weight:700; margin-bottom:8px; color:var(--color-text-dark);">Halaman</h4>
-                <ul style="list-style:none; padding:0; margin:0; color:#6b7280;">
-                    <li><a href="{{ route('catalog.index') }}">Katalog</a></li>
-                    <li><a href="{{ route('search') }}?q=">Produk</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="{{ route('cart') }}">Keranjang</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 style="font-weight:700; margin-bottom:8px; color:var(--color-text-dark);">Informasi</h4>
-                <ul style="list-style:none; padding:0; margin:0; color:#6b7280;">
-                    <li><a href="#">Kemitraan Korporat</a></li>
-                    <li><a href="#">Syarat & Ketentuan</a></li>
-                    <li><a href="#">Kebijakan Privasi</a></li>
-                    <li><a href="#">Layanan Pelanggan</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 style="font-weight:700; margin-bottom:8px; color:var(--color-text-dark);">Perusahaan</h4>
-                <ul style="list-style:none; padding:0; margin:0; color:#6b7280;">
-                    <li><a href="#">Siaran Pers</a></li>
-                    <li><a href="#">Karir</a></li>
-                    <li><a href="#">Cara Pesan</a></li>
-                    <li><a href="#">Laporan</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div style="max-width:1200px; margin:18px auto 0; color:#6b7280; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
-            <div>&copy; {{ date('Y') }} Whispering Flora. Semua hak dilindungi.</div>
-            <div>
-                <a href="#" style="margin-right:12px;">Kebijakan Privasi</a>
-                <a href="#" style="margin-right:12px;">Syarat & Ketentuan</a>
-                <a href="#">Kontak Kami</a>
-            </div>
-        </div>
-    </footer>
-
-        @include('auth._login-modal')
+    @include('auth._login-modal')
 
     <script>
         // Update cart count badge from localStorage
@@ -292,5 +489,6 @@
 
     @include('auth._login-modal')
 
-    </body>
-    </html>
+</body>
+
+</html>

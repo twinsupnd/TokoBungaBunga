@@ -1,5 +1,5 @@
 <!-- Reusable Header Component -->
-<header class="header" style="background-color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 1000;">
+<header class="header" style="position: sticky; top: 0; z-index: 1000;">
     <a href="/" style="display: flex; align-items: center; text-decoration: none;">
         <img src="{{ asset('images/logo.png') }}" alt="Whispering Flora Logo" style="height: 40px; width: auto;">
     </a>
@@ -7,68 +7,108 @@
     <nav style="display: flex; gap: 18px; align-items: center;">
         <!-- Search (icon + dropdown) -->
         <div style="position: relative; display: inline-block;">
-            <button id="open-search-box" aria-haspopup="true" aria-expanded="false" style="background:none;border:none;cursor:pointer;font-size:18px;padding:6px;color:var(--color-text-dark);">
-                🔍
+            <button id="open-search-box" aria-haspopup="true" aria-expanded="false" aria-label="Cari"
+                style="background:none;border:none;cursor:pointer;font-size:18px;padding:6px;color:var(--color-text-dark); display:flex; align-items:center; justify-content:center;">
+                <!-- Monochrome magnifier icon (inherits current color) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="img"
+                    aria-hidden="true" focusable="false"
+                    style="display:block; fill: none; stroke: currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round;">
+                    <title>Search</title>
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
             </button>
-            <div id="header-search-dropdown" style="position: absolute; top: 100%; left: -40px; transform: translateY(8px); display: none; background: white; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); padding: 12px; z-index: 1200; min-width: 340px;">
+            <div id="header-search-dropdown"
+                style="position: absolute; top: 100%; left: -40px; transform: translateY(8px); display: none; background: white; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); padding: 12px; z-index: 1200; min-width: 340px;">
                 <form action="{{ route('search') }}" method="get" style="display:flex; gap:8px; align-items:center;">
-                    <input type="search" name="q" placeholder="Cari Bunga..." aria-label="Cari bunga" style="flex:1; padding:10px 12px; border-radius:999px; border:1px solid #eee;">
-                    <button type="submit" style="padding:8px 10px; border-radius:999px; background:#f9739c; color:white; border:none; font-weight:700;">Cari</button>
+                    <input type="search" name="q" placeholder="Cari Bunga..." aria-label="Cari bunga"
+                        style="flex:1; padding:10px 12px; border-radius:999px; border:1px solid #eee;">
+                    <button type="submit"
+                        style="padding:8px 10px; border-radius:999px; background:#f9739c; color:white; border:none; font-weight:700;">Cari</button>
                 </form>
             </div>
         </div>
-        <a href="{{ route('catalog.index') }}" style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Katalog</a>
-        
+        <a href="{{ route('catalog.index') }}"
+            style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Katalog</a>
+
         <!-- Jenis Bunga Dropdown -->
         <div style="position: relative; display: inline-block;">
-            <button class="nav-dropdown-btn" style="background: none; border: none; cursor: pointer; color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s; display: flex; align-items: center; gap: 6px; padding: 0;">
-                JENIS BUNGA <span style="font-size: 12px;">▼</span>
+            <button class="nav-dropdown-btn"
+                style="background: none; border: none; cursor: pointer; color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s; display: flex; align-items: center; gap: 6px; padding: 0;">
+                Jenis Bunga <span style="font-size: 12px;">▼</span>
             </button>
-            <div class="nav-dropdown-menu" style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; display: none; z-index: 1001; margin-top: 8px;">
-                <a href="/bunga/mawar" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌹 Mawar</a>
-                <a href="/bunga/lily" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌺 Lily</a>
-                <a href="/bunga/tulip" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌷 Tulip</a>
-                <a href="/bunga/matahari" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌻 Matahari</a>
-                <a href="/bunga/baby-breath" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; transition: background 0.2s;">👶 Baby Breath</a>
+            <div class="nav-dropdown-menu"
+                style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; display: none; z-index: 1001; margin-top: 8px;">
+                <a href="/bunga/mawar"
+                    style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌹
+                    Mawar</a>
+                <a href="/bunga/lily"
+                    style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌺
+                    Lily</a>
+                <a href="/bunga/tulip"
+                    style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌷
+                    Tulip</a>
+                <a href="/bunga/matahari"
+                    style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌻
+                    Matahari</a>
+                <a href="/bunga/baby-breath"
+                    style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; transition: background 0.2s;">👶
+                    Baby Breath</a>
             </div>
         </div>
 
         <!-- Model Bunga Dropdown -->
         <div style="position: relative; display: inline-block;">
-            <button class="nav-dropdown-btn" style="background: none; border: none; cursor: pointer; color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s; display: flex; align-items: center; gap: 6px; padding: 0;">
-                MODEL BUNGA <span style="font-size: 12px;">▼</span>
+            <button class="nav-dropdown-btn"
+                style="background: none; border: none; cursor: pointer; color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s; display: flex; align-items: center; gap: 6px; padding: 0;">
+                Model Bunga <span style="font-size: 12px;">▼</span>
             </button>
-            <div class="nav-dropdown-menu" style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; display: none; z-index: 1001; margin-top: 8px;">
-                <a href="/model/asli" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌸 Bunga Asli</a>
-                <a href="/model/tiruan" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; transition: background 0.2s;">🎀 Bunga Tiruan</a>
+            <div class="nav-dropdown-menu"
+                style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; display: none; z-index: 1001; margin-top: 8px;">
+                <a href="/model/asli"
+                    style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">🌸
+                    Bunga Asli</a>
+                <a href="/model/tiruan"
+                    style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; transition: background 0.2s;">🎀
+                    Bunga Tiruan</a>
             </div>
         </div>
 
-        <a href="{{ route('about.index') }}" style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Tentang Kami</a>
+        <a href="{{ route('about.index') }}"
+            style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Tentang
+            Kami</a>
 
         @auth
             <div style="display: flex; align-items: center; gap: 20px;">
                 <!-- Cart Icon -->
-                <a href="{{ route('cart') }}" style="position: relative; display: flex; align-items: center; text-decoration: none; color: var(--color-text-dark); transition: color 0.3s; font-size: 20px;" title="Keranjang Belanja">
+                <a href="{{ route('cart') }}"
+                    style="position: relative; display: flex; align-items: center; text-decoration: none; color: var(--color-text-dark); transition: color 0.3s; font-size: 20px;"
+                    title="Keranjang Belanja">
                     🛒
-                    <span id="cart-count-badge" style="position: absolute; top: -8px; right: -10px; background: var(--color-accent-strong); color: white; border-radius: 999px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; min-width: 20px;">0</span>
+                    <span id="cart-count-badge"
+                        style="position: absolute; top: -8px; right: -10px; background: var(--color-accent-strong); color: white; border-radius: 999px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; min-width: 20px;">0</span>
                 </a>
 
                 <!-- User Menu -->
                 <div style="position: relative; display: inline-block;">
-                    <button id="user-menu-toggle" style="background: none; border: none; cursor: pointer; color: var(--color-text-dark); font-weight: 600; padding: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                    <button id="user-menu-toggle"
+                        style="background: none; border: none; cursor: pointer; color: var(--color-text-dark); font-weight: 600; padding: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
                         👤 {{ auth()->user()->name }}
                     </button>
-                    <div id="user-dropdown" style="position: absolute; top: 100%; right: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; display: none; z-index: 1001;">
-                        <a href="{{ route('profile.show') }}" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">
+                    <div id="user-dropdown"
+                        style="position: absolute; top: 100%; right: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; display: none; z-index: 1001;">
+                        <a href="{{ route('profile.show') }}"
+                            style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">
                             👤 Profil Saya
                         </a>
-                        <a href="{{ route('profile.edit') }}" style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">
+                        <a href="{{ route('profile.edit') }}"
+                            style="display: block; padding: 12px 16px; color: var(--color-text-dark); text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">
                             ✏️ Edit Profil
                         </a>
                         <form method="POST" action="{{ route('logout') }}" style="display: block;">
                             @csrf
-                            <button type="submit" style="width: 100%; text-align: left; padding: 12px 16px; background: none; border: none; cursor: pointer; color: var(--color-text-dark); text-decoration: none; transition: background 0.2s;">
+                            <button type="submit"
+                                style="width: 100%; text-align: left; padding: 12px 16px; background: none; border: none; cursor: pointer; color: var(--color-text-dark); text-decoration: none; transition: background 0.2s;">
                                 🚪 Logout
                             </button>
                         </form>
@@ -76,10 +116,12 @@
                 </div>
             </div>
         @else
-            <a href="#" id="open-auth-modal" style="color: var(--color-button-primary); font-weight: 600; text-decoration: none; padding: 10px 20px; border-radius: 25px; background: linear-gradient(45deg, var(--color-pastel-bliss-5), var(--color-accent-strong), var(--color-button-primary)); background-size: 200% 100%; background-position: right; color: white; transition: all 0.3s;">
+            <a href="#" id="open-auth-modal"
+                style="color: var(--color-button-primary); font-weight: 600; text-decoration: none; padding: 10px 20px; border-radius: 25px; background: linear-gradient(45deg, var(--color-pastel-bliss-5), var(--color-accent-strong), var(--color-button-primary)); background-size: 200% 100%; background-position: right; color: white; transition: all 0.3s;">
                 Login
             </a>
-            <a href="{{ route('register') }}" style="color: var(--color-accent-strong); font-weight: 600; text-decoration: none;">
+            <a href="{{ route('register') }}"
+                style="color: var(--color-accent-strong); font-weight: 600; text-decoration: none;">
                 Register
             </a>
         @endauth

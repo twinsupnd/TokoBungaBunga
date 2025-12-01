@@ -16,6 +16,7 @@ Route::get('/', [JenisController::class, 'landing']);
 Route::get('/search', [JenisController::class, 'search'])->name('search');
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 // Simple subscribe endpoint (store email in session & log)
 Route::post('/subscribe', function (Request $request) {
@@ -28,7 +29,7 @@ Route::post('/subscribe', function (Request $request) {
     $subscribers[] = ['email' => $data['email'], 'created_at' => now()->toDateTimeString()];
     session()->put('subscribers', $subscribers);
 
-    \Log::info('New newsletter sign up: ' . $data['email']);
+    Log::info('New newsletter sign up: ' . $data['email']);
 
     session()->flash('subscribed', true);
     return redirect()->back();
@@ -39,6 +40,8 @@ Route::get('/tentang-kami', function () {
 })->name('about.index');
 Route::get('/jenis/{jenis:slug}', [JenisController::class, 'show'])->name('jenis.show');
 Route::get('/katalog', [JenisController::class, 'publicCatalog'])->name('catalog.index');
+// Lightweight endpoint used by public catalog to check for updates
+Route::get('/katalog/last-updated', [JenisController::class, 'publicCatalogLastUpdated'])->name('catalog.lastUpdated');
 
 // Category routes
 Route::get('/bunga/{type}', [App\Http\Controllers\CategoryController::class, 'showFlowerType'])->name('category.flower-type');
@@ -130,6 +133,9 @@ Route::middleware(['auth', 'verified', 'role:manager'])->group(function () {
         // PUT/PATCH /manager/kelola-admin/{admin}
         Route::put('/{admin}', [AdminController::class, 'update'])->name('update');
 
+        // POST /manager/kelola-admin/{admin}/toggle-status
+        Route::post('/{admin}/toggle-status', [AdminController::class, 'toggleStatus'])->name('toggleStatus');
+
         // DELETE /manager/kelola-admin/{admin}
         Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('destroy');
     });
@@ -188,4 +194,4 @@ Route::get('/pesanan', function () {
 })->name('pesanan.preview');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

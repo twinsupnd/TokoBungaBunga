@@ -17,7 +17,7 @@ class JenisController extends Controller
     public function index()
     {
         // Admin listing for dashboard: show all jenis and form to create new
-        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin', 'manager'])) {
             abort(403);
         }
 
@@ -40,7 +40,7 @@ class JenisController extends Controller
     public function store(StoreJenisRequest $request)
     {
         // Allow admin/manager to create new Jenis (product)
-        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin', 'manager'])) {
             abort(403);
         }
 
@@ -71,7 +71,25 @@ class JenisController extends Controller
             $data['image'] = $path;
         }
 
-        Jenis::create($data);
+        $jenis = Jenis::create($data);
+
+        // Refresh model to get values and timestamps
+        $jenis->refresh();
+
+        if ($request->wantsJson() || $request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'success' => true,
+                'item' => [
+                    'slug' => $jenis->slug,
+                    'name' => $jenis->name,
+                    'price' => $jenis->price,
+                    'stock' => $jenis->stock,
+                    'description' => $jenis->description,
+                    'image_url' => $jenis->image ? Storage::disk('public')->url($jenis->image) : null,
+                    'updated_at' => $jenis->updated_at ? strtotime($jenis->updated_at) : time(),
+                ],
+            ]);
+        }
 
         return redirect()->route('dashboard.jenis.index')->with('success', 'Produk berhasil ditambahkan.');
     }
@@ -81,7 +99,7 @@ class JenisController extends Controller
      */
     public function adminShow(Jenis $jenis)
     {
-        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin', 'manager'])) {
             abort(403);
         }
         return view('dashboard.jenis.show', compact('jenis'));
@@ -114,11 +132,21 @@ class JenisController extends Controller
     }
 
     /**
+     * Return last updated timestamp for products (used by client polling).
+     */
+    public function publicCatalogLastUpdated()
+    {
+        $last = Jenis::max('updated_at');
+        $ts = $last ? strtotime($last) : 0;
+        return response()->json(['last' => $ts]);
+    }
+
+    /**
      * Catalog preview page for admin to see customer view.
      */
     public function catalog()
     {
-        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin', 'manager'])) {
             abort(403);
         }
 
@@ -131,7 +159,7 @@ class JenisController extends Controller
      */
     public function edit(Jenis $jenis)
     {
-        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin', 'manager'])) {
             abort(403);
         }
 
@@ -143,7 +171,7 @@ class JenisController extends Controller
      */
     public function update(UpdateJenisRequest $request, Jenis $jenis)
     {
-        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin', 'manager'])) {
             abort(403);
         }
 
@@ -174,6 +202,25 @@ class JenisController extends Controller
 
         $jenis->update($data);
 
+        // Refresh model to get latest values (including updated_at)
+        $jenis->refresh();
+
+        // If AJAX request, return JSON with updated fields for client-side update
+        if ($request->wantsJson() || $request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'success' => true,
+                'item' => [
+                    'slug' => $jenis->slug,
+                    'name' => $jenis->name,
+                    'price' => $jenis->price,
+                    'stock' => $jenis->stock,
+                    'description' => $jenis->description,
+                    'image_url' => $jenis->image ? Storage::disk('public')->url($jenis->image) : null,
+                    'updated_at' => $jenis->updated_at ? strtotime($jenis->updated_at) : time(),
+                ],
+            ]);
+        }
+
         return redirect()->route('dashboard.jenis.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
@@ -182,7 +229,7 @@ class JenisController extends Controller
      */
     public function destroy(Jenis $jenis)
     {
-        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin','manager'])) {
+        if (! \Illuminate\Support\Facades\Auth::check() || ! in_array(\Illuminate\Support\Facades\Auth::user()->role, ['admin', 'manager'])) {
             abort(403);
         }
 
