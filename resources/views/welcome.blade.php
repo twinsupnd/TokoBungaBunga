@@ -62,8 +62,38 @@
             </div>
         </section>
 
+        <!-- Running marquee below hero (visual-only, repeats 'Whispering Flora') -->
+        <div class="running-banner" aria-hidden="true">
+            <div class="running-track">
+                <div class="running-inner">
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                </div>
+                <!-- duplicate inner for smooth seamless loop -->
+                <div class="running-inner" aria-hidden="true">
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                    <span class="running-item">Whispering Flora</span>
+                </div>
+            </div>
+        </div>
         <!-- Feature highlights (landing) - polished visual -->
-        <section class="section" style="padding: 44px 12px; background: transparent;">
+      
             <style>
                 .landing-features {
                     max-width: 1200px;

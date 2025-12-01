@@ -327,6 +327,49 @@ a { text-decoration: none; }
     transform: translateX(5px);
 }
 
+/* --- RUNNING MARQUEE BELOW HERO --- */
+.running-banner {
+    overflow: hidden;
+    width: 100%;
+    background: transparent;
+    padding: 8px 0;
+}
+.running-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+    animation: marquee 18s linear infinite;
+}
+.running-inner {
+    display: flex;
+    gap: 48px;
+    padding-right: 48px;
+}
+.running-item {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-accent-strong);
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 980px) {
+    .running-item { font-size: 20px; }
+    .running-inner { gap: 28px; }
+}
+
+@media (max-width: 480px) {
+    .running-item { font-size: 16px; }
+    .running-inner { gap: 18px; }
+}
+
 /* --- AUTH (login/register modal) --- */
 .auth-container {
     position: fixed;
@@ -406,7 +449,7 @@ a { text-decoration: none; }
     /* Slightly darker than #FFE5D8 for better contrast */
     background: #FFD1C4; /* adjusted darker pastel */
     padding: 90px 50px 120px; /* slightly larger vertical space */
-    margin-top: 30px;
+    /* margin-top: 30px; */
 }
 
 /* Distinct style for the Reviews section so it looks separate from About */
