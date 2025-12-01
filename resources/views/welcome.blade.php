@@ -129,7 +129,7 @@
                 }
             </style>
 
-            <div class="landing-features">
+            {{-- <div class="landing-features">
                 <div class="landing-feature">
                     <img class="icon" src="{{ asset('images/feature-personalized.svg') }}"
                         alt="Personalized Services">
@@ -162,7 +162,7 @@
                         <p>FREE ONGKIR* Pengiriman Dalam Kota.</p>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </section>
 
         <section class="section" id="katalog">

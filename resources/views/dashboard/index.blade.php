@@ -204,7 +204,7 @@
             }
         </style>
 
-        <div class="features-row">
+        {{-- <div class="features-row">
             <div class="feature-item">
                 <img src="{{ asset('images/feature-personalized.svg') }}" alt="Personalized Services" />
                 <div>
@@ -236,7 +236,7 @@
                     <p>FREE ONGKIR* Pengiriman dalam kota.</p>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
 
