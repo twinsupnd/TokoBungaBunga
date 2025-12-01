@@ -8,7 +8,7 @@
     --color-pastel-bliss-3: #F8EDEB; /* Off-White/Lightest Pink (Background) */
     --color-pastel-bliss-4: #F9DCC4; /* Light Peach */
     --color-pastel-bliss-5: #FCD5CE; /* Peach/Soft Pink Tone (Accent) */
-    
+
     /* Warna tambahan untuk teks dan tombol agar kontras */
     --color-text-dark: #5A4B4B; /* Darker tone for readability */
     --color-text-light: #8C7878; /* Muted tone for sub-text */
@@ -65,7 +65,8 @@ a { text-decoration: none; }
 .header {
     position: fixed;
     top: 0; left: 0; right: 0;
-    background: linear-gradient(135deg, var(--color-pastel-bliss-3) 0%, rgba(255, 181, 167, 0.08) 100%);
+    /* Make header colors follow the brand logo palette (soft pastel / pink accents) */
+    background: linear-gradient(90deg, rgba(249,115,156,0.08), rgba(255,181,167,0.08)), linear-gradient(135deg, var(--color-pastel-bliss-5) 0%, var(--color-pastel-bliss-1) 100%);
     backdrop-filter: blur(8px);
     padding: 18px 50px;
     display: flex;
@@ -78,15 +79,15 @@ a { text-decoration: none; }
 
 .logo-container {
     display: inline-block;
-    height: 30px; 
+    height: 30px;
 }
 
 .logo-container img {
-    height: 100%; 
+    height: 100%;
     width: auto;
 }
 
-.nav a { 
+.nav a {
     margin-left: 30px;
     text-decoration: none;
     color: var(--color-text-dark);
@@ -116,25 +117,25 @@ a { text-decoration: none; }
 }
 
 .nav-button {
-    padding: 12px 28px; 
-    border-radius: 25px; 
+    padding: 12px 28px;
+    border-radius: 25px;
     background: linear-gradient(135deg, var(--color-pastel-bliss-1) 0%, var(--color-pastel-bliss-2) 100%);
     color: white !important;
     font-weight: 700;
-    transition: all 0.3s ease; 
-    border: none; 
+    transition: all 0.3s ease;
+    border: none;
     cursor: pointer;
-    position: relative; 
-    z-index: 1; 
-    box-shadow: 0 6px 20px rgba(237, 56, 120, 0.15); 
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 6px 20px rgba(237, 56, 120, 0.15);
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .nav-button:hover {
-    transform: translateY(-3px); 
-    box-shadow: 0 12px 30px rgba(237, 56, 120, 0.25); 
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(237, 56, 120, 0.25);
 }
 
 .nav-button:active {
@@ -217,9 +218,11 @@ a { text-decoration: none; }
 /* --- HERO SECTION --- */
 .hero {
     /* Perhatian: path asset di sini harus diganti di HTML/Blade */
-    background: no-repeat center center; 
+    background-repeat: no-repeat;
+    background-position: center center;
     background-size: cover;
-    padding-top: 80px; 
+    background-size: cover;
+    padding-top: 80px;
     height: 90vh;
     display: flex;
     align-items: center;
@@ -231,27 +234,32 @@ a { text-decoration: none; }
 .hero::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(248, 237, 235, 0.3);
+    inset: 0;
+    /* Slightly desaturate + soften the image so the popup stands out.
+       We'll use a translucent layer rather than hard white so the floral image shows through. */
+    background: linear-gradient(180deg, rgba(255,255,255,0.56), rgba(255,255,255,0.56));
+    pointer-events: none;
 }
 
 .hero-content {
     position: relative;
     z-index: 10;
     max-width: 800px;
-    
-    /* KOTAK PUTIH AGAK TRANSPARAN DI BELAKANG TEXT */
-    background-color: rgba(255, 255, 255, 0.75); 
-    padding: 50px; 
-    border-radius: 20px; 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+
+    /* KOTAK PUTIH AGAK TRANSPARAN DI BELAKANG TEXT; keep the card clearly white so it's the main focus */
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 30px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.05);
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .hero-content h1 {
     font-family: var(--font-display);
     font-size: 56px;
     margin-bottom: 10px;
-    color: var(--color-accent-strong); 
+    color: var(--color-accent-strong);
 }
 
 .hero-content p {
@@ -262,24 +270,24 @@ a { text-decoration: none; }
 }
 
 .hero-content .cta-button {
-    padding: 15px 35px; 
-    border-radius: 30px; 
+    padding: 15px 35px;
+    border-radius: 30px;
     color: white;
     text-decoration: none;
     font-weight: 700;
     font-size: 18px;
-    
+
     background: linear-gradient(135deg, var(--color-pastel-bliss-1) 0%, var(--color-pastel-bliss-5) 100%);
-    transition: all 0.3s ease-in-out; 
-    
-    position: relative; 
-    overflow: hidden; 
+    transition: all 0.3s ease-in-out;
+
+    position: relative;
+    overflow: hidden;
     z-index: 1;
-    border: none; 
-    
-    display: inline-flex; 
-    align-items: center; 
-    gap: 10px; 
+    border: none;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     box-shadow: 0 4px 15px rgba(255, 181, 167, 0.4);
 }
 
@@ -288,35 +296,35 @@ a { text-decoration: none; }
     content: '';
     position: absolute;
     top: 0;
-    left: -100%; 
-    width: 25px; 
+    left: -100%;
+    width: 25px;
     height: 100%;
-    transform: skewX(-20deg); 
-    background: rgba(255, 255, 255, 0.4); 
+    transform: skewX(-20deg);
+    background: rgba(255, 255, 255, 0.4);
     transition: left 1.0s ease-in-out;
     z-index: 2;
 }
 
 .hero-content .cta-button:hover {
     background: linear-gradient(135deg, var(--color-accent-strong) 0%, var(--color-pastel-bliss-1) 100%);
-    color: white; 
-    box-shadow: 0 12px 35px rgba(237, 56, 120, 0.5); 
-    transform: translateY(-3px) scale(1.05); 
+    color: white;
+    box-shadow: 0 12px 35px rgba(237, 56, 120, 0.5);
+    transform: translateY(-3px) scale(1.05);
 }
 
 /* BARU: Animasi kilauan saat hover */
 .hero-content .cta-button:hover::after {
-    left: 100%; 
+    left: 100%;
 }
 
 /* Efek untuk ikon saat hover pada tombol */
 .hero-content .cta-button i {
-    font-size: 1.1em; 
-    transition: transform 0.3s ease-in-out; 
+    font-size: 1.1em;
+    transition: transform 0.3s ease-in-out;
 }
 
 .hero-content .cta-button:hover i {
-    transform: translateX(5px); 
+    transform: translateX(5px);
 }
 
 /* --- AUTH (login/register modal) --- */
@@ -393,6 +401,38 @@ a { text-decoration: none; }
     text-align: center;
 }
 
+/* Distinct style for the Katalog section on the welcome page */
+#katalog {
+    /* Slightly darker than #FFE5D8 for better contrast */
+    background: #FFD1C4; /* adjusted darker pastel */
+    padding: 90px 50px 120px; /* slightly larger vertical space */
+    margin-top: 30px;
+}
+
+/* Distinct style for the Reviews section so it looks separate from About */
+#reviews {
+    background: #FFF6F5; /* subtle warm pink/cream, distinct from the peach 'about' band */
+    padding: 64px 50px; /* slightly tighter vertical padding compared to katalog */
+    border-top: 1px solid rgba(0,0,0,0.02);
+    border-bottom: 1px solid rgba(0,0,0,0.02);
+}
+
+#reviews .section-title { color: var(--color-text-dark); }
+#reviews p { color: var(--color-text-light); max-width: 950px; margin: 8px auto 40px; }
+#reviews .site-testimonials { max-width: 1200px; margin: 0 auto; }
+
+/* Slightly increase card shadows in the reviews area so they float above the warm background */
+#reviews .review-card { background: #fff; border-radius: 12px; box-shadow: 0 14px 30px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.03); }
+
+/* give the inner track/area more breathing room and keep product cards readable */
+#katalog .welcome-carousel { padding: 8px 30px; }
+#katalog .welcome-slide .product-card { background: #ffffff; border: 1px solid rgba(0,0,0,0.05); }
+#katalog .section-title { color: var(--color-text-dark); }
+
+/* make arrows and dots a touch more visible on this section */
+#katalog .welcome-btn { background: rgba(255,255,255,0.96); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+#katalog .welcome-dots .dot.active { background: var(--color-accent-strong); }
+
 .section-title {
     font-family: var(--font-display);
     font-size: 36px;
@@ -434,7 +474,7 @@ a { text-decoration: none; }
 
 .product-info h3 {
     font-family: var(--font-display);
-    color: var(--color-accent-strong); 
+    color: var(--color-accent-strong);
     margin-top: 0;
     font-size: 22px;
 }
@@ -442,13 +482,13 @@ a { text-decoration: none; }
 .product-info .price {
     font-size: 20px;
     font-weight: 700;
-    color: var(--color-button-primary); 
+    color: var(--color-button-primary);
     margin-top: 10px;
 }
 
 /* --- FOOTER --- */
 .footer {
-    background-color: var(--color-pastel-bliss-2); 
+    background-color: var(--color-pastel-bliss-2);
     color: var(--color-text-dark);
     padding: 20px 50px;
     text-align: center;
@@ -456,9 +496,57 @@ a { text-decoration: none; }
 }
 
 .footer a {
-    color: var(--color-text-dark);
+    color: var(--color-accent-strong);
     text-decoration: none;
     margin: 0 10px;
+}
+
+/* --- SITE FOOTER (cleaner layout for welcome) --- */
+.site-footer {
+    /* subtle gradient + base background for a soft band look */
+    background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(0,0,0,0.00)), var(--color-pastel-bliss-3);
+    /* larger vertical spacing to match reference */
+    padding: 90px 40px 40px;
+    color: var(--color-text-dark);
+}
+.site-footer .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; align-items: start; padding-top: 48px; }
+.site-footer .brand, .site-footer .footer-brand { padding-right: 42px; }
+.site-footer .brand h3, .site-footer .footer-brand h3 { font-family: var(--font-display); font-size: 40px; margin-bottom: 12px; color: var(--color-text-dark); letter-spacing: -0.6px; }
+.site-footer .brand p, .site-footer .footer-brand p { color: var(--color-text-light); font-size: 15px; margin: 0; max-width: 560px; line-height:2.05; }
+.site-footer h4 { font-weight: 700; color: var(--color-text-dark); margin-bottom: 18px; font-size: 26px; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 6px; text-align: left; }
+.site-footer ul { list-style: none; margin: 0; padding: 0; color: #6b7280; }
+.site-footer ul li { margin: 8px 0; }
+.site-footer ul li a { color: #4e4a4e; font-weight: 500; opacity: 0.95; }
+.site-footer ul li a:hover { color: var(--color-accent-strong); text-decoration: none; opacity:1; }
+.site-footer .footer-legal { display:flex; justify-content:center; align-items:center; margin-top:40px; color:#6b7280; font-size:13px; border-top: 1px solid rgba(0,0,0,0.06); padding-top:28px; gap:18px; flex-direction: column; }
+.site-footer .footer-legal .legal-row { display:flex; align-items:center; gap:18px; justify-content:center; width:100%; }
+.site-footer .footer-legal a { color: #6b4e6b; margin-left: 18px; font-weight: 500; }
+.site-footer .footer-legal .copyright { font-weight:800; color: var(--color-text-dark); }
+
+.site-footer .legal-links { display:flex; gap:18px; align-items:center; justify-content:center; }
+.site-footer .legal-links a { color: #6b7280; font-size: 13px; opacity: .95; }
+.site-footer .legal-links a:hover { color: var(--color-accent-strong); }
+
+/* vertical separator after the brand column */
+.site-footer .footer-inner > :nth-child(2) { padding-left: 48px; border-left: 1px solid rgba(0,0,0,0.08); }
+
+/* center/left alignment and spacing for the three column groups */
+.site-footer .footer-links { display:flex; flex-direction:column; align-items:center; }
+.site-footer .footer-links ul { padding-left: 0; }
+.site-footer .footer-links ul li { text-align:left; min-width:200px; }
+.site-footer .footer-links ul li a { font-size: 15px; color: #4b4a4a; opacity: .95; }
+
+/* make left brand visually distinct, slightly larger spacing */
+.site-footer { padding-bottom: 44px; }
+
+@media (max-width: 980px) {
+    .site-footer .footer-inner { grid-template-columns: repeat(2, 1fr); }
+    .site-footer .brand p { max-width: none; }
+}
+
+@media (max-width: 560px) {
+    .site-footer .footer-inner { grid-template-columns: 1fr; text-align: left; }
+    .site-footer .footer-legal { flex-direction: column; gap: 8px; align-items: flex-start; }
 }
 
 /* --- Responsive Design --- */
@@ -467,7 +555,7 @@ a { text-decoration: none; }
         padding: 15px 20px;
     }
     .nav {
-        display: none; 
+        display: none;
     }
     .hero {
         height: 60vh;
@@ -637,8 +725,8 @@ a { text-decoration: none; }
     transform: translateY(-4px);
     box-shadow: 0 18px 50px rgba(237,56,120,0.16);
 }
-.btn-view-all:active { 
-    transform: translateY(-1px); 
+.btn-view-all:active {
+    transform: translateY(-1px);
 }
 
 .btn-view-all.center {

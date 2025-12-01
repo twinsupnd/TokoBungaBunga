@@ -28,15 +28,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Role-based redirect: admin & manager -> dashboard, others -> Fortify home
-        $fallback = config('fortify.home', '/');
+        // Role-first redirect: manager -> manager dashboard, admin -> dashboard
         $user = $request->user();
-
-        if ($user && isset($user->role) && in_array($user->role, ['admin', 'manager'], true)) {
-            return redirect()->intended(route('dashboard'));
+        if ($user && isset($user->role)) {
+            $role = strtolower(trim((string) $user->role));
+            if ($role === 'manager') {
+                return redirect()->route('manager.dashboard');
+            }
+            if ($role === 'admin') {
+                return redirect()->route('dashboard');
+            }
         }
 
-        return redirect()->intended($fallback);
+        // Fallback to intended or Fortify home for other roles
+        return redirect()->intended(config('fortify.home', '/'));
     }
 
     /**

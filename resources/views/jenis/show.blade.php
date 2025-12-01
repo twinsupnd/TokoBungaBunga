@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,9 +8,12 @@
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     @vite(['resources/css/app.css'])
 </head>
+
 <body>
     @include('components.header')
 
@@ -20,7 +24,12 @@
     <div class="product-detail-container">
         <div class="product-detail-grid">
             <div class="product-detail-image">
-                <img src="{{ asset('images/' . ($jenis->image ?? 'babybreath.jpg')) }}" alt="{{ $jenis->name }}">
+                @if ($jenis->image)
+                    <img src="{{ Storage::disk('public')->url($jenis->image) }}?v={{ strtotime($jenis->updated_at) }}"
+                        alt="{{ $jenis->name }}">
+                @else
+                    <img src="{{ asset('images/babybreath.jpg') }}" alt="{{ $jenis->name }}">
+                @endif
             </div>
 
             <div class="product-detail-info">
@@ -126,15 +135,20 @@
             if (typeof window.cartData === 'undefined') {
                 window.cartData = {
                     items: [],
-                    summary: { subtotal: 0, shipping: 50000, discount: 0, total: 0 }
+                    summary: {
+                        subtotal: 0,
+                        shipping: 50000,
+                        discount: 0,
+                        total: 0
+                    }
                 };
             }
 
             // Check if product already in cart - update quantity or add new
-            const existingItem = window.cartData.items.find(item => 
+            const existingItem = window.cartData.items.find(item =>
                 item.id === newProduct.id && item.deliveryDate === deliveryDate
             );
-            
+
             if (existingItem) {
                 existingItem.quantity += quantity;
             } else {
@@ -157,11 +171,11 @@
 
             // Redirect to cart immediately
             @auth
-                window.location.href = '{{ route("cart") }}';
-            @else
-                // If not logged in, show login modal or redirect to login
-                window.location.href = '{{ route("login") }}';
-            @endauth
+            window.location.href = '{{ route('cart') }}';
+        @else
+            // If not logged in, show login modal or redirect to login
+            window.location.href = '{{ route('login') }}';
+        @endauth
         });
 
         // Load cart from localStorage on page load
@@ -177,4 +191,5 @@
         });
     </script>
 </body>
+
 </html>
