@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\JenisController;
 use App\Http\Controllers\AdminController; // <-- Controller yang kamu pakai
 use App\Http\Controllers\AdminManagementController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 // (Request is imported earlier)
@@ -79,6 +80,9 @@ Route::prefix('dashboard/jenis')->middleware(['auth', 'verified'])->group(functi
     Route::put('/{jenis:slug}', [JenisController::class, 'update'])->name('dashboard.jenis.update');
     Route::delete('/{jenis:slug}', [JenisController::class, 'destroy'])->name('dashboard.jenis.destroy');
 });
+
+// Admin orders listing in dashboard
+Route::get('/dashboard/pesanan', [OrderController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard.pesanan.index');
 
 // ====================
 // Catalog Preview (Admin / Manager)

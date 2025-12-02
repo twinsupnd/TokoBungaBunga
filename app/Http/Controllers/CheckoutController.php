@@ -94,10 +94,17 @@ class CheckoutController extends Controller
             $orderData = [
                 'user_id' => $user->id ?? null,
                 'status' => 'pending',
-                'name' => $data['name'] ?? null,
-                'phone' => $data['phone'] ?? null,
-                'address' => $data['address'] ?? null,
             ];
+
+            if (Schema::hasColumn('orders', 'name')) {
+                $orderData['name'] = $data['name'] ?? null;
+            }
+            if (Schema::hasColumn('orders', 'phone')) {
+                $orderData['phone'] = $data['phone'] ?? null;
+            }
+            if (Schema::hasColumn('orders', 'address')) {
+                $orderData['address'] = $data['address'] ?? null;
+            }
             if (Schema::hasColumn('orders', 'order_number')) {
                 $orderData['order_number'] = $orderId;
             }
@@ -147,10 +154,17 @@ class CheckoutController extends Controller
         $orderData = [
             'user_id' => $user->id ?? null,
             'status' => 'pending',
-            'name' => $data['name'] ?? null,
-            'phone' => $data['phone'] ?? null,
-            'address' => $data['address'] ?? null,
         ];
+
+        if (Schema::hasColumn('orders', 'name')) {
+            $orderData['name'] = $data['name'] ?? null;
+        }
+        if (Schema::hasColumn('orders', 'phone')) {
+            $orderData['phone'] = $data['phone'] ?? null;
+        }
+        if (Schema::hasColumn('orders', 'address')) {
+            $orderData['address'] = $data['address'] ?? null;
+        }
         if (Schema::hasColumn('orders', 'order_number')) {
             $orderData['order_number'] = $orderId;
         }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Pesanan Selesai - Whispering Flora</title>
     <script src="https://cdn.tailwindcss.com"></script>
+     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root{--accent:#ED3878;--text:#5A4B4B}
@@ -52,14 +53,8 @@
                 </div>
             </div>
 
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-[#FBF7F8] p-4 rounded-md border">
-                    <h3 class="font-semibold text-sm mb-2">Ringkasan</h3>
-                    <div class="text-sm text-[#5A4B4B]">Subtotal: —</div>
-                    <div class="text-sm text-[#5A4B4B]">Pengiriman: —</div>
-                    <div class="text-sm text-[#5A4B4B]">Diskon: —</div>
-                    <div class="mt-3 text-lg font-bold text-[#2D1F1F]">Total: —</div>
-                </div>
+
+                
 
                 <div class="bg-[#FBF7F8] p-4 rounded-md border">
                     <h3 class="font-semibold text-sm mb-2">Langkah Selanjutnya</h3>
@@ -72,31 +67,11 @@
             </div>
 
             <div class="mt-8 flex gap-4 justify-end">
-                <a href="/" class="px-6 py-3 rounded-md border font-semibold">Kembali ke Beranda</a>
-                <a href="/profile" class="px-6 py-3 rounded-md bg-[#ED3878] text-white font-bold">Lihat Pesanan Saya</a>
+                <a href="/" class="px-6 py-3 rounded-md bg-white border font-semibold">Kembali ke Beranda</a>
             </div>
         </div>
     </main>
 
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Konfirmasi Pesanan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>body{font-family:Quicksand, sans-serif; padding:40px; background:#fafafa; color:#222}</style>
-</head>
-<body>
-    <h1>Konfirmasi Pesanan</h1>
-    @if(isset($status) && $status === 'success')
-        <p>Terima kasih! Pembayaran berhasil. Pesanan Anda akan segera diproses.</p>
-    @else
-        <p>Status pembayaran: {{ $status }}</p>
-        <p>Kami belum menerima pembayaran. Silakan hubungi admin jika perlu bantuan.</p>
-    @endif
-    <p><a href="{{ route('catalog.index') }}">Kembali ke Katalog</a></p>
-</body>
-</html>
+
