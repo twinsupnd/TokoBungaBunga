@@ -575,7 +575,11 @@
                 var description = b.getAttribute('data-description') || '';
                 var image = b.getAttribute('data-image') || '';
 
-                if (editForm) editForm.action = route;
+                if (editForm) {
+                    editForm.action = route;
+                    // store the original slug so we can match the row if server changes slug
+                    editForm.dataset.originalSlug = currentSlug;
+                }
                 if (editName) editName.value = name;
                 if (editPrice) editPrice.value = price;
                 if (editStock) editStock.value = stock;
@@ -735,8 +739,11 @@
                         if (data.success && data.item) {
                             var item = data.item;
                             // update table row
-                            var btn = document.querySelector('.js-edit-btn[data-slug="' + item.slug +
-                                '"]');
+                            var btn = document.querySelector('.js-edit-btn[data-slug="' + item.slug + '"]');
+                            // if we can't find by the new slug, fall back to the original slug saved on the form
+                            if (!btn && editForm && editForm.dataset && editForm.dataset.originalSlug) {
+                                btn = document.querySelector('.js-edit-btn[data-slug="' + editForm.dataset.originalSlug + '"]');
+                            }
                             if (btn) {
                                 var row = btn.closest('tr');
                                 if (row) {
@@ -767,8 +774,11 @@
                                     btn.setAttribute('data-price', item.price || '');
                                     btn.setAttribute('data-stock', item.stock || '');
                                     btn.setAttribute('data-description', item.description || '');
-                                    btn.setAttribute('data-image', item.image_url ? item.image_url +
-                                        '?v=' + item.updated_at : '');
+                                    btn.setAttribute('data-image', item.image_url ? item.image_url + '?v=' + item.updated_at : '');
+                                    // if slug changed on the server, update the button's data-slug so future edits target the correct resource
+                                    if (item.slug && btn.getAttribute('data-slug') !== item.slug) {
+                                        btn.setAttribute('data-slug', item.slug);
+                                    }
                                 }
                             }
 
