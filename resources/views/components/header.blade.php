@@ -29,13 +29,7 @@
             <button id="open-search-box" aria-haspopup="true" aria-expanded="false" aria-label="Cari"
                 style="background:none;border:none;cursor:pointer;font-size:18px;padding:6px;color:var(--color-text-dark); display:flex; align-items:center; justify-content:center;">
                 <!-- Monochrome magnifier icon (inherits current color) -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="img"
-                    aria-hidden="true" focusable="false"
-                    style="display:block; fill: none; stroke: currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round;">
-                    <title>Search</title>
-                    <circle cx="11" cy="11" r="7"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
+                
             </button>
             <div id="header-search-dropdown"
                 style="position: absolute; top: 100%; left: -40px; transform: translateY(8px); display: none; background: white; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); padding: 12px; z-index: 1200; min-width: 340px;">

@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/lucide@latest"></script>
-
+ @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         /* --- Variabel Warna dan Font (Pastel Bliss) --- */
         :root {
@@ -55,28 +55,13 @@
         }
 
         /* HEADER */
-        .header {
-            background-color: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
+       
         .header-nav-link {
             font-family: var(--font-nav);
             font-weight: 500;
             font-size: 15px;
             color: var(--color-text-dark);
             transition: color 0.2s;
-        }
-
-        .header-nav-link:hover {
-            color: var(--color-accent-strong);
         }
 
         /* Input Kuantitas Disesuaikan */
@@ -660,6 +645,8 @@
         </div>
     </div>
 
+    
+    @include('auth._login-modal')
 </body>
 
 </html>
