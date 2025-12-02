@@ -280,7 +280,7 @@
 
         <form method="GET" action="{{ route('catalog.index') }}" style="max-width:900px; margin:12px auto 20px; display:flex; gap:8px; padding:0 12px;">
             <input name="q" type="search" placeholder="Cari produk, nama atau deskripsi..." value="{{ request('q', isset($q) ? $q : '') }}"
-                style="flex:1; padding:10px 14px; border-radius:10px; border:1px solid rgba(34,34,59,0.06); font-size:14px;">
+                style="flex:1; padding:10px 14px; border-radius:10px; border:1px solid rgba(51, 51, 168, 0.06); font-size:14px;">
             <button type="submit" style="padding:10px 14px; border-radius:10px; background:linear-gradient(135deg,#c7b7ff,#ffd6e0); border:none; font-weight:700;">Cari</button>
             @if(request('q') || (isset($q) && $q))
                 <a href="{{ route('catalog.index') }}" style="display:inline-flex; align-items:center; padding:10px 12px; border-radius:10px; background:#fff; border:1px solid rgba(34,34,59,0.04); text-decoration:none; color:inherit;">Reset</a>

@@ -42,7 +42,7 @@
             </div>
         </div>
         <a href="{{ route('catalog.index') }}"
-            style="color: var(--color-text-dark); text-decoration: none; font-weight: 500; transition: color 0.3s;">Katalog</a>
+            style="color: var(--color-text-dark); text-decoration: none; font-weight: 600; transition: color 0.3s;">Katalog</a>
 
         <!-- Jenis Bunga Dropdown -->
         <div class="nav-dropdown">
