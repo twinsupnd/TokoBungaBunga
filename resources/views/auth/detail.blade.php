@@ -105,6 +105,52 @@
             background-color: var(--color-pastel-bliss-2);
         }
 
+        /* Global loading overlay (spinner similar to payment gateway) */
+        #global-loading {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.45);
+            z-index: 9999;
+        }
+        .loader {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            border: 8px solid rgba(255,255,255,0.18);
+            border-top-color: var(--color-accent-strong);
+            animation: spin 1s linear infinite;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Enhanced payment-style spinner */
+        .payment-spinner {
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:12px;
+            color: #fff;
+        }
+        .spinner-svg { width:120px; height:120px; }
+        .spinner-svg .ring { fill:none; stroke-width:8; stroke-linecap:round; }
+        .spinner-svg .ring-1 { stroke: rgba(255,255,255,0.14); }
+        .spinner-svg .ring-2 { stroke: var(--color-accent-strong); stroke-dasharray: 80 120; stroke-dashoffset: 0; transform-origin: 50% 50%; animation: spin-slow 1.6s linear infinite; }
+        .spinner-svg .ring-3 { stroke: rgba(255,255,255,0.3); stroke-dasharray: 40 160; animation: spin-reverse 1.9s linear infinite; }
+
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+        .spinner-logo { width:46px; height:46px; border-radius:10px; background: #fff; display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        .spinner-logo .mark { font-weight:700; color: var(--color-accent-strong); font-family: var(--font-display); }
+
+        .spinner-text { font-size:14px; color: #fff; opacity:0.98; font-weight:600; }
+
     </style>
 
     <script>
@@ -127,14 +173,12 @@
             }
         };
 
-        // --- MODEL DATA SIMULASI CHECKOUT ---
-        // Data ini biasanya diambil dari sesi atau database setelah konfirmasi keranjang
+        // --- MODEL DATA CHECKOUT ---
+        // Prefer server-provided items (passed from CheckoutController::show).
+        // If server cart is empty, we will fallback to client `localStorage` below.
         let checkoutData = {
-            items: [
-                { id: 1, name: 'Baby Blooms Bouquet', price: 550000, quantity: 2, imageUrl: 'https://placehold.co/80x80/FFB5A7/5A4B4B?text=Bouquet' },
-                { id: 2, name: 'Aromatic Candle Set (Peony)', price: 210000, quantity: 3, imageUrl: 'https://placehold.co/80x80/F9DCC4/5A4B4B?text=Candle' }
-            ],
-            shipping: 40000, // Simulasi Ongkir
+            items: @json($items ?? []),
+            shipping: @json($shipping ?? 40000), // default ongkir if not passed from controller
             subtotal: 0,
             total: 0,
             discount: 0
@@ -207,7 +251,37 @@
             console.log("Metode pembayaran dipilih:", method);
         }
 
-        function proceedToPayment(event) {
+        // Show a global loading overlay (spinner)
+        function showLoading() {
+            const el = document.getElementById('global-loading');
+            if (el) el.style.display = 'flex';
+            // disable the main submit button to prevent duplicate clicks
+            const btn = document.querySelector('button[type="submit"].btn-payment');
+            if (btn) {
+                // store original content so we can restore it
+                if (!btn.dataset.origHtml) btn.dataset.origHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.setAttribute('aria-busy', 'true');
+                // show compact label while processing
+                btn.innerHTML = '<span style="display:inline-block;margin-right:10px;vertical-align:middle;">Memproses...</span>';
+            }
+        }
+
+        function hideLoading() {
+            const el = document.getElementById('global-loading');
+            if (el) el.style.display = 'none';
+            const btn = document.querySelector('button[type="submit"].btn-payment');
+            if (btn) {
+                btn.disabled = false;
+                btn.removeAttribute('aria-busy');
+                if (btn.dataset.origHtml) {
+                    btn.innerHTML = btn.dataset.origHtml;
+                    delete btn.dataset.origHtml;
+                }
+            }
+        }
+
+        async function proceedToPayment(event) {
             event.preventDefault(); // Mencegah form submit default
 
             // Validate form
@@ -227,43 +301,154 @@
                 return;
             }
 
-            // Prepare payload
-            const payload = {
-                name: name,
-                phone: phone,
-                address: address,
-                payment_method: payment_method
-            };
-
-            // Send to server to create a local order (no Midtrans)
             const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
 
-            fetch("{{ route('checkout.process') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            }).then(r => r.json())
-            .then(function(resp) {
-                if (resp.error) {
-                    alert('Kesalahan saat membuat pesanan: ' + (resp.error || JSON.stringify(resp)));
+            // If there is a browser cart that hasn't been synced yet, attempt to sync it first.
+            let parsedCart = null;
+            let syncSucceeded = false;
+
+            // show global loading spinner for the checkout flow
+            showLoading();
+
+            try {
+                try {
+                    const savedRaw = localStorage.getItem('whispering_flora_cart');
+                    const syncedFlag = localStorage.getItem('whispering_flora_cart_synced');
+                    const authId = @json(auth()->id());
+
+                    if (savedRaw && syncedFlag !== String(authId)) {
+                        parsedCart = JSON.parse(savedRaw);
+                        if (parsedCart && Array.isArray(parsedCart.items) && parsedCart.items.length > 0) {
+                            // Attempt silent sync and wait for result before checkout
+                            try {
+                                const syncResp = await fetch("{{ route('cart.sync') }}", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': token,
+                                        'Accept': 'application/json'
+                                    },
+                                    credentials: 'same-origin',
+                                    body: JSON.stringify({ items: parsedCart.items })
+                                });
+
+                                const syncJson = await syncResp.json();
+                                if (syncJson && syncJson.status === 'ok') {
+                                    // mark as synced locally to avoid duplicate attempts
+                                    localStorage.removeItem('whispering_flora_cart');
+                                    localStorage.setItem('whispering_flora_cart_synced', String(authId));
+                                    syncSucceeded = true;
+                                    // update UI badge if present
+                                    try { updateCartBadge(); } catch (e) {}
+                                }
+                            } catch (e) {
+                                console.warn('Silent cart sync failed, will include local items in checkout payload as fallback.', e);
+                                // continue to checkout attempt — include local items as fallback
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Error checking local cart before checkout', e);
+                }
+
+                // Prepare payload for checkout (server uses DB cart for authenticated users)
+                const payload = {
+                    name: name,
+                    phone: phone,
+                    address: address,
+                    payment_method: payment_method
+                };
+
+                // If we still have local cart items that weren't synced, include them as fallback
+                if (!syncSucceeded && parsedCart && Array.isArray(parsedCart.items) && parsedCart.items.length > 0) {
+                    // Normalize local cart items before sending to server.
+                    // Some pages may store `price` as formatted strings (eg "Rp190.000").
+                    // Ensure we always send numeric prices (in cents/IDR integer) so server
+                    // doesn't cast formatted strings to 0.
+                    payload.items = parsedCart.items.map(p => {
+                        const rawPrice = p.price !== undefined && p.price !== null ? p.price : (p.jenis_price || p.price_text || 0);
+                        const normalizedPrice = (typeof rawPrice === 'number') ? rawPrice : (parseInt(String(rawPrice).replace(/[^0-9]/g, '')) || 0);
+                        return {
+                            id: p.id ?? p.jenis_id ?? null,
+                            name: p.name ?? p.title ?? 'Produk',
+                            price: normalizedPrice,
+                            quantity: p.quantity || 1,
+                            imageUrl: p.imageUrl || p.image || (p.image_path ? '/storage/'+p.image_path : 'https://placehold.co/80x80/F9DCC4/5A4B4B?text=Produk')
+                        };
+                    });
+                }
+
+                // Send to server to create a local order (no Midtrans)
+                const resp = await fetch("{{ route('checkout.process') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload)
+                });
+
+                const json = await resp.json();
+                console.log('checkout.process response', resp.status, json);
+
+                // If server returned non-2xx, show error message and don't open modal
+                if (!resp.ok) {
+                    const msg = json && (json.error || json.message || JSON.stringify(json)) || 'Unknown error';
+                    alert('Gagal membuat pesanan: ' + msg);
                     return;
                 }
 
-                // Open the simulated payment modal with the returned order info
-                openPaymentModal(resp.order_id || '', resp.total || 0);
-            }).catch(function(err){
+                // Server returned 200; ensure we have an order id and total
+                if (!json.order_id) {
+                    alert('Gagal membuat pesanan: server tidak mengembalikan ID pesanan.\nResponse: ' + JSON.stringify(json));
+                    return;
+                }
+
+                // Show a Midtrans-like payment popup (user will click Complete to finish)
+                hideLoading();
+                openPaymentModal(json.order_id, json.total || 0);
+            } catch (err) {
                 console.error(err);
                 alert('Terjadi kesalahan saat mencoba proses pembayaran.');
-            });
+            } finally {
+                // always hide loading spinner when finished (whether success or error)
+                hideLoading();
+            }
         }
 
 
         // Render awal saat halaman dimuat
         window.onload = function() {
+            // If server didn't provide items, try to populate from localStorage cart
+            try {
+                if ((!checkoutData.items || checkoutData.items.length === 0)) {
+                    const raw = localStorage.getItem('whispering_flora_cart');
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (parsed && Array.isArray(parsed.items) && parsed.items.length > 0) {
+                            checkoutData.items = parsed.items.map(p => {
+                                // Normalize fields: accept either `price` numeric or string formats
+                                let price = 0;
+                                if (p.price !== undefined && p.price !== null) {
+                                    price = typeof p.price === 'number' ? p.price : parseInt(String(p.price).replace(/[^0-9]/g, '')) || 0;
+                                }
+                                return {
+                                    id: p.id ?? p.jenis_id ?? null,
+                                    name: p.name ?? p.title ?? 'Produk',
+                                    price: price,
+                                    quantity: p.quantity || 1,
+                                    imageUrl: p.imageUrl || p.image || (p.image_path ? '/storage/'+p.image_path : 'https://placehold.co/80x80/F9DCC4/5A4B4B?text=Produk')
+                                };
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not load local cart for checkout summary', e);
+            }
+
             renderDetails();
             lucide.createIcons();
         };
@@ -372,67 +557,101 @@
                 </div>
             </div> </form> </div>
 
-</body>
+    <!-- Simulated payment removed: we redirect directly to confirmation on success -->
 
-<!-- Simulated Payment Modal (no external gateway) -->
-<div id="payment-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-        <h3 class="text-xl font-bold mb-2 text-accent-strong">Pembayaran - Simulasi</h3>
-        <p class="text-sm text-text-light mb-4">Transaksi akan disimulasikan secara lokal. Pilih tindakan untuk melanjutkan.</p>
-
-        <div class="mb-4 text-sm">
-            <div><strong>Order ID:</strong> <span id="modal-order-id">-</span></div>
-            <div><strong>Total:</strong> <span id="modal-total">Rp-,-</span></div>
-        </div>
-
-        <div class="flex gap-3">
-            <button id="modal-pay-now" class="flex-1 bg-accent-strong text-white py-2 rounded-md font-bold">Bayar Sekarang</button>
-            <button id="modal-pending" class="flex-1 bg-yellow-400 text-white py-2 rounded-md font-bold">Simulasikan Pending</button>
-            <button id="modal-fail" class="flex-1 bg-red-500 text-white py-2 rounded-md font-bold">Simulasikan Gagal</button>
-        </div>
-
-        <div class="mt-4 text-right">
-            <button id="modal-close" class="text-sm text-text-light">Tutup</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    function openPaymentModal(orderId, total) {
-        document.getElementById('modal-order-id').textContent = orderId || '-';
-        document.getElementById('modal-total').textContent = formatRupiah(total || 0);
-
-        const modal = document.getElementById('payment-modal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-
-        // Attach handlers
-        document.getElementById('modal-close').onclick = function(){
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        };
-
-        document.getElementById('modal-pay-now').onclick = function(){
-            // Simulate processing
-            this.disabled = true;
-            this.textContent = 'Memproses...';
-            setTimeout(function(){
-                window.location = "{{ route('pesanan.confirmation') }}?status=success&order_id=" + encodeURIComponent(orderId);
-            }, 1200);
-        };
-
-        document.getElementById('modal-pending').onclick = function(){
-            setTimeout(function(){
-                window.location = "{{ route('pesanan.confirmation') }}?status=pending&order_id=" + encodeURIComponent(orderId);
-            }, 800);
-        };
-
-        document.getElementById('modal-fail').onclick = function(){
-            setTimeout(function(){
-                window.location = "{{ route('pesanan.confirmation') }}?status=error&order_id=" + encodeURIComponent(orderId);
-            }, 800);
-        };
-    }
-</script>
+    </body>
 
 </html>
+
+    <!-- Midtrans-like payment popup (simplified) -->
+    <div id="midtrans-popup" class="fixed inset-0 z-60 hidden items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 m-4">
+            <div class="flex items-start justify-between">
+                <h3 class="text-xl font-bold text-accent-strong">Pembayaran Selesai</h3>
+                <button id="midtrans-close" class="text-text-light">×</button>
+            </div>
+
+            <div class="mt-4">
+                <p class="text-sm text-text-dark">Pembayaran berhasil diproses. Detail pesanan:</p>
+
+                <div class="mt-4 border rounded-lg p-4 bg-bliss-3">
+                    <div class="flex justify-between mb-2"><strong>Order ID</strong><span id="mt-order-id">-</span></div>
+                    <div class="flex justify-between"><strong>Total</strong><span id="mt-order-total">Rp-,-</span></div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-3 justify-end">
+                <button id="mt-complete" class="bg-accent-strong text-white px-4 py-2 rounded-md font-bold">Complete</button>
+                <button id="mt-close-btn" class="px-4 py-2 rounded-md border">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openPaymentModal(orderId, total) {
+            const popup = document.getElementById('midtrans-popup');
+            if (!popup) return;
+            document.getElementById('mt-order-id').textContent = orderId || '-';
+            document.getElementById('mt-order-total').textContent = formatRupiah(total || 0);
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
+
+            // handlers
+            document.getElementById('midtrans-close').onclick = closePopup;
+            document.getElementById('mt-close-btn').onclick = closePopup;
+
+            // store info on popup element to avoid closure/scope pitfalls
+            popup.dataset.orderNumber = orderId || '';
+            popup.dataset.orderTotal = total || 0;
+
+            const completeBtn = document.getElementById('mt-complete');
+            completeBtn.onclick = async function(){
+                // disable button while processing
+                completeBtn.disabled = true;
+                const orderNumber = popup.dataset.orderNumber || orderId || '';
+                try {
+                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    const resp = await fetch("{{ route('pesanan.complete') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                            credentials: 'same-origin',
+                        body: JSON.stringify({ order_number: orderNumber })
+                    });
+
+                    let j = null;
+                    try {
+                        j = await resp.json();
+                    } catch (parseErr) {
+                        const text = await resp.text();
+                        console.error('Non-JSON response from /pesanan/complete:', resp.status, text);
+                        alert('Gagal menyelesaikan pembayaran: Server returned non-JSON response (see console)');
+                        return;
+                    }
+
+                    console.log('Complete response', resp.status, j);
+                    if (resp.ok && j.status === 'ok') {
+                        closePopup();
+                        window.location = "{{ route('pesanan.confirmation') }}?status=success&order_id=" + encodeURIComponent(orderNumber || '');
+                        return;
+                    }
+
+                    // show error message returned by server, if any
+                    alert('Gagal menyelesaikan pembayaran: ' + (j.error || JSON.stringify(j)));
+                } catch (e) {
+                    console.error(e);
+                    alert('Terjadi kesalahan saat menyelesaikan pembayaran (cek console).');
+                } finally {
+                    completeBtn.disabled = false;
+                }
+            };
+
+            function closePopup(){
+                popup.classList.add('hidden');
+                popup.classList.remove('flex');
+            }
+        }
+    </script>
