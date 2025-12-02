@@ -274,27 +274,7 @@
 </head>
 
 <body>
-    <nav class="navbar">
-        <a href="/" class="navbar-brand">
-            <img src="{{ asset('images/logo.png') }}" alt="Toko Bunga">
-            Toko Bunga
-        </a>
-        <div class="navbar-links">
-            <a href="/" class="navbar-link">Beranda</a>
-            <a href="{{ route('public.catalog') }}" class="navbar-link"
-                style="color: var(--pastel-accent); font-weight: 700;">Katalog</a>
-            @if (auth()->check())
-                <a href="{{ route('dashboard') }}" class="navbar-link">Dashboard</a>
-                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="navbar-link"
-                        style="background: none; border: none; cursor: pointer; padding: 0;">Logout</button>
-                </form>
-            @else
-                <a href="{{ route('login') }}" class="btn-login">Login / Daftar</a>
-            @endif
-        </div>
-    </nav>
+    @include('components.header')
 
     <div class="catalog-container">
         <div class="page-header">
@@ -302,50 +282,46 @@
             <p class="page-subtitle">Koleksi bunga pilihan kami yang indah dan segar</p>
         </div>
 
+        <form method="GET" action="{{ route('catalog.index') }}" style="max-width:900px; margin:12px auto 20px; display:flex; gap:8px; padding:0 12px;">
+            <input name="q" type="search" placeholder="Cari produk, nama atau deskripsi..." value="{{ request('q', isset($q) ? $q : '') }}"
+                style="flex:1; padding:10px 14px; border-radius:10px; border:1px solid rgba(34,34,59,0.06); font-size:14px;">
+            <button type="submit" style="padding:10px 14px; border-radius:10px; background:linear-gradient(135deg,#c7b7ff,#ffd6e0); border:none; font-weight:700;">Cari</button>
+            @if(request('q') || (isset($q) && $q))
+                <a href="{{ route('catalog.index') }}" style="display:inline-flex; align-items:center; padding:10px 12px; border-radius:10px; background:#fff; border:1px solid rgba(34,34,59,0.04); text-decoration:none; color:inherit;">Reset</a>
+            @endif
+        </form>
+
+        {{-- Types section removed to avoid duplicating the same Jenis entries that are shown below as products. --}}
+
         @if ($products->count() > 0)
             <div class="catalog-grid">
                 @foreach ($products as $product)
-                    <div class="product-card">
-                        <div class="product-image">
-                            @if ($product->image)
-                                <img src="{{ Storage::disk('public')->url($product->image) }}?v={{ strtotime($product->updated_at) }}"
-                                    alt="{{ $product->name }}">
-                            @else
-                                <div
-                                    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 14px;">
-                                    No Image</div>
-                            @endif
-                        </div>
-                        <div class="product-info">
-                            <h3 class="product-name">{{ $product->name }}</h3>
-                            <p class="product-description">
-                                {{ \Illuminate\Support\Str::limit($product->description, 100) }}</p>
-                            <div class="product-price">Rp {{ number_format((float) $product->price, 0, ',', '.') }}
-                            </div>
-                            <div style="margin-bottom:10px;">
-                                @if ($product->stock > 0)
-                                    <span
-                                        style="background:#e0ffe0; color:#2ecc40; font-weight:600; padding:3px 12px; border-radius:8px; font-size:13px;">Stok:
-                                        {{ $product->stock }} unit</span>
+                    <a href="{{ route('jenis.show', $product->slug) }}" style="display:block; color:inherit; text-decoration:none;">
+                        <div class="product-card" style="position: relative; border-radius: 10px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: white;">
+                            <div style="position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;">
+                                @if ($product->image && file_exists(public_path('images/' . basename($product->image))))
+                                    <img src="{{ asset('images/' . basename($product->image)) }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; transition: transform 0.25s ease;">
                                 @else
-                                    <span
-                                        style="background:#ffe0e0; color:#ff3b3b; font-weight:600; padding:3px 12px; border-radius:8px; font-size:13px;">Stok
-                                        Habis</span>
+                                    <img src="{{ asset('images/babybreath.jpg') }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; opacity:0.6;">
                                 @endif
+                                <div style="position: absolute; top: 12px; left: 12px; background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--pastel-accent); backdrop-filter: blur(4px);">
+                                    🌸 Favorit
+                                </div>
                             </div>
-                            <div class="product-actions">
-                                <a href="{{ route('jenis.show', $product->slug) }}" class="btn btn-view">👁 Lihat
-                                    Detail</a>
-                                @if (auth()->check())
-                                    <button class="btn btn-login-product"
-                                        onclick="addToCart('{{ $product->id }}', '{{ $product->name }}', {{ $product->price }})">🛒
-                                        Keranjang</button>
-                                @else
-                                    <a href="{{ route('login') }}" class="btn btn-login-product">🛒 Keranjang</a>
-                                @endif
+                            <div class="product-info" style="padding: 16px; background: #fff;">
+                                <h3 style="margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--text);">{{ $product->name }}</h3>
+                                <p style="color: var(--muted); font-size: 13px; margin: 0 0 10px; line-height: 1.4;">{{ \Illuminate\Support\Str::limit($product->description, 100) }}</p>
+                                <p class="price" style="margin: 0; font-weight: 700; color: var(--pastel-accent); font-size: 16px;">Rp {{ number_format((float) $product->price, 0, ',', '.') }}</p>
+                                <div style="margin-top:10px;">
+                                    @if ($product->stock > 0)
+                                        <span style="background:#e0ffe0; color:#2ecc40; font-weight:600; padding:3px 12px; border-radius:8px; font-size:13px;">Stok: {{ $product->stock }} unit</span>
+                                    @else
+                                        <span style="background:#ffe0e0; color:#ff3b3b; font-weight:600; padding:3px 12px; border-radius:8px; font-size:13px;">Stok Habis</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         @else

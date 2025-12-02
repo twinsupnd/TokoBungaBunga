@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
         /* --- Variabel Warna dan Font (Pastel Bliss) --- */
@@ -209,23 +210,55 @@
         function proceedToPayment(event) {
             event.preventDefault(); // Mencegah form submit default
 
-            // 1. Validasi Formulir (Simulasi)
+            // Validate form
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
             const address = document.getElementById('address').value;
+            const active = document.querySelector('.payment-option.active');
+            const payment_method = active ? (active.getAttribute('data-method') || active.textContent.trim()) : null;
 
             if (!name || !phone || !address) {
                 alert("Mohon lengkapi semua data pelanggan dan pengiriman!");
                 return;
             }
 
-            // 2. Simulasi Proses Pembayaran
-            alert(`Berhasil! Pesanan untuk ${name} (Total: ${formatRupiah(checkoutData.total)}) siap diproses ke Pembayaran. (Simulasi selesai)`);
-            
-            // Di lingkungan nyata, Anda akan:
-            // a. Mengirim data form dan cart ke server.
-            // b. Menerima token pembayaran dari gateway (Midtrans/Xendit).
-            // c. Redirect ke halaman pembayaran atau membuka modal pembayaran.
+            if (!payment_method) {
+                alert('Pilih metode pembayaran terlebih dahulu.');
+                return;
+            }
+
+            // Prepare payload
+            const payload = {
+                name: name,
+                phone: phone,
+                address: address,
+                payment_method: payment_method
+            };
+
+            // Send to server to create a local order (no Midtrans)
+            const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+
+            fetch("{{ route('checkout.process') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }).then(r => r.json())
+            .then(function(resp) {
+                if (resp.error) {
+                    alert('Kesalahan saat membuat pesanan: ' + (resp.error || JSON.stringify(resp)));
+                    return;
+                }
+
+                // Open the simulated payment modal with the returned order info
+                openPaymentModal(resp.order_id || '', resp.total || 0);
+            }).catch(function(err){
+                console.error(err);
+                alert('Terjadi kesalahan saat mencoba proses pembayaran.');
+            });
         }
 
 
@@ -238,26 +271,7 @@
 </head>
 <body class="min-h-screen">
 
-    <header class="header container mx-auto px-4 max-w-7xl">
-        <a href="#" class="logo-container">
-            <div class="text-2xl font-bold title-display text-accent-strong">Whispering Flora</div>
-        </a>
-        <nav class="hidden md:flex space-x-8 text-sm font-medium">
-            <a href="{{ route('catalog.index') }}" class="header-nav-link">KATALOG</a>
-            <a href="{{ route('about.index') }}" class="header-nav-link">TENTANG KAMI</a>
-            <a href="#" class="header-nav-link">HUBUNGI KAMI</a>
-        </nav>
-        <div class="flex items-center space-x-6">
-            <i data-lucide="heart" class="w-5 h-5 text-text-light cursor-pointer hover:text-accent-strong"></i>
-            <i data-lucide="user" class="w-5 h-5 text-text-light cursor-pointer hover:text-accent-strong"></i>
-            <div class="relative">
-                <i data-lucide="shopping-bag" class="w-5 h-5 text-text-dark cursor-pointer"></i>
-                <span class="absolute -top-3 -right-3 text-xs bg-accent-strong text-white rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                    ${checkoutData.items.reduce((sum, item) => sum + item.quantity, 0)} 
-                </span>
-            </div>
-        </div>
-    </header>
+    @include('components.header')
 
 
     <div class="container mx-auto px-4 py-12 max-w-7xl">
@@ -303,13 +317,13 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         
-                        <div class="payment-option p-4 flex items-center gap-4 hover:border-accent-strong/50" 
+                        <div class="payment-option p-4 flex items-center gap-4 hover:border-accent-strong/50" data-method="bank_transfer"
                             onclick="selectPaymentMethod(this, 'Bank Transfer')">
                             <i data-lucide="credit-card" class="w-6 h-6 text-text-dark"></i>
                             <span class="font-medium">Transfer Bank (BCA / Mandiri)</span>
                         </div>
                         
-                        <div class="payment-option p-4 flex items-center gap-4 hover:border-accent-strong/50" 
+                        <div class="payment-option p-4 flex items-center gap-4 hover:border-accent-strong/50" data-method="e_wallet"
                             onclick="selectPaymentMethod(this, 'E-Wallet')">
                             <i data-lucide="smartphone" class="w-6 h-6 text-text-dark"></i>
                             <span class="font-medium">E-Wallet (Gopay / OVO / Dana)</span>
@@ -359,4 +373,66 @@
             </div> </form> </div>
 
 </body>
+
+<!-- Simulated Payment Modal (no external gateway) -->
+<div id="payment-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+        <h3 class="text-xl font-bold mb-2 text-accent-strong">Pembayaran - Simulasi</h3>
+        <p class="text-sm text-text-light mb-4">Transaksi akan disimulasikan secara lokal. Pilih tindakan untuk melanjutkan.</p>
+
+        <div class="mb-4 text-sm">
+            <div><strong>Order ID:</strong> <span id="modal-order-id">-</span></div>
+            <div><strong>Total:</strong> <span id="modal-total">Rp-,-</span></div>
+        </div>
+
+        <div class="flex gap-3">
+            <button id="modal-pay-now" class="flex-1 bg-accent-strong text-white py-2 rounded-md font-bold">Bayar Sekarang</button>
+            <button id="modal-pending" class="flex-1 bg-yellow-400 text-white py-2 rounded-md font-bold">Simulasikan Pending</button>
+            <button id="modal-fail" class="flex-1 bg-red-500 text-white py-2 rounded-md font-bold">Simulasikan Gagal</button>
+        </div>
+
+        <div class="mt-4 text-right">
+            <button id="modal-close" class="text-sm text-text-light">Tutup</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openPaymentModal(orderId, total) {
+        document.getElementById('modal-order-id').textContent = orderId || '-';
+        document.getElementById('modal-total').textContent = formatRupiah(total || 0);
+
+        const modal = document.getElementById('payment-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        // Attach handlers
+        document.getElementById('modal-close').onclick = function(){
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        document.getElementById('modal-pay-now').onclick = function(){
+            // Simulate processing
+            this.disabled = true;
+            this.textContent = 'Memproses...';
+            setTimeout(function(){
+                window.location = "{{ route('pesanan.confirmation') }}?status=success&order_id=" + encodeURIComponent(orderId);
+            }, 1200);
+        };
+
+        document.getElementById('modal-pending').onclick = function(){
+            setTimeout(function(){
+                window.location = "{{ route('pesanan.confirmation') }}?status=pending&order_id=" + encodeURIComponent(orderId);
+            }, 800);
+        };
+
+        document.getElementById('modal-fail').onclick = function(){
+            setTimeout(function(){
+                window.location = "{{ route('pesanan.confirmation') }}?status=error&order_id=" + encodeURIComponent(orderId);
+            }, 800);
+        };
+    }
+</script>
+
 </html>

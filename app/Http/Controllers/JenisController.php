@@ -125,10 +125,22 @@ class JenisController extends Controller
     /**
      * Public catalog page for customers to view all products.
      */
-    public function publicCatalog()
+    public function publicCatalog(Request $request)
     {
-        $products = Jenis::orderBy('id')->get();
-        return view('public-catalog', compact('products'));
+        $q = trim((string) $request->query('q', ''));
+
+        $query = Jenis::query();
+
+        if ($q !== '') {
+            $query->where(function ($sub) use ($q) {
+                $sub->where('name', 'like', "%{$q}%")
+                    ->orWhere('description', 'like', "%{$q}%");
+            });
+        }
+
+        $products = $query->orderBy('id')->get();
+
+        return view('public-catalog', compact('products'))->with('q', $q);
     }
 
     /**

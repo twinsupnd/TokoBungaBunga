@@ -193,5 +193,14 @@ Route::get('/pesanan', function () {
     return view('auth.detail');
 })->name('pesanan.preview');
 
+// Checkout process (Midtrans)
+Route::post('/checkout/process', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process')->middleware('auth');
+
+// Simple confirmation landing after payment redirect
+Route::get('/pesanan/konfirmasi', function (\Illuminate\Http\Request $request) {
+    $status = $request->query('status', 'success');
+    return view('pesanan.confirmation', ['status' => $status]);
+})->name('pesanan.confirmation');
+
 
 require __DIR__ . '/auth.php';

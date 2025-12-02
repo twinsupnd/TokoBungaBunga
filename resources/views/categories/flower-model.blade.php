@@ -169,18 +169,27 @@
         @if ($products->count() > 0)
             <div class="product-grid">
                 @foreach ($products as $product)
-                    <a href="{{ route('jenis.show', $product->slug) }}" style="text-decoration: none; color: inherit;">
-                        <div class="product-card">
-                            <img src="{{ $product->image ? Storage::disk('public')->url($product->image) . '?v=' . strtotime($product->updated_at) : asset('images/babybreath.jpg') }}"
-                                alt="{{ $product->name }}" class="product-image">
-                            <div class="product-info">
-                                <h3 class="product-name">{{ $product->name }}</h3>
-                                <p class="product-description">
-                                    {{ \Illuminate\Support\Str::limit($product->description, 60) }}</p>
-                                <p class="product-price">{{ $product->price }}</p>
+                    <div class="welcome-slide" data-slug="{{ $product->slug }}" style="padding:0;">
+                        <a href="{{ route('jenis.show', $product->slug) }}" style="display:block; color:inherit; text-decoration:none;">
+                            <div class="product-card" style="position: relative; border-radius: 10px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: white;">
+                                <div style="position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;">
+                                    @if ($product->image && file_exists(public_path('images/' . basename($product->image))))
+                                        <img src="{{ asset('images/' . basename($product->image)) }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; transition: transform 0.25s ease;">
+                                    @else
+                                        <img src="{{ asset('images/babybreath.jpg') }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; opacity:0.7;">
+                                    @endif
+                                    <div style="position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.95); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--pastel-accent); backdrop-filter: blur(4px);">
+                                        🌸 Favorit
+                                    </div>
+                                </div>
+                                <div class="product-info" style="padding: 16px; background: #fff;">
+                                    <h3 style="margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--text);">{{ $product->name }}</h3>
+                                    <p style="color: var(--muted); font-size: 13px; margin: 0 0 10px; line-height: 1.4;">{{ \Illuminate\Support\Str::limit($product->description, 80) }}</p>
+                                    <p class="price" style="margin: 0; font-weight: 700; color: var(--f97316, #f97316); font-size: 16px;">{{ $product->price }}</p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 @endforeach
             </div>
         @else
