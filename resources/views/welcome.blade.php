@@ -322,7 +322,7 @@
                 @endif
             </div>
 
-            <a href="{{ route('login') }}" class="cta-button" style="margin-top: 50px; display: inline-block;">Lihat
+            <a href="{{ route('catalog.index') }}" class="cta-button" style="margin-top: 50px; display: inline-block;">Lihat
                 Semua Produk &raquo;</a>
         </section>
 
