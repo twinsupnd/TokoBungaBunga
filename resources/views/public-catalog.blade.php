@@ -299,8 +299,8 @@
                     <a href="{{ route('jenis.show', $product->slug) }}" style="display:block; color:inherit; text-decoration:none;">
                         <div class="product-card" style="position: relative; border-radius: 10px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: white;">
                             <div style="position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;">
-                                @if ($product->image && file_exists(public_path('images/' . basename($product->image))))
-                                    <img src="{{ asset('images/' . basename($product->image)) }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; transition: transform 0.25s ease;">
+                                @if ($product->image)
+                                    <img src="{{ asset($product->image) . '?v=' . strtotime($product->updated_at) }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; transition: transform 0.25s ease;">
                                 @else
                                     <img src="{{ asset('images/babybreath.jpg') }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; opacity:0.6;">
                                 @endif
@@ -328,6 +328,33 @@
             <div class="empty-state">
                 <div class="empty-icon">📦</div>
                 <p class="empty-text">Belum ada produk tersedia. Cek kembali nanti!</p>
+            </div>
+        @endif
+
+        {{-- Pagination --}}
+        @if ($products->hasPages())
+            <div style="display: flex; justify-content: center; margin-top: 40px; padding: 20px 0;">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    @if ($products->onFirstPage())
+                        <span style="padding: 8px 12px; color: #ccc; cursor: not-allowed;">← Prev</span>
+                    @else
+                        <a href="{{ $products->previousPageUrl() }}" style="padding: 8px 12px; border-radius: 6px; background: #f0e9ff; color: #c7b7ff; text-decoration: none; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#e0d9ff'" onmouseout="this.style.background='#f0e9ff'">← Prev</a>
+                    @endif
+
+                    @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+                        @if ($page == $products->currentPage())
+                            <span style="padding: 8px 12px; border-radius: 6px; background: linear-gradient(135deg, #c7b7ff, #ffd6e0); color: white; font-weight: 700;">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}" style="padding: 8px 12px; border-radius: 6px; background: #f0e9ff; color: #7b7b8b; text-decoration: none; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#e0d9ff'" onmouseout="this.style.background='#f0e9ff'">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    @if ($products->hasMorePages())
+                        <a href="{{ $products->nextPageUrl() }}" style="padding: 8px 12px; border-radius: 6px; background: #f0e9ff; color: #c7b7ff; text-decoration: none; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#e0d9ff'" onmouseout="this.style.background='#f0e9ff'">Next →</a>
+                    @else
+                        <span style="padding: 8px 12px; color: #ccc; cursor: not-allowed;">Next →</span>
+                    @endif
+                </div>
             </div>
         @endif
     </div>

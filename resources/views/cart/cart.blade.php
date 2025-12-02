@@ -266,7 +266,7 @@
                         name: "{{ addslashes($it->jenis->name ?? 'Produk') }}",
                         price: {{ $it->price ?? (int) preg_replace('/[^0-9]/', '', $it->jenis->price ?? 0) }},
                         quantity: {{ $it->quantity }},
-                        imageUrl: "{{ $it->jenis->image ? Storage::disk('public')->url($it->jenis->image) . '?v=' . strtotime($it->jenis->updated_at) : asset('images/babybreath.jpg') }}"
+                        imageUrl: "{{ $it->jenis->image ? asset($it->jenis->image) . '?v=' . strtotime($it->jenis->updated_at) : asset('images/babybreath.jpg') }}"
                     },
                 @endforeach
             ];

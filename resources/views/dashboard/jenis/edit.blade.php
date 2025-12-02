@@ -63,7 +63,7 @@
                     @if ($jenis->image)
                         <div class="current-image">
                             <p class="image-label">Gambar Saat Ini:</p>
-                            <img src="{{ Storage::disk('public')->url($jenis->image) }}" alt="{{ $jenis->name }}"
+                            <img src="{{ asset($jenis->image) }}" alt="{{ $jenis->name }}"
                                 class="preview-image">
                             <p class="image-filename">{{ basename($jenis->image) }}</p>
                         </div>

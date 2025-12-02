@@ -19,7 +19,7 @@
                     <div class="product-card">
                         <div class="product-image">
                             @if ($product->image)
-                                <img src="{{ Storage::disk('public')->url($product->image) }}?v={{ strtotime($product->updated_at) }}"
+                                <img src="{{ asset($product->image) }}?v={{ strtotime($product->updated_at) }}"
                                     alt="{{ $product->name }}">
                             @else
                                 <div class="placeholder-image">No Image</div>

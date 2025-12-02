@@ -200,7 +200,7 @@
                                 <a href="{{ route('jenis.show', $product->slug) }}"
                                     style="display:flex; gap:24px; align-items:center; width:100%; text-decoration:none; color: inherit;">
                                     <div class="slide-image">
-                                        <img src="{{ $product->image ? Storage::disk('public')->url($product->image) . '?v=' . strtotime($product->updated_at) : asset('images/babybreath.jpg') }}"
+                                        <img src="{{ $product->image ? asset($product->image) . '?v=' . strtotime($product->updated_at) : asset('images/babybreath.jpg') }}"
                                             alt="{{ $product->name }}">
                                     </div>
                                     <div class="slide-info">

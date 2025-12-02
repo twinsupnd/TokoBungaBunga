@@ -287,7 +287,7 @@
                                         style="position: relative; border-radius: 10px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: white;">
                                         <div
                                             style="position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;">
-                                            <img src="{{ asset('images/' . ($product->image ?? 'babybreath.jpg')) }}"
+                                            <img src="{{ $product->image ? asset($product->image) : asset('images/babybreath.jpg') }}"
                                                 alt="{{ $product->name }}"
                                                 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease;">
                                             <div

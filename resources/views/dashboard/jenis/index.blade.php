@@ -379,7 +379,7 @@
                                 <tr style="font-size:14px;">
                                     <td style="text-align:center; width:120px;">
                                         @if ($item->image)
-                                            <img src="{{ Storage::disk('public')->url($item->image) }}?v={{ strtotime($item->updated_at) }}"
+                                            <img src="{{ asset($item->image) }}?v={{ strtotime($item->updated_at) }}"
                                                 alt="{{ $item->name }}" class="thumb">
                                         @else
                                             <img src="{{ asset('images/babybreath.jpg') }}" alt="{{ $item->name }}"
@@ -407,7 +407,7 @@
                                                 data-name="{{ $item->name }}" data-price="{{ $item->price }}"
                                                 data-stock="{{ $item->stock }}"
                                                 data-description="{{ $item->description ?? '' }}"
-                                                data-image="{{ $item->image ? Storage::disk('public')->url($item->image) : asset('images/babybreath.jpg') }}">Edit</button>
+                                                data-image="{{ $item->image ? asset($item->image) : asset('images/babybreath.jpg') }}">Edit</button>
                                             <form action="{{ route('dashboard.jenis.destroy', $item->slug) }}"
                                                 method="POST" class="inline-form"
                                                 onsubmit="return confirm('Yakin hapus produk ini?');">

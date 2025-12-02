@@ -11,6 +11,9 @@
             <a href="{{ route('dashboard.jenis.index') }}"
                 class="{{ request()->is('dashboard/jenis*') ? 'active' : '' }}">Kelola Produk</a>
         </li>
+        <li>
+            <a href="{{ route('dashboard.pesanan.index') }}" class="{{ request()->is('dashboard/pesanan*') ? 'active' : '' }}">Pesanan</a>
+        </li>
     @endif
 
     {{-- PANEL MANAGER --}}

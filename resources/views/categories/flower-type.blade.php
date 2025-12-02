@@ -173,8 +173,8 @@
                         <a href="{{ route('jenis.show', $product->slug) }}" style="display:block; color:inherit; text-decoration:none;">
                             <div class="product-card" style="position: relative; border-radius: 10px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: white;">
                                 <div style="position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;">
-                                    @if ($product->image && file_exists(public_path('images/' . basename($product->image))))
-                                        <img src="{{ asset('images/' . basename($product->image)) }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; transition: transform 0.25s ease;">
+                                    @if ($product->image)
+                                        <img src="{{ asset($product->image) . '?v=' . strtotime($product->updated_at) }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; transition: transform 0.25s ease;">
                                     @else
                                         <img src="{{ asset('images/babybreath.jpg') }}" alt="{{ $product->name }}" style="width:100%; height:100%; object-fit:cover; opacity:0.7;">
                                     @endif

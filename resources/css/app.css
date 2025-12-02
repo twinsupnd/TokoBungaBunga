@@ -237,7 +237,7 @@ a { text-decoration: none; }
     inset: 0;
     /* Slightly desaturate + soften the image so the popup stands out.
        We'll use a translucent layer rather than hard white so the floral image shows through. */
-    background: linear-gradient(180deg, rgba(255,255,255,0.56), rgba(255,255,255,0.56));
+    background: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.25));
     pointer-events: none;
 }
 

@@ -67,8 +67,13 @@ class JenisController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '', $file->getClientOriginalName());
-            $path = Storage::disk('public')->putFileAs('products', $file, $filename);
-            $data['image'] = $path;
+            // Save directly to public/images directory
+            $destinationPath = public_path('images');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            $file->move($destinationPath, $filename);
+            $data['image'] = 'images/' . $filename;
         }
 
         $jenis = Jenis::create($data);
@@ -85,7 +90,7 @@ class JenisController extends Controller
                     'price' => $jenis->price,
                     'stock' => $jenis->stock,
                     'description' => $jenis->description,
-                    'image_url' => $jenis->image ? Storage::disk('public')->url($jenis->image) : null,
+                    'image_url' => $jenis->image ? asset($jenis->image) : null,
                     'updated_at' => $jenis->updated_at ? strtotime($jenis->updated_at) : time(),
                 ],
             ]);
@@ -138,7 +143,7 @@ class JenisController extends Controller
             });
         }
 
-        $products = $query->orderBy('id')->get();
+        $products = $query->orderBy('id')->paginate(12)->withQueryString();
 
         return view('public-catalog', compact('products'))->with('q', $q);
     }
@@ -202,14 +207,22 @@ class JenisController extends Controller
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
-            if ($jenis->image && Storage::disk('public')->exists($jenis->image)) {
-                Storage::disk('public')->delete($jenis->image);
+            if ($jenis->image) {
+                $oldPath = public_path($jenis->image);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
             }
 
             $file = $request->file('image');
             $filename = time() . '_' . preg_replace('/[^a-z0-9\.\-]/i', '', $file->getClientOriginalName());
-            $path = Storage::disk('public')->putFileAs('products', $file, $filename);
-            $data['image'] = $path;
+            // Save directly to public/images directory
+            $destinationPath = public_path('images');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            $file->move($destinationPath, $filename);
+            $data['image'] = 'images/' . $filename;
         }
 
         $jenis->update($data);
@@ -227,7 +240,7 @@ class JenisController extends Controller
                     'price' => $jenis->price,
                     'stock' => $jenis->stock,
                     'description' => $jenis->description,
-                    'image_url' => $jenis->image ? Storage::disk('public')->url($jenis->image) : null,
+                    'image_url' => $jenis->image ? asset($jenis->image) : null,
                     'updated_at' => $jenis->updated_at ? strtotime($jenis->updated_at) : time(),
                 ],
             ]);
@@ -246,8 +259,11 @@ class JenisController extends Controller
         }
 
         // Delete image if exists
-        if ($jenis->image && Storage::disk('public')->exists($jenis->image)) {
-            Storage::disk('public')->delete($jenis->image);
+        if ($jenis->image) {
+            $imagePath = public_path($jenis->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
         }
 
         $jenis->delete();

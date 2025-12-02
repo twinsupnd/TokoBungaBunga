@@ -47,7 +47,7 @@
     <!-- Product Image -->
     <div class="card">
         @if ($jenis->image)
-            <img src="{{ Storage::disk('public')->url($jenis->image) }}" alt="{{ $jenis->name }}">
+            <img src="{{ asset($jenis->image) }}" alt="{{ $jenis->name }}">
         @else
             <img src="{{ asset('images/babybreath.jpg') }}" alt="No image">
         @endif

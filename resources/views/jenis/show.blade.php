@@ -25,7 +25,7 @@
         <div class="product-detail-grid">
             <div class="product-detail-image">
                 @if ($jenis->image)
-                    <img src="{{ Storage::disk('public')->url($jenis->image) }}?v={{ strtotime($jenis->updated_at) }}"
+                    <img src="{{ asset($jenis->image) }}?v={{ strtotime($jenis->updated_at) }}"
                         alt="{{ $jenis->name }}">
                 @else
                     <img src="{{ asset('images/babybreath.jpg') }}" alt="{{ $jenis->name }}">
