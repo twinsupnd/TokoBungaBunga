@@ -8,6 +8,7 @@
         .nav-link:hover, .nav-dropdown-btn:hover { color: var(--color-accent-strong); background: rgba(237,56,120,0.04); }
         .nav-dropdown { position:relative; }
         .nav-dropdown-menu { position:absolute; top:calc(100% + 8px); left:0; display:none; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 8px 30px rgba(0,0,0,0.08); min-width:200px; z-index:1200; max-height:320px; overflow-y:auto; padding-right:6px; }
+        .nav-dropdown.open .nav-dropdown-menu { display:block; }
         /* Ensure user dropdown specifically can grow taller and be scrollable on small screens */
         #user-dropdown { max-height: 50vh; overflow-y: auto; padding-right: 8px; }
         /* Ensure logout button spans full width inside the dropdown */
@@ -132,14 +133,14 @@
         }
 
         dropdownToggles.forEach(btn => {
-            const menu = btn.nextElementSibling;
-            if (!menu) return;
+            const parent = btn.closest('.nav-dropdown');
+            if (!parent) return;
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const isOpen = menu.style.display === 'block';
+                const isOpen = parent.classList.contains('open');
                 closeAllDropdowns();
                 if (!isOpen) {
-                    menu.style.display = 'block';
+                    parent.classList.add('open');
                     btn.setAttribute('aria-expanded', 'true');
                 }
             });
@@ -163,15 +164,21 @@
     if (userMenuBtn && userDropdown) {
         userMenuBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+            const isOpen = window.getComputedStyle(userDropdown).display === 'block';
+            // close other dropdowns first
+            document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.style.display = 'none');
+            userDropdown.style.display = isOpen ? 'none' : 'block';
+            userMenuBtn.setAttribute('aria-expanded', String(!isOpen));
         });
 
+        // Close when clicking outside any .nav-dropdown
+        // remove any specific userMenuBtn handler: generic handlers above now control all dropdowns
+        // Ensure clicking outside closes any open dropdown
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('[style*="position: relative"]') && userDropdown) {
-                userDropdown.style.display = 'none';
+            if (!e.target.closest('.nav-dropdown')) {
+                closeAllDropdowns();
             }
         });
-    }
 
     // Header search dropdown
     const searchToggle = document.getElementById('open-search-box');
@@ -226,6 +233,18 @@
             if (saved && syncedFlag !== String(authId)) {
                 const parsed = JSON.parse(saved);
                 if (parsed && Array.isArray(parsed.items) && parsed.items.length > 0) {
+                    // Ask user before syncing — prevents unexpected merges when browser cart
+                    // contains demo/test items or stale data.
+                    try {
+                        const ok = confirm('Kami menemukan item di keranjang browser Anda. Sinkronkan ke akun Anda sekarang? Tekan OK untuk mengonfirmasi.');
+                        if (!ok) {
+                            // User declined — do not auto-sync now.
+                            return;
+                        }
+                    } catch (e) {
+                        // If confirm is not available for some reason, proceed to sync.
+                    }
+
                     fetch("{{ route('cart.sync') }}", {
                         method: 'POST',
                         headers: {

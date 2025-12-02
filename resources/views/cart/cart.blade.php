@@ -223,10 +223,11 @@
         };
 
         // Load from localStorage if exists
+        let _savedCartRaw = null;
         try {
-            const savedCart = localStorage.getItem('whispering_flora_cart');
-            if (savedCart) {
-                const parsedCart = JSON.parse(savedCart);
+            _savedCartRaw = localStorage.getItem('whispering_flora_cart');
+            if (_savedCartRaw) {
+                const parsedCart = JSON.parse(_savedCartRaw);
                 if (parsedCart && parsedCart.items && Array.isArray(parsedCart.items)) {
                     cartData = parsedCart;
                 }
@@ -235,8 +236,8 @@
             console.log('Error loading cart from localStorage:', e);
         }
 
-        // If no saved cart, use demo data for preview
-        if (cartData.items.length === 0) {
+        // If no saved cart (browser has never had a cart) and no server items, use demo data for preview
+        if ((!_savedCartRaw || _savedCartRaw === null) && cartData.items.length === 0) {
             cartData = {
                 items: [{
                         id: 1,
@@ -267,6 +268,9 @@
                 }
             };
         }
+
+        // Determine whether the cart was rendered from server (authenticated user)
+        const isServerCart = @json(isset($items) && count($items) > 0);
 
         // If server provided cart items (authenticated user), use them instead
         @if (isset($items) && count($items) > 0)
@@ -360,12 +364,31 @@
                 showMessage('Kuantitas maksimum adalah 99.', 'info');
             }
 
-            // SIMULASI: Proses Update di Server
+            // Update locally first
             item.quantity = newQuantity;
 
             // Update Summary
             const newSummary = calculateSummaryLocally(cartData.items);
             cartData.summary = newSummary;
+
+            // If this page is rendering a server-side cart (authenticated), notify server
+            if (isServerCart) {
+                try {
+                    await fetch(`/cart/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                        },
+                        body: new URLSearchParams({ quantity: String(newQuantity) })
+                    });
+                } catch (e) {
+                    console.error('Failed to update cart on server', e);
+                }
+            } else {
+                // Persist client-only cart to localStorage so changes survive refresh
+                try { localStorage.setItem('whispering_flora_cart', JSON.stringify(cartData)); } catch (e) { }
+            }
 
             showMessage('Keranjang berhasil diperbarui!', 'success');
             renderCart();
@@ -393,15 +416,40 @@
                     return;
                 }
 
-                // SIMULASI: Proses Hapus di Server
-                cartData.items.splice(itemIndex, 1);
+                // If this cart is server-rendered (authenticated), call server delete endpoint
+                if (isServerCart) {
+                    try {
+                        const resp = await fetch(`/cart/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            }
+                        });
 
-                // Update Summary
-                const newSummary = calculateSummaryLocally(cartData.items);
-                cartData.summary = newSummary;
-
-                showMessage('Item berhasil dihapus dari keranjang.', 'success');
-                renderCart();
+                        // On success remove locally and re-render
+                        if (resp.ok || resp.status === 302) {
+                            cartData.items.splice(itemIndex, 1);
+                            const newSummary = calculateSummaryLocally(cartData.items);
+                            cartData.summary = newSummary;
+                            showMessage('Item berhasil dihapus dari keranjang.', 'success');
+                            renderCart();
+                        } else {
+                            showMessage('Gagal menghapus item di server.', 'error');
+                        }
+                    } catch (e) {
+                        console.error('Delete cart error', e);
+                        showMessage('Terjadi kesalahan saat menghapus item.', 'error');
+                    }
+                } else {
+                    // Client-only cart: remove and persist to localStorage
+                    cartData.items.splice(itemIndex, 1);
+                    const newSummary = calculateSummaryLocally(cartData.items);
+                    cartData.summary = newSummary;
+                    try { localStorage.setItem('whispering_flora_cart', JSON.stringify(cartData)); } catch (e) {}
+                    showMessage('Item berhasil dihapus dari keranjang.', 'success');
+                    renderCart();
+                }
             }
         }
 
@@ -504,6 +552,15 @@
             const totalsCard = document.getElementById('cart-totals-card');
             if (totalsCard) {
                 totalsCard.style.display = cartData.items.length > 0 ? 'block' : 'none';
+            }
+
+            // Persist client-only cart state so changes survive page refresh
+            try {
+                if (!isServerCart) {
+                    localStorage.setItem('whispering_flora_cart', JSON.stringify(cartData));
+                }
+            } catch (e) {
+                // ignore storage errors
             }
         }
 

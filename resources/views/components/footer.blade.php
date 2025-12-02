@@ -2,9 +2,10 @@
 <style>
     /* Inline-critical footer styles (higher priority while debugging caching issues) */
     .site-footer {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0.00)), var(--color-pastel-bliss-3);
-        padding: 90px 40px 40px;
-        box-sizing: border-box
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255,255,255,0)), var(--color-pastel-bliss-3);
+        padding: 48px 28px 28px;
+        box-sizing: border-box;
+        color: var(--color-text-light);
     }
 
     .site-footer__inner {
@@ -12,38 +13,41 @@
         margin: 0 auto;
         display: grid;
         grid-template-columns: 2fr 1fr 1fr 1fr;
-        gap: 60px;
+        gap: 32px;
         align-items: start;
-        padding-top: 48px
+        padding-top: 18px;
     }
 
     .site-footer .footer-brand img {
         height: 36px;
         display: block;
-        margin-bottom: 10px
+        margin-bottom: 10px;
     }
 
     .site-footer .logo {
         font-family: var(--font-display);
-        font-size: 40px;
-        margin: 0 0 12px;
-        color: var(--color-text-dark)
+        font-size: 28px;
+        margin: 0 0 8px;
+        color: var(--color-text-dark);
+        letter-spacing: 0.4px;
     }
 
     .site-footer p {
-        margin: 0;
+        margin: 0 0 8px 0;
         color: var(--color-text-light);
-        line-height: 2.05;
-        max-width: 560px
+        line-height: 1.6;
+        max-width: 520px;
+        font-size: 0.98rem;
     }
 
     .site-footer h4 {
         font-family: var(--font-display);
-        font-size: 26px;
-        margin: 0 0 18px;
+        font-size: 13px;
+        margin: 0 0 12px;
         text-transform: uppercase;
-        letter-spacing: 6px;
-        text-align: center
+        letter-spacing: 2px;
+        text-align: left;
+        color: var(--color-text-dark);
     }
 
     .site-footer ul {
@@ -57,24 +61,44 @@
     }
 
     .site-footer ul li a {
-        color: #4e4a4e;
-        text-decoration: none
+        color: var(--color-text-dark);
+        text-decoration: none;
+        opacity: 0.9;
+        transition: opacity 0.15s ease, transform 0.15s ease;
     }
 
+    .site-footer ul li a:hover {
+        opacity: 1;
+        transform: translateX(2px);
+        color: var(--color-accent-strong);
+    }
+
+
     .site-footer__divider {
-        margin-top: 40px;
+        margin-top: 28px;
         border-top: 1px solid rgba(0, 0, 0, 0.06);
-        background: var(--color-pastel-bliss-2);
-        padding: 20px
+        background: transparent;
+        padding: 16px 8px;
     }
 
     .site-footer__legal {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
         gap: 12px;
-        color: #6b7280
+        color: #6b7280;
+        flex-wrap: wrap;
     }
+
+    .site-footer__legal .legal-links a {
+        margin-left: 12px;
+        color: var(--color-text-light);
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    .site-footer__legal .legal-links a:hover { color: var(--color-accent-strong); }
 
     .site-footer__legal .copyright {
         font-weight: 800;
@@ -82,30 +106,31 @@
     }
 
     .site-footer .footer-inner> :nth-child(2) {
-        padding-left: 48px;
-        border-left: 1px solid rgba(0, 0, 0, 0.08)
+        padding-left: 28px;
+        border-left: 1px solid rgba(0, 0, 0, 0.04);
     }
 
     @media (max-width:980px) {
         .site-footer__inner {
             grid-template-columns: 1fr 1fr;
-            gap: 28px
+            gap: 24px;
         }
 
         .site-footer__inner>:nth-child(2) {
             border-left: none;
-            padding-left: 0
+            padding-left: 0;
         }
     }
 
     @media (max-width:560px) {
         .site-footer__inner {
             grid-template-columns: 1fr;
-            padding: 8px 18px
+            padding: 8px 18px;
         }
 
         .site-footer__legal {
-            flex-direction: column
+            flex-direction: column;
+            align-items: center;
         }
     }
 </style>
@@ -119,6 +144,12 @@
                 Dari kelopak pertama hingga akhir, kami merangkai setiap bunga dengan ketulusan,
                 kreativitas, dan perhatian pada detail.
             </p>
+
+            <div class="footer-social" style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+                <a href="#" aria-label="Instagram" style="color:var(--color-text-dark); text-decoration:none;">Instagram</a>
+                <a href="#" aria-label="WhatsApp" style="color:var(--color-text-dark); text-decoration:none;">WhatsApp</a>
+                <a href="#" aria-label="Email" style="color:var(--color-text-dark); text-decoration:none;">Email</a>
+            </div>
         </div>
 
         <!-- Column 2: PAGES -->
