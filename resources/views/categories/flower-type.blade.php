@@ -203,14 +203,7 @@
         @endif
     </main>
 
-    <footer class="footer" style="margin-top: 60px;">
-        &copy; {{ date('Y') }} Whispering Flora. Hak Cipta Dilindungi.
-        <div>
-            <a href="#">Kebijakan Privasi</a> |
-            <a href="#">Syarat & Ketentuan</a> |
-            <a href="#">Kontak Kami</a>
-        </div>
-    </footer>
+    @include('components.footer')
 
     @include('auth._login-modal')
 </body>

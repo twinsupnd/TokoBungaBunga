@@ -226,6 +226,8 @@
 
     </main>
 
+    @include('components.footer')
+
     @include('auth._login-modal')
 
     <script>
