@@ -54,6 +54,8 @@ Route::get('/model/{model}', [App\Http\Controllers\CategoryController::class, 's
 Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->middleware(['auth', 'verified'])->name('cart');
 Route::post('/cart/{cart}', [App\Http\Controllers\CartController::class, 'update'])->middleware(['auth', 'verified'])->name('cart.update');
 Route::delete('/cart/{cart}', [App\Http\Controllers\CartController::class, 'destroy'])->middleware(['auth', 'verified'])->name('cart.destroy');
+// Endpoint to sync client localStorage cart into DB (merge, avoid duplicates)
+Route::post('/cart/sync', [App\Http\Controllers\CartController::class, 'sync'])->middleware(['auth', 'verified'])->name('cart.sync');
 
 // ====================
 // Dashboard

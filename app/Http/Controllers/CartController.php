@@ -23,6 +23,46 @@ class CartController extends Controller
         return view('cart.cart', ['items' => $items, 'message' => null]);
     }
 
+    // Sync client-side cart (localStorage) into DB for the authenticated user
+    public function sync(\Illuminate\Http\Request $request)
+    {
+        if (! auth()->check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $data = $request->validate([
+            'items' => 'required|array'
+        ]);
+
+        $user = auth()->user();
+
+        foreach ($data['items'] as $it) {
+            $jenisId = isset($it['id']) ? (int) $it['id'] : null;
+            if (! $jenisId) continue;
+
+            $qty = max(1, (int) ($it['quantity'] ?? 1));
+            $price = isset($it['price']) ? (float) $it['price'] : null;
+
+            $existing = Cart::where('user_id', $user->id)->where('jenis_id', $jenisId)->first();
+
+            if ($existing) {
+                // increase quantity instead of creating duplicate rows
+                $existing->quantity = $existing->quantity + $qty;
+                if ($price) $existing->price = $price;
+                $existing->save();
+            } else {
+                Cart::create([
+                    'user_id' => $user->id,
+                    'jenis_id' => $jenisId,
+                    'quantity' => $qty,
+                    'price' => $price,
+                ]);
+            }
+        }
+
+        return response()->json(['status' => 'ok']);
+    }
+
     // Update quantity
     public function update(Request $request, Cart $cart): RedirectResponse
     {

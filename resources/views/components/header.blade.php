@@ -7,7 +7,11 @@
         .nav-link, .nav-dropdown-btn { color: var(--ColorHeaderText, var(--color-text-dark)); text-decoration:none; font-weight:600; background:none; border:0; cursor:pointer; padding:6px 8px; border-radius:6px; }
         .nav-link:hover, .nav-dropdown-btn:hover { color: var(--color-accent-strong); background: rgba(237,56,120,0.04); }
         .nav-dropdown { position:relative; }
-        .nav-dropdown-menu { position:absolute; top:calc(100% + 8px); left:0; display:none; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 8px 30px rgba(0,0,0,0.08); min-width:200px; z-index:1200; }
+        .nav-dropdown-menu { position:absolute; top:calc(100% + 8px); left:0; display:none; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 8px 30px rgba(0,0,0,0.08); min-width:200px; z-index:1200; max-height:320px; overflow-y:auto; padding-right:6px; }
+        /* Ensure user dropdown specifically can grow taller and be scrollable on small screens */
+        #user-dropdown { max-height: 50vh; overflow-y: auto; padding-right: 8px; }
+        /* Ensure logout button spans full width inside the dropdown */
+        #user-dropdown form button { width: 100%; text-align: left; }
         .nav-dropdown-menu a { display:block; padding:10px 14px; color:var(--color-text-dark); }
         .nav-dropdown-menu a:hover { background:var(--color-pastel-bliss-3); color:var(--color-accent-strong); }
         .icon-inline { font-size:16px; }
@@ -194,4 +198,54 @@
 
     window.addEventListener('load', updateCartBadge);
     window.addEventListener('storage', updateCartBadge);
+
+    // Small, themed scrollbar for dropdown menus (WebKit + Firefox fallback)
+    (function(){
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .nav-dropdown-menu::-webkit-scrollbar { width: 8px; }
+            .nav-dropdown-menu::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 6px; }
+            .nav-dropdown-menu::-webkit-scrollbar-track { background: transparent; }
+
+            /* Firefox */
+            .nav-dropdown-menu { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.12) transparent; }
+        `;
+        document.head.appendChild(style);
+    })();
+
+    // If user is authenticated, try to sync any localStorage cart into server-side DB once
+    (function() {
+        const isAuth = @json(auth()->check());
+        const authId = @json(auth()->id());
+        if (!isAuth) return;
+
+        try {
+            const saved = localStorage.getItem('whispering_flora_cart');
+            const syncedFlag = localStorage.getItem('whispering_flora_cart_synced');
+            // Only sync if there's a saved cart and we haven't synced for this user id yet
+            if (saved && syncedFlag !== String(authId)) {
+                const parsed = JSON.parse(saved);
+                if (parsed && Array.isArray(parsed.items) && parsed.items.length > 0) {
+                    fetch("{{ route('cart.sync') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ items: parsed.items })
+                    }).then(r => r.json()).then(function(resp) {
+                        if (resp && resp.status === 'ok') {
+                            // mark as synced for this user and remove local cart to avoid duplication
+                            localStorage.removeItem('whispering_flora_cart');
+                            localStorage.setItem('whispering_flora_cart_synced', String(authId));
+                            updateCartBadge();
+                        }
+                    }).catch(function(e){ console.error('Cart sync failed', e); });
+                }
+            }
+        } catch (e) {
+            console.error('Cart sync error', e);
+        }
+    })();
 </script>
