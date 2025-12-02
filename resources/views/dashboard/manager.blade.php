@@ -27,7 +27,7 @@
 </style>
 
 <div class="page-header">
-    <h1 class="page-title">👔 Panel Manager</h1>
+    <h1 class="page-title">Panel Manager</h1>
     <p class="page-subtitle">Kelola admin dan pengaturan tingkat tinggi sistem</p>
 </div>
 

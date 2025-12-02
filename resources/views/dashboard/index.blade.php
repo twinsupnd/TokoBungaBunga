@@ -83,7 +83,7 @@
             margin: 0;
             font-size: 28px;
             font-weight: 700;
-            color: var(--pastel-accent);
+            color: #231d43;
         }
 
         .activity-section {
@@ -119,7 +119,7 @@
         }
 
         .activity-list strong {
-            color: var(--pastel-accent);
+            color: #5748ad;
             font-weight: 600;
         }
 
@@ -249,7 +249,7 @@
 
         <div class="stat-card">
             <h3>Total Bulanan</h3>
-            <p>Rp 12.860.000</p>
+            <p>Rp 5.860.000</p>
         </div>
 
         <div class="stat-card">
@@ -262,9 +262,9 @@
     <div class="activity-section">
         <h3>Aktivitas Terakhir</h3>
         <ul class="activity-list">
-            <li>- Riwayat login admin: <strong>2 jam lalu</strong></li>
-            <li>- Pesanan baru: <strong>3 pesanan</strong></li>
-            <li>- Stok <strong>Baby Blooms Bouquet</strong> di bawah threshold</li>
+            <li>1. Riwayat login admin: <strong>2 jam lalu</strong></li>
+            <li>2. Pesanan baru: <strong>3 pesanan</strong></li>
+            <li>3. Stok <strong>Baby Blooms Bouquet</strong> di bawah threshold</li>
         </ul>
     </div>
 

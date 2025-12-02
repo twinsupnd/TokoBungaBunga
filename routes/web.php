@@ -64,6 +64,9 @@ Route::get('/dashboard', function () {
     return view('dashboard.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Popup profile update (AJAX)
+Route::post('/profile/popup-update', [ProfileController::class, 'popupUpdate'])->middleware(['auth', 'verified'])->name('profile.popup.update');
+
 // ====================
 // Produk (Admin / Manager)
 // ====================
@@ -191,12 +194,15 @@ Route::middleware('auth')->group(function () {
 // ====================
 // Dummy Preview
 // ====================
-Route::get('/pesanan', function () {
-    return view('auth.detail');
-})->name('pesanan.preview');
+use App\Http\Controllers\CheckoutController;
+
+Route::get('/pesanan', [CheckoutController::class, 'show'])->name('pesanan.preview')->middleware('auth');
 
 // Checkout process (Midtrans)
 Route::post('/checkout/process', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process')->middleware('auth');
+
+// Endpoint to mark order as completed/paid (called by popup Complete button)
+Route::post('/pesanan/complete', [App\Http\Controllers\CheckoutController::class, 'complete'])->name('pesanan.complete')->middleware('auth');
 
 // Simple confirmation landing after payment redirect
 Route::get('/pesanan/konfirmasi', function (\Illuminate\Http\Request $request) {

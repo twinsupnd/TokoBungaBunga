@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -91,5 +92,25 @@ class ProfileController extends Controller
         $user->update(['profile_photo_path' => $path]);
 
         return Redirect::route('dashboard.profile')->with('success', 'Foto profil berhasil diperbarui!');
+    }
+
+    /**
+     * AJAX-friendly popup update for name and role
+     */
+    public function popupUpdate(Request $request)
+    {
+        Log::info('Popup update attempt', ['user_id' => $request->user()->id, 'payload' => $request->all()]);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $user = $request->user();
+        $user->name = $data['name'];
+        $user->save();
+
+        Log::info('Popup update saved', ['user_id' => $user->id, 'name' => $user->name]);
+
+        return response()->json(['status' => 'ok', 'user' => $user->only(['id','name','role','email'])]);
     }
 }

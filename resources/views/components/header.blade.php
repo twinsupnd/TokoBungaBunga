@@ -69,31 +69,116 @@
 
         @auth
             <div style="display:flex; align-items:center; gap:16px;">
-                <!-- Cart Icon -->
+                <!-- Cart Icon (SVG) -->
                 <a href="{{ route('cart') }}" title="Keranjang Belanja" style="position:relative; display:inline-flex; align-items:center; color:var(--color-text-dark); text-decoration:none; padding:6px; border-radius:6px;">
-                    <span class="icon-inline">🛒</span>
+                    <svg class="icon-inline" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="9" cy="20" r="1"></circle>
+                        <circle cx="20" cy="20" r="1"></circle>
+                        <path d="M1 1h4l2.6 13.4a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L23 6H6"></path>
+                    </svg>
                     <span id="cart-count-badge" style="position:absolute; top:-6px; right:-6px; background:var(--color-accent-strong); color:#fff; border-radius:999px; min-width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; padding:0 6px;">0</span>
                 </a>
 
-                <!-- User Menu -->
-                <div class="nav-dropdown" style="display:inline-block; position:relative;">
-                    <button id="user-menu-toggle" class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false">👤 {{ auth()->user()->name }}</button>
-                    <div id="user-dropdown" class="nav-dropdown-menu" style="right:0; left:auto;">
-                        <a href="{{ route('profile.show') }}">Profil Saya</a>
-                        <a href="{{ route('profile.edit') }}">Edit Profil</a>
-                        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-                            @csrf
-                            <button type="submit" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none;">Logout</button>
-                        </form>
-                    </div>
+                <!-- User Menu: click opens profile popup -->
+                <div style="display:inline-block; position:relative;">
+                    <button id="open-profile-popup" class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" style="display:inline-flex; align-items:center; gap:8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-3-3.87"></path><path d="M4 21v-2a4 4 0 0 1 3-3.87"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span id="nav-username">{{ auth()->user()->name ?? '' }}</span>
+                    </button>
                 </div>
             </div>
         @else
-            <a href="#" id="open-auth-modal" class="nav-link" style="padding:8px 14px; border-radius:20px; background:linear-gradient(135deg, var(--color-pastel-bliss-1), var(--color-accent-strong)); color:#fff;">Login</a>
-            <a href="{{ route('register') }}" class="nav-link" style="padding:6px 10px;">Register</a>
+                <button id="open-auth-modal" class="nav-link" style="padding:8px 14px; border-radius:20px; background:linear-gradient(135deg, var(--color-pastel-bliss-1), var(--color-accent-strong)); color:#fff; border:0; cursor:pointer;">Login / Register</button>
         @endauth
     </nav>
 </header>
+
+<!-- Profile popup modal -->
+<div id="profile-modal" style="display:none; position:fixed; inset:0; align-items:center; justify-content:center; z-index:1400;">
+    <div id="profile-modal-backdrop" style="position:absolute; inset:0; background:rgba(0,0,0,0.35);"></div>
+    <div style="position:relative; z-index:1410; width:360px; max-width:92%;">
+        <div style="background:white; border-radius:12px; padding:18px; box-shadow:0 20px 50px rgba(0,0,0,0.25);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <strong>Profil Saya</strong>
+                <button id="profile-modal-close" style="background:none;border:0;font-size:18px;cursor:pointer;">✕</button>
+            </div>
+            <form id="profile-popup-form">
+                @csrf
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <label style="font-size:13px; font-weight:600;">Nama</label>
+                    <input name="name" id="profile-name" type="text" required value="{{ auth()->user()->name ?? '' }}" style="padding:8px;border:1px solid #e5e7eb;border-radius:6px;">
+
+                    <label style="font-size:13px; font-weight:600;">Role</label>
+                    <input type="text" id="profile-role" value="{{ ucfirst(auth()->user()->role ?? 'user') }}" disabled style="padding:8px;border:1px solid #e5e7eb;border-radius:6px;background:#f9fafb;">
+
+                    <div style="display:flex; gap:8px; margin-top:8px; align-items:center;">
+                        <button type="submit" style="flex:1; padding:8px; border-radius:8px; border:0; background:var(--color-accent-strong); color:white; font-weight:700; cursor:pointer;">Simpan</button>
+                        <button type="submit" form="logout-form" style="padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.06); background:#fff; cursor:pointer;">Logout</button>
+                    </div>
+                </div>
+            </form>
+
+            <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display:none;">
+                @csrf
+            </form>
+        </div>
+    </div>
+</div>
+
+        <!-- Auth modal (Login / Register) for guests -->
+        <div id="auth-modal" style="display:none; position:fixed; inset:0; align-items:center; justify-content:center; z-index:1500;">
+            <div id="auth-modal-backdrop" style="position:absolute; inset:0; background:rgba(0,0,0,0.45);"></div>
+            <div style="position:relative; z-index:1510; width:420px; max-width:94%;">
+                <div style="background:white; border-radius:12px; padding:18px; box-shadow:0 20px 50px rgba(0,0,0,0.25);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <strong id="auth-modal-title">Login</strong>
+                        <button id="auth-modal-close" style="background:none;border:0;font-size:18px;cursor:pointer;">✕</button>
+                    </div>
+
+                    <div style="display:flex; gap:8px; margin-bottom:12px;">
+                        <button id="auth-tab-login" class="auth-tab" style="flex:1; padding:8px; border-radius:8px; border:1px solid #eee; background:#fff; cursor:pointer;">Login</button>
+                        <button id="auth-tab-register" class="auth-tab" style="flex:1; padding:8px; border-radius:8px; border:1px solid #eee; background:#fff; cursor:pointer;">Register</button>
+                    </div>
+
+                    <div id="auth-login" class="auth-pane">
+                        <form method="POST" action="{{ route('login') }}" style="display:flex; flex-direction:column; gap:8px;">
+                            @csrf
+                            <label style="font-size:13px; font-weight:600;">Email:</label>
+                            <input name="email" type="email" placeholder="Email" required style="padding:10px;border:1px solid #e5e7eb;border-radius:6px;"> 
+                            <label style="font-size:13px; font-weight:600;">Password:</label>
+                            <input name="password" type="password" placeholder="Password" required style="padding:10px;border:1px solid #e5e7eb;border-radius:6px;"> 
+                            <div style="display:flex; align-items:center; justify-content:space-between;">
+                                <label style="font-size:13px;"><input type="checkbox" name="remember"> Remember me</label>
+                                <a href="{{ route('password.request') }}" style="font-size:13px; color:var(--color-accent-strong);">Lupa password?</a>
+                            </div>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <button type="submit" style="flex:1; padding:10px; border-radius:8px; border:0; background:var(--color-accent-strong); color:white; font-weight:700; cursor:pointer;">Masuk</button>
+                            </div>
+                            <div style="margin-top:8px; font-size:14px; text-align:center;">Belum punya akun? <a href="#" id="switch-to-register">Register di sini</a></div>
+                        </form>
+                    </div>
+
+                    <div id="auth-register" class="auth-pane" style="display:none;">
+                        <form method="POST" action="{{ route('register') }}" style="display:flex; flex-direction:column; gap:8px;">
+                            @csrf
+                            <label style="font-size:13px; font-weight:600;">Nama Lengkap:</label>
+                            <input name="name" type="text" placeholder="Nama lengkap" required style="padding:10px;border:1px solid #e5e7eb;border-radius:6px;"> 
+                            <label style="font-size:13px; font-weight:600;">Email:</label>
+                            <input name="email" type="email" placeholder="Email" required style="padding:10px;border:1px solid #e5e7eb;border-radius:6px;"> 
+                            <label style="font-size:13px; font-weight:600;">Password:</label>
+                            <input name="password" type="password" placeholder="Password" required style="padding:10px;border:1px solid #e5e7eb;border-radius:6px;"> 
+                            <label style="font-size:13px; font-weight:600;">Konfirmasi Password:</label>
+                            <input name="password_confirmation" type="password" placeholder="Konfirmasi Password" required style="padding:10px;border:1px solid #e5e7eb;border-radius:6px;"> 
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <button type="submit" style="flex:1; padding:10px; border-radius:8px; border:0; background:var(--color-accent-strong); color:white; font-weight:700; cursor:pointer;">Daftar</button>
+                            </div>
+                            <div style="margin-top:8px; font-size:14px; text-align:center;">Sudah punya akun? <a href="#" id="switch-to-login">Masuk di sini</a></div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
 <script>
     // Update cart count badge from localStorage
@@ -150,28 +235,69 @@
         });
     })();
 
-    // User menu dropdown
-    const userMenuBtn = document.getElementById('user-menu-toggle');
-    const userDropdown = document.getElementById('user-dropdown');
+    // Profile popup behavior (open modal, submit via AJAX)
+    (function(){
+        const openBtn = document.getElementById('open-profile-popup');
+        const modal = document.getElementById('profile-modal');
+        const modalBackdrop = document.getElementById('profile-modal-backdrop');
+        const modalClose = document.getElementById('profile-modal-close');
+        const form = document.getElementById('profile-popup-form');
+        const nameInput = document.getElementById('profile-name');
+        // role is display-only now, do not send from client
+        const navUsername = document.getElementById('nav-username');
+        const csrfToken = '{{ csrf_token() }}';
 
-    if (userMenuBtn && userDropdown) {
-        userMenuBtn.addEventListener('click', (e) => {
+        function openModal(){ if(modal) modal.style.display = 'flex'; }
+        function closeModal(){ if(modal) modal.style.display = 'none'; }
+
+        openBtn?.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+        modalClose?.addEventListener('click', function(e){ e.preventDefault(); closeModal(); });
+        modalBackdrop?.addEventListener('click', closeModal);
+
+        document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+        form?.addEventListener('submit', function(e){
             e.preventDefault();
-            const isOpen = window.getComputedStyle(userDropdown).display === 'block';
-            // close other dropdowns first
-            document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.style.display = 'none');
-            userDropdown.style.display = isOpen ? 'none' : 'block';
-            userMenuBtn.setAttribute('aria-expanded', String(!isOpen));
-        });
+            const payload = { name: nameInput.value };
+            fetch("{{ route('profile.popup.update') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }).then(async r => {
+                if (r.ok) {
+                    const data = await r.json();
+                    if(data && data.status === 'ok'){
+                        if(navUsername) navUsername.textContent = data.user.name;
+                        closeModal();
+                        return;
+                    }
+                    alert('Profil tersimpan, namun respons tak terduga.');
+                    return;
+                }
 
-        // Close when clicking outside any .nav-dropdown
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.nav-dropdown') && userDropdown) {
-                userDropdown.style.display = 'none';
-                userMenuBtn.setAttribute('aria-expanded', 'false');
-            }
+                // handle errors
+                let errBody;
+                try { errBody = await r.json(); } catch (ex) { errBody = await r.text(); }
+                console.error('Profile save failed', r.status, errBody);
+                if (r.status === 419) {
+                    alert('Sesi Anda berakhir. Silakan refresh halaman dan login kembali.');
+                } else if (r.status === 422 && errBody && errBody.errors) {
+                    // collect validation messages
+                    const messages = Object.values(errBody.errors).flat().join('\n');
+                    alert(messages || 'Validasi gagal.');
+                } else if (errBody && errBody.message) {
+                    alert(errBody.message);
+                } else {
+                    alert('Gagal menyimpan profil. Periksa console untuk detail.');
+                }
+            }).catch(err => { console.error(err); alert('Terjadi kesalahan saat menyimpan.'); });
         });
-    }
+    })();
 
     // Header search dropdown
     const searchToggle = document.getElementById('open-search-box');
@@ -252,5 +378,35 @@
         } catch (e) {
             console.error('Cart sync error', e);
         }
+    })();
+
+    // Auth modal: open/close and switch panes
+    (function(){
+        const openAuth = document.getElementById('open-auth-modal');
+        const authModal = document.getElementById('auth-modal');
+        const authBackdrop = document.getElementById('auth-modal-backdrop');
+        const authClose = document.getElementById('auth-modal-close');
+        const tabLogin = document.getElementById('auth-tab-login');
+        const tabRegister = document.getElementById('auth-tab-register');
+        const paneLogin = document.getElementById('auth-login');
+        const paneRegister = document.getElementById('auth-register');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+        const authTitle = document.getElementById('auth-modal-title');
+
+        function showAuthModal(){ if(authModal) authModal.style.display = 'flex'; }
+        function hideAuthModal(){ if(authModal) authModal.style.display = 'none'; }
+        function showLogin(){ if(paneLogin) paneLogin.style.display = 'block'; if(paneRegister) paneRegister.style.display = 'none'; if(authTitle) authTitle.textContent = 'Login'; }
+        function showRegister(){ if(paneLogin) paneLogin.style.display = 'none'; if(paneRegister) paneRegister.style.display = 'block'; if(authTitle) authTitle.textContent = 'Register'; }
+
+        openAuth?.addEventListener('click', function(e){ e.preventDefault(); showAuthModal(); showLogin(); });
+        authClose?.addEventListener('click', function(){ hideAuthModal(); });
+        authBackdrop?.addEventListener('click', function(){ hideAuthModal(); });
+
+        tabLogin?.addEventListener('click', function(e){ e.preventDefault(); showLogin(); });
+        tabRegister?.addEventListener('click', function(e){ e.preventDefault(); showRegister(); });
+        switchToRegister?.addEventListener('click', function(e){ e.preventDefault(); showRegister(); });
+        switchToLogin?.addEventListener('click', function(e){ e.preventDefault(); showLogin(); });
+        document.addEventListener('keydown', function(e){ if(e.key === 'Escape') hideAuthModal(); });
     })();
 </script>

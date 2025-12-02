@@ -172,7 +172,7 @@
         <aside class="sidebar" role="navigation" aria-label="Sidebar">
             <div class="sidebar-header">
                 <img src="{{ asset('images/logo.png') }}" alt="Toko Bunga Logo" class="sidebar-logo">
-                <a href="{{ route('dashboard') }}" class="brand">Toko Bunga</a>
+                <a href="{{ route('dashboard') }}" class="brand">Whispering Flora</a>
             </div>
             <div class="sidebar-menu-wrapper">
                 @include('dashboard.sidebar')
