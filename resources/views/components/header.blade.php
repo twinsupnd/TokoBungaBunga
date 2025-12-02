@@ -226,18 +226,8 @@
             if (saved && syncedFlag !== String(authId)) {
                 const parsed = JSON.parse(saved);
                 if (parsed && Array.isArray(parsed.items) && parsed.items.length > 0) {
-                    // Ask user before syncing — prevents unexpected merges when browser cart
-                    // contains demo/test items or stale data.
-                    try {
-                        const ok = confirm('Kami menemukan item di keranjang browser Anda. Sinkronkan ke akun Anda sekarang? Tekan OK untuk mengonfirmasi.');
-                        if (!ok) {
-                            // User declined — do not auto-sync now.
-                            return;
-                        }
-                    } catch (e) {
-                        // If confirm is not available for some reason, proceed to sync.
-                    }
-
+                    // Automatically sync browser cart into user's account (silent, non-blocking).
+                    // This avoids showing a blocking native confirm dialog.
                     fetch("{{ route('cart.sync') }}", {
                         method: 'POST',
                         headers: {
@@ -253,7 +243,10 @@
                             localStorage.setItem('whispering_flora_cart_synced', String(authId));
                             updateCartBadge();
                         }
-                    }).catch(function(e){ console.error('Cart sync failed', e); });
+                    }).catch(function(e){
+                        // Do not interrupt the user; log failure silently.
+                        console.error('Cart sync failed', e);
+                    });
                 }
             }
         } catch (e) {
