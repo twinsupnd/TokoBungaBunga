@@ -8,7 +8,6 @@
         .nav-link:hover, .nav-dropdown-btn:hover { color: var(--color-accent-strong); background: rgba(237,56,120,0.04); }
         .nav-dropdown { position:relative; }
         .nav-dropdown-menu { position:absolute; top:calc(100% + 8px); left:0; display:none; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 8px 30px rgba(0,0,0,0.08); min-width:200px; z-index:1200; max-height:320px; overflow-y:auto; padding-right:6px; }
-        .nav-dropdown.open .nav-dropdown-menu { display:block; }
         /* Ensure user dropdown specifically can grow taller and be scrollable on small screens */
         #user-dropdown { max-height: 50vh; overflow-y: auto; padding-right: 8px; }
         /* Ensure logout button spans full width inside the dropdown */
@@ -133,14 +132,14 @@
         }
 
         dropdownToggles.forEach(btn => {
-            const parent = btn.closest('.nav-dropdown');
-            if (!parent) return;
+            const menu = btn.nextElementSibling;
+            if (!menu) return;
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const isOpen = parent.classList.contains('open');
+                const isOpen = menu.style.display === 'block';
                 closeAllDropdowns();
                 if (!isOpen) {
-                    parent.classList.add('open');
+                    menu.style.display = 'block';
                     btn.setAttribute('aria-expanded', 'true');
                 }
             });
@@ -172,13 +171,13 @@
         });
 
         // Close when clicking outside any .nav-dropdown
-        // remove any specific userMenuBtn handler: generic handlers above now control all dropdowns
-        // Ensure clicking outside closes any open dropdown
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.nav-dropdown')) {
-                closeAllDropdowns();
+            if (!e.target.closest('.nav-dropdown') && userDropdown) {
+                userDropdown.style.display = 'none';
+                userMenuBtn.setAttribute('aria-expanded', 'false');
             }
         });
+    }
 
     // Header search dropdown
     const searchToggle = document.getElementById('open-search-box');
