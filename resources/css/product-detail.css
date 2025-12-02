@@ -3,7 +3,7 @@
 .product-detail-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 1px 1px;
 }
 
 .product-detail-grid {
@@ -38,25 +38,25 @@
 
 .product-detail-info h1 {
     font-family: var(--font-display);
-    font-size: 42px;
+    font-size: 30px;
     color: var(--color-accent-strong);
-    margin: 0 0 16px;
+    margin: 0 0 10px;
     font-weight: 700;
     line-height: 1.2;
 }
 
 .product-detail-price {
-    font-size: 32px;
+    font-size: 20px;
     font-weight: 700;
-    color: var(--color-pastel-bliss-5);
-    margin: 16px 0 24px;
+    color: #5d2f2f;
+    margin: 1px 0 1px;
 }
 
 .product-detail-description {
     font-size: 16px;
     color: var(--color-text-light);
     line-height: 1.8;
-    margin-bottom: 32px;
+    margin-bottom: 3px;
 }
 
 .product-date-label {
@@ -72,7 +72,7 @@
 }
 
 .product-date-input {
-    width: 100%;
+    width: 93%;
     padding: 10px 12px;
     border: 2px solid var(--color-pastel-bliss-2);
     border-radius: 6px;
@@ -93,7 +93,7 @@
 .product-qty-box {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
     margin-bottom: 24px;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .product-qty-input {
-    width: 70px;
+    width: 50px;
     border: 2px solid var(--color-pastel-bliss-2);
     border-radius: 6px;
     padding: 8px;
@@ -167,8 +167,8 @@
 }
 
 .product-meta-section {
-    margin-top: 40px;
-    padding-top: 40px;
+    margin-top: 20px;
+    padding-top: 20px;
     border-top: 2px solid var(--color-pastel-bliss-2);
 }
 
@@ -204,6 +204,7 @@
 
 .product-back-link {
     display: inline-block;
+    margin-top: 20px;
     margin-bottom: 20px;
     color: var(--color-accent-strong);
     text-decoration: none;

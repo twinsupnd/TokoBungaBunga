@@ -81,9 +81,7 @@
             </div>
           </div>
 
-          <div style="flex:0 0 420px; min-width:250px;">
-            <img src="{{ asset('images/bg.jpg') }}" alt="Whispering Flora" style="width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
-          </div>
+        
         </div>
       </section>
 
