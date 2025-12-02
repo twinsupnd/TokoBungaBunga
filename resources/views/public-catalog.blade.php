@@ -331,28 +331,54 @@
             </div>
         @endif
 
-        {{-- Pagination --}}
+        {{-- Pagination (compact window) --}}
         @if ($products->hasPages())
+            @php
+                $current = $products->currentPage();
+                $last = $products->lastPage();
+                $start = max(1, $current - 2);
+                $end = min($last, $current + 2);
+            @endphp
+
             <div style="display: flex; justify-content: center; margin-top: 40px; padding: 20px 0;">
                 <div style="display: flex; gap: 8px; align-items: center;">
+                    {{-- Prev --}}
                     @if ($products->onFirstPage())
-                        <span style="padding: 8px 12px; color: #ccc; cursor: not-allowed;">← Prev</span>
+                        <span style="padding: 10px 14px; border-radius:8px; color:#9ca3af; background:#fff; border:1px solid rgba(34,34,59,0.04);">←</span>
                     @else
-                        <a href="{{ $products->previousPageUrl() }}" style="padding: 8px 12px; border-radius: 6px; background: #f0e9ff; color: #c7b7ff; text-decoration: none; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#e0d9ff'" onmouseout="this.style.background='#f0e9ff'">← Prev</a>
+                        <a href="{{ $products->previousPageUrl() }}" style="padding: 10px 14px; border-radius:8px; background:#fff; border:1px solid rgba(34,34,59,0.06); text-decoration:none; color:inherit;">←</a>
                     @endif
 
-                    @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
-                        @if ($page == $products->currentPage())
-                            <span style="padding: 8px 12px; border-radius: 6px; background: linear-gradient(135deg, #c7b7ff, #ffd6e0); color: white; font-weight: 700;">{{ $page }}</span>
-                        @else
-                            <a href="{{ $url }}" style="padding: 8px 12px; border-radius: 6px; background: #f0e9ff; color: #7b7b8b; text-decoration: none; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#e0d9ff'" onmouseout="this.style.background='#f0e9ff'">{{ $page }}</a>
+                    {{-- First page + ellipsis if needed --}}
+                    @if ($start > 1)
+                        <a href="{{ $products->url(1) }}" style="padding: 10px 14px; border-radius:8px; background:#fff; border:1px solid rgba(34,34,59,0.06); text-decoration:none; color:inherit;">1</a>
+                        @if ($start > 2)
+                            <span style="padding: 10px 6px; color:#9ca3af;">…</span>
                         @endif
-                    @endforeach
+                    @endif
 
+                    {{-- Page window --}}
+                    @for ($p = $start; $p <= $end; $p++)
+                        @if ($p == $current)
+                            <span style="padding: 10px 14px; border-radius:8px; background: linear-gradient(135deg,#c7b7ff,#ffd6e0); color:#fff; font-weight:700;">{{ $p }}</span>
+                        @else
+                            <a href="{{ $products->url($p) }}" style="padding: 10px 14px; border-radius:8px; background:#fff; border:1px solid rgba(34,34,59,0.06); text-decoration:none; color:inherit;">{{ $p }}</a>
+                        @endif
+                    @endfor
+
+                    {{-- Last page + ellipsis if needed --}}
+                    @if ($end < $last)
+                        @if ($end < $last - 1)
+                            <span style="padding: 10px 6px; color:#9ca3af;">…</span>
+                        @endif
+                        <a href="{{ $products->url($last) }}" style="padding: 10px 14px; border-radius:8px; background:#fff; border:1px solid rgba(34,34,59,0.06); text-decoration:none; color:inherit;">{{ $last }}</a>
+                    @endif
+
+                    {{-- Next --}}
                     @if ($products->hasMorePages())
-                        <a href="{{ $products->nextPageUrl() }}" style="padding: 8px 12px; border-radius: 6px; background: #f0e9ff; color: #c7b7ff; text-decoration: none; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#e0d9ff'" onmouseout="this.style.background='#f0e9ff'">Next →</a>
+                        <a href="{{ $products->nextPageUrl() }}" style="padding: 10px 14px; border-radius:8px; background:#fff; border:1px solid rgba(34,34,59,0.06); text-decoration:none; color:inherit;">→</a>
                     @else
-                        <span style="padding: 8px 12px; color: #ccc; cursor: not-allowed;">Next →</span>
+                        <span style="padding: 10px 14px; border-radius:8px; color:#9ca3af; background:#fff; border:1px solid rgba(34,34,59,0.04);">→</span>
                     @endif
                 </div>
             </div>

@@ -143,7 +143,7 @@ class JenisController extends Controller
             });
         }
 
-        $products = $query->orderBy('id')->paginate(12)->withQueryString();
+        $products = $query->orderBy('id')->paginate(9)->withQueryString();
 
         return view('public-catalog', compact('products'))->with('q', $q);
     }
