@@ -29,11 +29,7 @@
             height: 100%;
         }
 
-        body {
-            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto;
-            background: var(--pastel-bg);
-            color: var(--text);
-        }
+      
 
         .navbar {
             background: linear-gradient(180deg, var(--pastel-card), #FFF);
